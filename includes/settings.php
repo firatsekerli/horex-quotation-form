@@ -182,30 +182,83 @@ function horex_render_settings_page() {
 				<p class="horex-tab-description"><?php echo esc_html( $tab['description'] ); ?></p>
 			<?php endif; ?>
 
-			<table class="form-table" role="presentation">
-				<tbody>
-				<?php foreach ( $tab['fields'] as $name => $field ) : ?>
-					<tr>
-						<th scope="row">
-							<label for="<?php echo esc_attr( 'horex-field-' . $name ); ?>">
-								<?php echo esc_html( $field['label'] ); ?>
-							</label>
-						</th>
-						<td>
-							<?php horex_render_field( $name, $field, $settings[ $name ] ); ?>
-							<?php if ( ! empty( $field['description'] ) ) : ?>
-								<p class="description"><?php echo esc_html( $field['description'] ); ?></p>
-							<?php endif; ?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-				</tbody>
-			</table>
+			<?php horex_render_tab_fields( $tab, $settings ); ?>
 
 			<?php submit_button( __( 'Opslaan', 'horex' ) ); ?>
 		</form>
 	</div>
 	<?php
+}
+
+/**
+ * Render a tab's fields: scalars in a form-table, repeaters and groups full width.
+ *
+ * @param array $tab      Tab definition.
+ * @param array $settings Current settings.
+ */
+function horex_render_tab_fields( array $tab, array $settings ) {
+	$blocks  = horex_block_field_types();
+	$only    = 1 === count( $tab['fields'] );
+	$scalars = array();
+
+	foreach ( $tab['fields'] as $name => $field ) {
+		if ( ! in_array( $field['type'], $blocks, true ) ) {
+			$scalars[ $name ] = $field;
+			continue;
+		}
+
+		horex_render_scalar_table( $scalars, $settings );
+		$scalars = array();
+
+		echo '<div class="horex-section">';
+
+		// A tab holding nothing but one repeater already says what it is in the tab label.
+		if ( ! $only ) {
+			printf( '<h2 class="horex-section__title">%s</h2>', esc_html( $field['label'] ) );
+
+			if ( ! empty( $field['description'] ) ) {
+				printf( '<p class="description">%s</p>', esc_html( $field['description'] ) );
+			}
+		}
+
+		horex_render_field( $name, $field, $settings[ $name ] );
+
+		echo '</div>';
+	}
+
+	horex_render_scalar_table( $scalars, $settings );
+}
+
+/**
+ * Render a set of scalar fields as a standard WordPress form table.
+ *
+ * @param array $fields   Schema fields.
+ * @param array $settings Current settings.
+ */
+function horex_render_scalar_table( array $fields, array $settings ) {
+	if ( ! $fields ) {
+		return;
+	}
+
+	echo '<table class="form-table" role="presentation"><tbody>';
+
+	foreach ( $fields as $name => $field ) {
+		$id = 'wysiwyg' === $field['type'] ? 'horex_field_' . $name : 'horex-field-' . $name;
+
+		echo '<tr><th scope="row">';
+		printf( '<label for="%1$s">%2$s</label>', esc_attr( $id ), esc_html( $field['label'] ) );
+		echo '</th><td>';
+
+		horex_render_field( $name, $field, $settings[ $name ] );
+
+		if ( ! empty( $field['description'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $field['description'] ) );
+		}
+
+		echo '</td></tr>';
+	}
+
+	echo '</tbody></table>';
 }
 
 /**
@@ -257,14 +310,7 @@ function horex_handle_settings_save() {
  * @return array
  */
 function horex_sanitize_settings( array $input, array $fields ) {
-	$clean = array();
-
-	foreach ( $fields as $name => $field ) {
-		$value          = isset( $input[ $name ] ) ? $input[ $name ] : null;
-		$clean[ $name ] = horex_sanitize_value( $value, $field );
-	}
-
-	return $clean;
+	return horex_sanitize_subfields( $input, $fields );
 }
 
 /**
@@ -282,7 +328,9 @@ function horex_sanitize_value( $value, array $field ) {
 			return ! empty( $value );
 
 		case 'number':
-			$number = is_scalar( $value ) ? absint( $value ) : 0;
+			// Cast rather than absint: a negative entry should clamp to the declared
+			// minimum, not silently flip sign into a plausible-looking measurement.
+			$number = is_scalar( $value ) ? (int) $value : 0;
 
 			if ( isset( $field['min'] ) ) {
 				$number = max( (int) $field['min'], $number );
@@ -327,10 +375,117 @@ function horex_sanitize_value( $value, array $field ) {
 
 			return array_values( array_unique( array_filter( $emails, 'is_email' ) ) );
 
+		case 'slug':
+			return is_scalar( $value ) ? sanitize_title( (string) $value ) : '';
+
+		case 'group':
+			return horex_sanitize_subfields( is_array( $value ) ? $value : array(), $field['fields'] );
+
+		case 'repeater':
+			return horex_sanitize_repeater( $value, $field );
+
 		case 'text':
 		default:
 			return is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
 	}
+}
+
+/**
+ * Sanitise an associative set of values against a schema field list.
+ *
+ * @param array $values Raw values.
+ * @param array $fields Schema sub-fields.
+ * @return array
+ */
+function horex_sanitize_subfields( array $values, array $fields ) {
+	$clean = array();
+
+	foreach ( $fields as $name => $field ) {
+		$clean[ $name ] = horex_sanitize_value( isset( $values[ $name ] ) ? $values[ $name ] : null, $field );
+	}
+
+	return $clean;
+}
+
+/**
+ * Sanitise repeater rows.
+ *
+ * Rows arrive keyed by whatever index the browser produced, so they are re-indexed.
+ * A row whose label field is empty is dropped: a product without a name, or a
+ * measuring step without text, is a stray row rather than data.
+ *
+ * @param mixed $value Raw rows.
+ * @param array $field Schema field definition.
+ * @return array
+ */
+function horex_sanitize_repeater( $value, array $field ) {
+	if ( ! is_array( $value ) ) {
+		return array();
+	}
+
+	$label_key = isset( $field['row_label'] ) ? $field['row_label'] : '';
+	$rows      = array();
+
+	foreach ( $value as $row ) {
+		if ( ! is_array( $row ) ) {
+			continue;
+		}
+
+		$clean = horex_sanitize_subfields( $row, $field['fields'] );
+
+		if ( $label_key && '' === trim( (string) $clean[ $label_key ] ) ) {
+			continue;
+		}
+
+		$rows[] = $clean;
+	}
+
+	return horex_fill_row_slugs( $rows, $field );
+}
+
+/**
+ * Give every row a stable, unique slug.
+ *
+ * Slugs are the keys submissions are stored against, so an empty one is derived from
+ * the row label and duplicates are suffixed. An existing slug is never rewritten —
+ * renaming a product must not orphan the requests that already reference it.
+ *
+ * @param array $rows  Sanitised rows.
+ * @param array $field Schema field definition.
+ * @return array
+ */
+function horex_fill_row_slugs( array $rows, array $field ) {
+	if ( ! isset( $field['fields']['slug'] ) ) {
+		return $rows;
+	}
+
+	$label_key = isset( $field['row_label'] ) ? $field['row_label'] : '';
+	$seen      = array();
+
+	foreach ( $rows as $index => $row ) {
+		$slug = isset( $row['slug'] ) ? $row['slug'] : '';
+
+		if ( '' === $slug && $label_key && isset( $row[ $label_key ] ) ) {
+			$slug = sanitize_title( (string) $row[ $label_key ] );
+		}
+
+		if ( '' === $slug ) {
+			$slug = 'item';
+		}
+
+		$base    = $slug;
+		$attempt = 2;
+
+		while ( isset( $seen[ $slug ] ) ) {
+			$slug = $base . '-' . $attempt;
+			++$attempt;
+		}
+
+		$seen[ $slug ]          = true;
+		$rows[ $index ]['slug'] = $slug;
+	}
+
+	return $rows;
 }
 
 /**
@@ -372,8 +527,9 @@ function horex_enqueue_admin_assets() {
 		'horex-admin',
 		'horexAdmin',
 		array(
-			'chooseImage' => __( 'Afbeelding kiezen', 'horex' ),
-			'useImage'    => __( 'Deze afbeelding gebruiken', 'horex' ),
+			'chooseImage'   => __( 'Afbeelding kiezen', 'horex' ),
+			'useImage'      => __( 'Deze afbeelding gebruiken', 'horex' ),
+			'confirmRemove' => __( 'Deze rij verwijderen?', 'horex' ),
 		)
 	);
 }

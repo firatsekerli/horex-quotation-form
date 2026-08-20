@@ -52,6 +52,9 @@ final class Horex {
 		add_action( 'init', 'horex_register_cpt' );
 		add_action( 'admin_menu', 'horex_register_settings_page' );
 		add_action( 'admin_enqueue_scripts', 'horex_maybe_enqueue_admin_assets' );
+
+		// Seeds installs that were activated before the seeder existed.
+		add_action( 'admin_init', 'horex_maybe_seed' );
 		add_action( 'admin_post_horex_save_settings', 'horex_handle_settings_save' );
 	}
 
@@ -63,6 +66,7 @@ final class Horex {
 		require_once HOREX_DIR . 'includes/settings-schema.php';
 		require_once HOREX_DIR . 'includes/settings.php';
 		require_once HOREX_DIR . 'includes/settings-render.php';
+		require_once HOREX_DIR . 'includes/defaults.php';
 	}
 
 	/**
@@ -77,6 +81,7 @@ final class Horex {
 	 */
 	public static function activate() {
 		horex_register_cpt();
+		horex_maybe_seed();
 		flush_rewrite_rules();
 	}
 

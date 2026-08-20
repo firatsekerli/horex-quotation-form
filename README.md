@@ -59,10 +59,23 @@ includes/
   cpt.php                    registratie horex_aanvraag + adminkolommen
   settings-schema.php        het schema: tabbladen, velden, standaardwaarden
   settings.php               instellingenpagina: opslag, opslaan, sanitizen
-  settings-render.php        veldrenderers (tekst, kleur, afbeelding, wysiwyg, …)
+  settings-render.php        veldrenderers (tekst, kleur, afbeelding, repeater, …)
+  defaults.php               de startcatalogus, eenmalig ingeladen
+tests/
+  test-sanitize.php          controle op de sanitizer, draait zonder WordPress
 templates/                   shortcode-markup
 assets/js, assets/css        admin- en front-end assets
 ```
+
+## Testen
+
+```bash
+php tests/test-sanitize.php
+```
+
+Draait zonder WordPress en controleert de sanitizer: welke velden overleven, of lege
+rijen verdwijnen, of slugs uniek en stabiel blijven, en of de startcatalogus past op het
+schema dat het formulier rendert.
 
 ## Ontwikkeling
 
@@ -70,7 +83,7 @@ De build loopt in kleine, afzonderlijk testbare fases:
 
 - [x] **0 — Scaffold:** plugin-header, hoofdklasse, CPT zichtbaar, instellingenpagina met
   schema-gestuurde velden (Maten, E-mail, Branding)
-- [ ] **1 — Catalogus:** repeatercomponent + producten, framekleuren, gaas, stof, doek,
+- [x] **1 — Catalogus:** repeatercomponent + producten, framekleuren, gaas, stof, doek,
   meethulp, en de seeder met de bevestigde gegevens
 - [ ] **2 — Aanvraagvelden:** opslag en adminweergave van aanvragen + adminkolommen
 - [ ] **3 — Front-end shell:** shortcode, config doorgeven, productstap
