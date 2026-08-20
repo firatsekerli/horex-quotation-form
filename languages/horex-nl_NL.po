@@ -67,40 +67,52 @@ msgstr "Aanvraag opgeslagen"
 msgid "Request updated"
 msgstr "Aanvraag bijgewerkt"
 
-#: includes/settings-render.php:194
+#: includes/settings-render.php:253
 msgid "Nothing added yet."
 msgstr "Nog niets toegevoegd."
 
-#: includes/settings-render.php:199
+#: includes/settings-render.php:259
 msgid "Add row"
 msgstr "Rij toevoegen"
 
-#: includes/settings-render.php:232
+#: includes/settings-render.php:306
+msgid "Show or hide this row"
+msgstr "Deze rij tonen of verbergen"
+
+#: includes/settings-render.php:323
+#: includes/settings-render.php:378
 msgid "Move up"
 msgstr "Omhoog verplaatsen"
 
-#: includes/settings-render.php:233
+#: includes/settings-render.php:324
+#: includes/settings-render.php:379
 msgid "Move down"
 msgstr "Omlaag verplaatsen"
 
-#: includes/settings-render.php:234
-#: includes/settings-render.php:234
-#: includes/settings-render.php:362
+#: includes/settings-render.php:325
+#: includes/settings-render.php:380
+#: includes/settings-render.php:552
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: includes/settings-render.php:318
+#: includes/settings-render.php:336
+msgid "Advanced"
+msgstr "Geavanceerd"
+
+#: includes/settings-render.php:506
 msgid "Choose colour"
 msgstr "Kleur kiezen"
 
-#: includes/settings-render.php:359
-msgid "Replace"
-msgstr "Vervangen"
-
-#: includes/settings-render.php:359
-#: includes/settings.php:592
+#: includes/settings-render.php:533
+#: includes/settings-render.php:549
+#: includes/settings.php:612
 msgid "Choose image"
 msgstr "Afbeelding kiezen"
+
+#: includes/settings-render.php:549
+#: includes/settings.php:615
+msgid "Replace"
+msgstr "Vervangen"
 
 #: includes/settings-schema.php:24
 msgid "Insect screens — with variant and mesh, frame colours"
@@ -116,7 +128,7 @@ msgstr "Zonwering — geen uitvoering of gaas, doekkleuren"
 
 #: includes/settings-schema.php:41
 #: includes/settings-schema.php:46
-#: includes/submission.php:311
+#: includes/submission.php:320
 msgid "Products"
 msgstr "Producten"
 
@@ -139,7 +151,7 @@ msgstr "Product"
 #: includes/settings-schema.php:155
 #: includes/settings-schema.php:317
 #: includes/submission-schema.php:56
-#: includes/submission.php:309
+#: includes/submission.php:318
 msgid "Name"
 msgstr "Naam"
 
@@ -148,12 +160,12 @@ msgstr "Naam"
 #: includes/settings-schema.php:119
 #: includes/settings-schema.php:160
 #: includes/settings-schema.php:322
-msgid "Slug"
-msgstr "Slug"
+msgid "Key"
+msgstr "Sleutel"
 
 #: includes/settings-schema.php:60
-msgid "Stable key used in requests. Leave empty to fill it automatically; do not change it once requests exist."
-msgstr "Vaste sleutel in aanvragen. Laat leeg om automatisch te vullen; wijzig niet meer zodra er aanvragen zijn."
+msgid "Stable key used in requests. Filled automatically from the name; changing it breaks the link with requests that already exist."
+msgstr "Vaste sleutel in aanvragen. Wordt automatisch uit de naam gevuld; wijzigen verbreekt de koppeling met bestaande aanvragen."
 
 #: includes/settings-schema.php:64
 msgid "Type"
@@ -451,7 +463,7 @@ msgid "Settings"
 msgstr "Instellingen"
 
 #: includes/settings.php:158
-#: includes/settings.php:280
+#: includes/settings.php:284
 msgid "You do not have permission to access this page."
 msgstr "U heeft geen toegang tot deze pagina."
 
@@ -459,19 +471,19 @@ msgstr "U heeft geen toegang tot deze pagina."
 msgid "Settings saved."
 msgstr "Instellingen opgeslagen."
 
-#: includes/settings.php:198
+#: includes/settings.php:201
 msgid "Save"
 msgstr "Opslaan"
 
-#: includes/settings.php:287
+#: includes/settings.php:291
 msgid "Unknown tab."
 msgstr "Onbekend tabblad."
 
-#: includes/settings.php:593
+#: includes/settings.php:613
 msgid "Use this image"
 msgstr "Deze afbeelding gebruiken"
 
-#: includes/settings.php:594
+#: includes/settings.php:614
 msgid "Remove this row?"
 msgstr "Deze rij verwijderen?"
 
@@ -590,12 +602,12 @@ msgid "Administration"
 msgstr "Beheer"
 
 #: includes/submission-schema.php:174
-#: includes/submission.php:312
+#: includes/submission.php:321
 msgid "Status"
 msgstr "Status"
 
 #: includes/submission-schema.php:180
-#: includes/submission.php:310
+#: includes/submission.php:319
 msgid "Reference"
 msgstr "Referentie"
 
@@ -603,10 +615,10 @@ msgstr "Referentie"
 msgid "Generated on saving when empty."
 msgstr "Wordt bij het opslaan gegenereerd als dit leeg is."
 
-#: includes/submission.php:313
+#: includes/submission.php:322
 msgid "Date"
 msgstr "Datum"
 
-#: includes/submission.php:332
+#: includes/submission.php:342
 msgid "(no name)"
 msgstr "(geen naam)"

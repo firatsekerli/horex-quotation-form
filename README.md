@@ -64,6 +64,11 @@ weggegooid.
 Alle instellingen staan in één geautoloade optie (`horex_settings`); aanvragen staan in post
 meta bij het `horex_aanvraag` posttype.
 
+Het schema bepaalt ook hoe een veld getoond wordt. Een repeater met één tekstveld wordt een
+eenvoudige lijst, een repeater met meer velden wordt een inklapbare kaart, en velden met
+`'advanced' => true` — zoals de slugs — staan achter een uitklapbaar blok, omdat ze
+automatisch gevuld worden en zelden aangepast hoeven te worden.
+
 ## Structuur
 
 ```
@@ -81,6 +86,7 @@ tests/
   bootstrap.php              WordPress-stubs voor de tests
   test-sanitize.php          controle op de sanitizer
   test-submission.php        controle op opslaan van aanvragen
+  test-render.php            controle op de veldrenderers en repeater-templates
   run.php                    draait alle suites
 bin/
   lib-po.php                 gedeelde .po/.mo-functies
@@ -122,8 +128,9 @@ php tests/run.php
 
 Draait zonder WordPress. Gecontroleerd wordt onder meer: welke velden de sanitizer
 overleven, of lege rijen verdwijnen, of slugs uniek en stabiel blijven, of maten buiten
-het bereik serverzijdig gemarkeerd worden, en of referentienummers uniek zijn en niet
-opnieuw gegenereerd worden bij een tweede keer opslaan.
+het bereik serverzijdig gemarkeerd worden, of referentienummers uniek zijn en niet
+opnieuw gegenereerd worden bij een tweede keer opslaan, en of de repeater-templates
+correcte veldnamen opleveren als er een rij bijkomt.
 
 ## Ontwikkeling
 

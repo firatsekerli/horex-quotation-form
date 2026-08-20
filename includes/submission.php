@@ -257,22 +257,15 @@ function horex_render_submission_meta_box( $post, $box ) {
 		$nonce_done = true;
 	}
 
-	echo '<div class="horex-group horex-group--flush">';
+	echo '<div class="horex-grid horex-grid--metabox">';
 
 	foreach ( $schema[ $key ]['fields'] as $name => $field ) {
-		$is_block = in_array( $field['type'], horex_block_field_types(), true );
-		$width    = isset( $field['width'] ) ? $field['width'] : 'full';
-
-		printf( '<div class="horex-field horex-field--%s">', esc_attr( $is_block ? 'block' : $width ) );
-		printf( '<span class="horex-field__label">%s</span>', esc_html( $field['label'] ) );
-
-		horex_render_field( $name, $field, $data[ $name ], HOREX_SUBMISSION_META . '[' . $name . ']', '' );
-
-		if ( ! empty( $field['description'] ) ) {
-			printf( '<p class="description">%s</p>', esc_html( $field['description'] ) );
-		}
-
-		echo '</div>';
+		horex_render_field_cell(
+			$name,
+			$field,
+			$data[ $name ],
+			HOREX_SUBMISSION_META . '[' . $name . ']'
+		);
 	}
 
 	echo '</div>';

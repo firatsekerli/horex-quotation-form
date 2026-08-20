@@ -66,39 +66,51 @@ msgstr ""
 msgid "Request updated"
 msgstr ""
 
-#: includes/settings-render.php:194
+#: includes/settings-render.php:253
 msgid "Nothing added yet."
 msgstr ""
 
-#: includes/settings-render.php:199
+#: includes/settings-render.php:259
 msgid "Add row"
 msgstr ""
 
-#: includes/settings-render.php:232
+#: includes/settings-render.php:306
+msgid "Show or hide this row"
+msgstr ""
+
+#: includes/settings-render.php:323
+#: includes/settings-render.php:378
 msgid "Move up"
 msgstr ""
 
-#: includes/settings-render.php:233
+#: includes/settings-render.php:324
+#: includes/settings-render.php:379
 msgid "Move down"
 msgstr ""
 
-#: includes/settings-render.php:234
-#: includes/settings-render.php:234
-#: includes/settings-render.php:362
+#: includes/settings-render.php:325
+#: includes/settings-render.php:380
+#: includes/settings-render.php:552
 msgid "Remove"
 msgstr ""
 
-#: includes/settings-render.php:318
+#: includes/settings-render.php:336
+msgid "Advanced"
+msgstr ""
+
+#: includes/settings-render.php:506
 msgid "Choose colour"
 msgstr ""
 
-#: includes/settings-render.php:359
-msgid "Replace"
+#: includes/settings-render.php:533
+#: includes/settings-render.php:549
+#: includes/settings.php:612
+msgid "Choose image"
 msgstr ""
 
-#: includes/settings-render.php:359
-#: includes/settings.php:592
-msgid "Choose image"
+#: includes/settings-render.php:549
+#: includes/settings.php:615
+msgid "Replace"
 msgstr ""
 
 #: includes/settings-schema.php:24
@@ -115,7 +127,7 @@ msgstr ""
 
 #: includes/settings-schema.php:41
 #: includes/settings-schema.php:46
-#: includes/submission.php:311
+#: includes/submission.php:320
 msgid "Products"
 msgstr ""
 
@@ -138,7 +150,7 @@ msgstr ""
 #: includes/settings-schema.php:155
 #: includes/settings-schema.php:317
 #: includes/submission-schema.php:56
-#: includes/submission.php:309
+#: includes/submission.php:318
 msgid "Name"
 msgstr ""
 
@@ -147,11 +159,11 @@ msgstr ""
 #: includes/settings-schema.php:119
 #: includes/settings-schema.php:160
 #: includes/settings-schema.php:322
-msgid "Slug"
+msgid "Key"
 msgstr ""
 
 #: includes/settings-schema.php:60
-msgid "Stable key used in requests. Leave empty to fill it automatically; do not change it once requests exist."
+msgid "Stable key used in requests. Filled automatically from the name; changing it breaks the link with requests that already exist."
 msgstr ""
 
 #: includes/settings-schema.php:64
@@ -450,7 +462,7 @@ msgid "Settings"
 msgstr ""
 
 #: includes/settings.php:158
-#: includes/settings.php:280
+#: includes/settings.php:284
 msgid "You do not have permission to access this page."
 msgstr ""
 
@@ -458,19 +470,19 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
-#: includes/settings.php:198
+#: includes/settings.php:201
 msgid "Save"
 msgstr ""
 
-#: includes/settings.php:287
+#: includes/settings.php:291
 msgid "Unknown tab."
 msgstr ""
 
-#: includes/settings.php:593
+#: includes/settings.php:613
 msgid "Use this image"
 msgstr ""
 
-#: includes/settings.php:594
+#: includes/settings.php:614
 msgid "Remove this row?"
 msgstr ""
 
@@ -589,12 +601,12 @@ msgid "Administration"
 msgstr ""
 
 #: includes/submission-schema.php:174
-#: includes/submission.php:312
+#: includes/submission.php:321
 msgid "Status"
 msgstr ""
 
 #: includes/submission-schema.php:180
-#: includes/submission.php:310
+#: includes/submission.php:319
 msgid "Reference"
 msgstr ""
 
@@ -602,10 +614,10 @@ msgstr ""
 msgid "Generated on saving when empty."
 msgstr ""
 
-#: includes/submission.php:313
+#: includes/submission.php:322
 msgid "Date"
 msgstr ""
 
-#: includes/submission.php:332
+#: includes/submission.php:342
 msgid "(no name)"
 msgstr ""

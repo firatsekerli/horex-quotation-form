@@ -80,6 +80,17 @@ function wp_update_post( $post ) {
 	return $post['ID'];
 }
 
+function esc_url( $v ) { return (string) $v; }
+function esc_textarea( $v ) { return htmlspecialchars( (string) $v, ENT_QUOTES ); }
+function esc_html_e( $t, $d = null ) { echo $t; }
+function esc_attr_e( $t, $d = null ) { echo $t; }
+function checked( $a, $b = true, $echo = true ) { $r = $a == $b ? ' checked="checked"' : ''; if ( $echo ) { echo $r; } return $r; }
+function selected( $a, $b = true, $echo = true ) { $r = $a == $b ? ' selected="selected"' : ''; if ( $echo ) { echo $r; } return $r; }
+function wp_get_attachment_image_url( $id, $size = 'thumbnail' ) { return $id ? 'https://example.test/img/' . (int) $id . '.jpg' : false; }
+function wp_editor( $content, $id, $settings = array() ) {
+	printf( '<textarea name="%s">%s</textarea>', esc_attr( $settings['textarea_name'] ), esc_textarea( $content ) );
+}
+
 function remove_action( $hook, $callback, $priority = 10 ) { return true; }
 function add_action( $hook, $callback, $priority = 10, $args = 1 ) { return true; }
 function add_filter( $hook, $callback, $priority = 10, $args = 1 ) { return true; }

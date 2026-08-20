@@ -189,13 +189,17 @@ function horex_render_settings_page() {
 			<input type="hidden" name="horex_tab" value="<?php echo esc_attr( $current ); ?>" />
 			<?php wp_nonce_field( 'horex_save_settings_' . $current, 'horex_nonce' ); ?>
 
-			<?php if ( ! empty( $tab['description'] ) ) : ?>
-				<p class="horex-tab-description"><?php echo esc_html( $tab['description'] ); ?></p>
-			<?php endif; ?>
+			<div class="horex-panel">
+				<?php if ( ! empty( $tab['description'] ) ) : ?>
+					<p class="horex-panel__intro"><?php echo esc_html( $tab['description'] ); ?></p>
+				<?php endif; ?>
 
-			<?php horex_render_tab_fields( $tab, $settings ); ?>
+				<?php horex_render_tab_fields( $tab, $settings ); ?>
+			</div>
 
-			<?php submit_button( __( 'Save', 'horex' ) ); ?>
+			<div class="horex-submit">
+				<?php submit_button( __( 'Save', 'horex' ), 'primary', 'submit', false ); ?>
+			</div>
 		</form>
 	</div>
 	<?php
@@ -228,7 +232,7 @@ function horex_render_tab_fields( array $tab, array $settings ) {
 			printf( '<h2 class="horex-section__title">%s</h2>', esc_html( $field['label'] ) );
 
 			if ( ! empty( $field['description'] ) ) {
-				printf( '<p class="description">%s</p>', esc_html( $field['description'] ) );
+				printf( '<p class="horex-section__intro">%s</p>', esc_html( $field['description'] ) );
 			}
 		}
 
@@ -565,6 +569,22 @@ function horex_field_default( array $field ) {
 }
 
 /**
+ * Cache-busting version for an asset, taken from its modification time.
+ *
+ * The plugin version stays put between deploys, so using it here leaves browsers and
+ * page caches serving yesterday's CSS against today's markup.
+ *
+ * @param string $relative Path relative to the plugin root.
+ * @return string
+ */
+function horex_asset_version( $relative ) {
+	$path = HOREX_DIR . $relative;
+	$time = file_exists( $path ) ? filemtime( $path ) : 0;
+
+	return $time ? HOREX_VERSION . '.' . $time : HOREX_VERSION;
+}
+
+/**
  * Enqueue the admin stylesheet and scripts for the settings page.
  */
 function horex_enqueue_admin_assets() {
@@ -574,14 +594,14 @@ function horex_enqueue_admin_assets() {
 		'horex-admin',
 		HOREX_URL . 'assets/css/admin.css',
 		array(),
-		HOREX_VERSION
+		horex_asset_version( 'assets/css/admin.css' )
 	);
 
 	wp_enqueue_script(
 		'horex-admin',
 		HOREX_URL . 'assets/js/admin.js',
 		array( 'jquery' ),
-		HOREX_VERSION,
+		horex_asset_version( 'assets/js/admin.js' ),
 		true
 	);
 
@@ -592,6 +612,7 @@ function horex_enqueue_admin_assets() {
 			'chooseImage'   => __( 'Choose image', 'horex' ),
 			'useImage'      => __( 'Use this image', 'horex' ),
 			'confirmRemove' => __( 'Remove this row?', 'horex' ),
+			'replace'       => __( 'Replace', 'horex' ),
 		)
 	);
 }

@@ -55,9 +55,9 @@ function horex_settings_schema() {
 						),
 						'slug'         => array(
 							'type'        => 'slug',
-							'label'       => __( 'Slug', 'horex' ),
-							'width'       => 'half',
-							'description' => __( 'Stable key used in requests. Leave empty to fill it automatically; do not change it once requests exist.', 'horex' ),
+							'label'       => __( 'Key', 'horex' ),
+							'advanced'    => true,
+							'description' => __( 'Stable key used in requests. Filled automatically from the name; changing it breaks the link with requests that already exist.', 'horex' ),
 						),
 						'type'         => array(
 							'type'    => 'select',
@@ -84,9 +84,9 @@ function horex_settings_schema() {
 									'width' => 'half',
 								),
 								'slug' => array(
-									'type'  => 'slug',
-									'label' => __( 'Slug', 'horex' ),
-									'width' => 'half',
+									'type'     => 'slug',
+									'label'    => __( 'Key', 'horex' ),
+									'advanced' => true,
 								),
 								'foto' => array(
 									'type'  => 'image',
@@ -115,9 +115,9 @@ function horex_settings_schema() {
 							'width' => 'half',
 						),
 						'slug'   => array(
-							'type'  => 'slug',
-							'label' => __( 'Slug', 'horex' ),
-							'width' => 'half',
+							'type'     => 'slug',
+							'label'    => __( 'Key', 'horex' ),
+							'advanced' => true,
 						),
 						'hex'    => array(
 							'type'  => 'color',
@@ -156,9 +156,9 @@ function horex_settings_schema() {
 							'width' => 'half',
 						),
 						'slug'        => array(
-							'type'  => 'slug',
-							'label' => __( 'Slug', 'horex' ),
-							'width' => 'half',
+							'type'     => 'slug',
+							'label'    => __( 'Key', 'horex' ),
+							'advanced' => true,
 						),
 						'omschrijving' => array(
 							'type'        => 'textarea',
@@ -318,9 +318,9 @@ function horex_fabric_colour_fields() {
 			'width' => 'half',
 		),
 		'slug'         => array(
-			'type'  => 'slug',
-			'label' => __( 'Slug', 'horex' ),
-			'width' => 'half',
+			'type'     => 'slug',
+			'label'    => __( 'Key', 'horex' ),
+			'advanced' => true,
 		),
 		'swatch'       => array(
 			'type'        => 'image',
