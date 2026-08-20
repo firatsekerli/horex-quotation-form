@@ -108,6 +108,8 @@ tests/
   test-catalogue.php         controle op de seeder en de catalogusmigratie
   test-frontend.php          controle op de catalogus richting JavaScript en de stapvolgorde
   test-submit.php            controle op de verzendpoort en de e-mails
+  test-integration.php       een aanvraag helemaal doorlopen: browser tot adminkolom
+  test-contract.php          controle of front-end en back-end dezelfde veldnamen gebruiken
   browser/                   de configurator in een echte browser doorlopen
   run.php                    draait alle suites
 bin/

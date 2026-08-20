@@ -125,6 +125,36 @@ function get_the_date( $format, $post_id = 0 ) { return gmdate( $format ); }
 function get_edit_post_link( $post_id, $context = '' ) { return 'https://example.test/wp-admin/post.php?post=' . (int) $post_id; }
 function get_transient( $key ) { return isset( $GLOBALS['horex_test_transients'][ $key ] ) ? $GLOBALS['horex_test_transients'][ $key ] : false; }
 function set_transient( $key, $value, $ttl = 0 ) { $GLOBALS['horex_test_transients'][ $key ] = $value; return true; }
+/** Thrown in place of the exit() that wp_send_json_* performs. */
+class Horex_Json_Response extends Exception {
+	/** @var array */
+	public $payload;
+	/** @var bool */
+	public $ok;
+
+	public function __construct( $ok, $payload, $status ) {
+		parent::__construct( 'json', (int) $status );
+		$this->ok      = (bool) $ok;
+		$this->payload = (array) $payload;
+	}
+}
+
+function wp_send_json_success( $data = array(), $status = 200 ) { throw new Horex_Json_Response( true, $data, $status ); }
+function wp_send_json_error( $data = array(), $status = 400 ) { throw new Horex_Json_Response( false, $data, $status ); }
+function check_ajax_referer( $action, $field = false, $die = true ) {
+	$sent = isset( $_POST[ $field ] ) ? $_POST[ $field ] : '';
+	return $sent === 'nonce-' . $action;
+}
+function is_wp_error( $thing ) { return $thing instanceof WP_Error; }
+class WP_Error {}
+function wp_insert_post( $post, $wp_error = false ) {
+	static $next = 900;
+	$next++;
+	$GLOBALS['horex_test_posts'][ $next ] = array( 'post_title' => isset( $post['post_title'] ) ? $post['post_title'] : '' );
+	return $next;
+}
+function get_post_type( $post_id ) { return Horex::CPT; }
+
 function wp_unslash( $value ) { return is_array( $value ) ? array_map( 'wp_unslash', $value ) : stripslashes( (string) $value ); }
 function wp_mail( $to, $subject, $body, $headers = array() ) {
 	$GLOBALS['horex_test_mail'][] = compact( 'to', 'subject', 'body', 'headers' );
