@@ -1,0 +1,755 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     HOR-EX MERKTOKENS
+     ============================================================ */
+  :root{
+    --geel:#FEC129; --geel-zacht:#FFF3D2;
+    --ink:#1E1E1E; --canvas:#FFFAED; --paper:#FFFFFF;
+    --line:#EDE4CE; --muted:#857E6C;
+    --display:'Playfair Display', Georgia, serif;
+    --body:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --r:14px;
+    --shadow:0 1px 2px rgba(30,30,30,.04), 0 10px 28px rgba(30,30,30,.07);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--body);font-size:17px;background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased}
+  #app{min-height:100vh;display:flex;flex-direction:column}
+
+  header{position:sticky;top:0;z-index:20;background:var(--ink)}
+  .head-inner{max-width:820px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:16px}
+  .logo{height:26px;width:auto;display:block}
+  .head-step{margin-left:auto;font-size:12.5px;color:rgba(255,250,237,.6);font-variant-numeric:tabular-nums}
+  .bar{height:3px;background:rgba(255,250,237,.14)}
+  .bar i{display:block;height:100%;background:var(--geel);width:0;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+  main{flex:1;display:flex;justify-content:center;padding:0 22px}
+  .stage{width:100%;max-width:820px;padding:46px 0 120px}
+  .screen{animation:in .42s cubic-bezier(.16,1,.3,1) both}
+  @keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}*{transition:none!important}}
+
+  .eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:13px;
+    font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+  .eyebrow::before{content:'';width:19px;height:11px;flex:none;
+    background:repeating-linear-gradient(90deg,var(--geel) 0 3px,transparent 3px 6px)}
+
+  h1{font-family:var(--display);font-weight:700;font-size:40px;line-height:1.08;letter-spacing:-.015em}
+  @media(max-width:560px){h1{font-size:31px}}
+  .sub{color:var(--muted);font-size:16px;line-height:1.55;margin-top:12px;max-width:48ch}
+
+  /* ---------- productkaarten ---------- */
+  .products{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:28px}
+  @media(max-width:700px){.products{grid-template-columns:1fr 1fr}}
+  @media(max-width:380px){.products{grid-template-columns:1fr}}
+
+  .pcard{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r);
+    padding:0;overflow:hidden;cursor:pointer;font:inherit;color:inherit;text-align:left;
+    display:flex;flex-direction:column;
+    transition:border-color .18s,transform .18s,box-shadow .18s}
+  .pcard:hover{border-color:var(--geel);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .pcard:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .pcard.on{border-color:var(--geel);box-shadow:0 0 0 3px var(--geel-zacht)}
+
+  .pshot{display:block;position:relative;width:100%;aspect-ratio:4/3;background:#F3EEE2;overflow:hidden}
+  .pshot svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  /* de foto ligt bovenop de illustratie; laadt hij niet, dan blijft de tekening staan */
+  .pshot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .5s cubic-bezier(.16,1,.3,1)}
+  .pcard:hover .pshot img{transform:scale(1.04)}
+  .tick{position:absolute;top:8px;right:8px;z-index:2;width:22px;height:22px;border-radius:50%;
+    background:var(--geel);color:var(--ink);display:none;place-items:center;font-size:12px;font-weight:700}
+  .pcard.on .tick{display:grid}
+
+  .pmeta{display:block;padding:11px 12px 13px}
+  .pmeta .t{display:block;font-weight:600;font-size:14.5px;line-height:1.25;letter-spacing:-.01em}
+  .pmeta .d{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+  /* ---------- keuzekaarten ---------- */
+  .grid{display:grid;gap:10px;margin-top:28px}
+  .card{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r);
+    padding:18px 19px;text-align:left;cursor:pointer;font:inherit;color:inherit;
+    display:flex;align-items:center;gap:15px;
+    transition:border-color .16s,transform .16s,box-shadow .16s,background .16s}
+  .card:hover{border-color:var(--geel);transform:translateY(-1px);box-shadow:var(--shadow)}
+  .card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .card.on{border-color:var(--geel);background:var(--geel-zacht)}
+  .card .t{display:block;font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .card .d{display:block;font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .card .body{flex:1}
+  .key{flex:none;width:27px;height:27px;border-radius:8px;border:1.5px solid var(--line);
+    display:grid;place-items:center;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--paper)}
+  .card.on .key{background:var(--geel);border-color:var(--geel);color:var(--ink)}
+
+  /* ---------- kleurstalen ---------- */
+  .swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}
+  @media(max-width:480px){.swatches{grid-template-columns:repeat(2,1fr)}}
+  .sw{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r);
+    padding:12px;cursor:pointer;font:inherit;color:inherit;text-align:center;
+    transition:border-color .16s,transform .16s,background .16s}
+  .sw:hover{border-color:var(--geel);transform:translateY(-1px)}
+  .sw.on{border-color:var(--geel);background:var(--geel-zacht)}
+  .sw i{display:block;height:54px;border-radius:9px;border:1px solid rgba(0,0,0,.12);margin-bottom:10px}
+  .sw .t{font-size:13.5px;font-weight:500}
+
+  /* ---------- maat ---------- */
+  .measure{display:grid;grid-template-columns:1fr 250px;gap:30px;margin-top:28px;align-items:start}
+  @media(max-width:680px){.measure{grid-template-columns:1fr}}
+  label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px}
+  input[type=text],input[type=email],input[type=tel],textarea,input.mm{
+    width:100%;background:var(--paper);border:1.5px solid var(--line);border-radius:11px;
+    padding:13px 14px;font:inherit;font-size:16px;color:var(--ink);font-family:var(--body);
+    transition:border-color .16s,box-shadow .16s}
+  input:focus,textarea:focus{outline:none;border-color:var(--geel);box-shadow:0 0 0 3px var(--geel-zacht)}
+  input.mm{font-variant-numeric:tabular-nums}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+  .field{margin-bottom:19px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .unit{position:relative}
+  .unit b{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);font-weight:500;pointer-events:none}
+
+  .preview{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px;position:sticky;top:96px}
+  .preview h4{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;font-weight:600}
+  .stageframe{height:205px;display:grid;place-items:center}
+  .frame{position:relative;border-style:solid;transition:width .2s,height .2s,border-color .2s}
+  .vulling{position:absolute;inset:0}
+  .dim{position:absolute;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .dim.w{bottom:-21px;left:50%;transform:translateX(-50%)}
+  .dim.h{right:-9px;top:50%;transform:translate(100%,-50%)}
+  /* ---------- meethulp ---------- */
+  .meethulp{width:100%;display:flex;align-items:center;gap:13px;text-align:left;
+    background:var(--paper);border:1.5px solid var(--line);border-radius:11px;
+    padding:11px 13px;margin-bottom:19px;cursor:pointer;font:inherit;color:inherit;
+    transition:border-color .16s,box-shadow .16s,transform .16s}
+  .meethulp:hover{border-color:var(--geel);box-shadow:var(--shadow);transform:translateY(-1px)}
+  .meethulp:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .meethulp .mini{flex:none;width:56px;height:44px;border-radius:8px;overflow:hidden;background:#F3EEE2}
+  .meethulp .mini svg{width:100%;height:100%;display:block}
+  .meethulp .mt{flex:1}
+  .meethulp .mt b{display:block;font-size:14.5px;font-weight:600}
+  .meethulp .mt span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .meethulp .pijl{flex:none;width:26px;height:26px;border-radius:50%;background:var(--geel);
+    color:var(--ink);display:grid;place-items:center;font-size:13px;font-weight:700}
+
+  /* ---------- popup ---------- */
+  .modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;
+    background:rgba(30,30,30,.55);animation:fade .2s ease both}
+  /* zonder deze regel wint display:grid van het hidden-attribuut
+     en blijft de overlay altijd zichtbaar */
+  .modal[hidden]{display:none}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal-paneel{background:var(--canvas);border-radius:18px;max-width:560px;width:100%;
+    max-height:92vh;overflow:auto;padding:26px;position:relative;
+    animation:omhoog .34s cubic-bezier(.16,1,.3,1) both}
+  @keyframes omhoog{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+  .modal-sluit{position:absolute;top:15px;right:15px;width:34px;height:34px;border-radius:50%;
+    border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font:inherit;font-size:16px;
+    color:var(--ink);display:grid;place-items:center}
+  .modal-sluit:hover{border-color:var(--ink)}
+  .modal h3{font-family:var(--display);font-size:26px;font-weight:700;line-height:1.15;padding-right:40px}
+  .tekening{background:var(--paper);border:1px solid var(--line);border-radius:13px;
+    margin-top:18px;padding:14px}
+  .tekening svg{width:100%;height:auto;display:block}
+  .modal video{width:100%;border-radius:13px;margin-top:18px;display:block;background:#000}
+  .regels{margin-top:20px;display:grid;gap:12px}
+  .regel{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.5}
+  .regel b{flex:none;width:24px;height:24px;border-radius:50%;background:var(--geel);color:var(--ink);
+    display:grid;place-items:center;font-size:12.5px;font-weight:700;margin-top:1px}
+  .modal .slot{margin-top:20px;font-size:13px;color:var(--muted);line-height:1.5;
+    border-top:1px solid var(--line);padding-top:14px}
+
+  .warn{margin-top:15px;font-size:13px;background:var(--geel-zacht);border-left:3px solid var(--geel);
+    padding:11px 13px;border-radius:0 9px 9px 0;line-height:1.5}
+
+  .actions{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+  button.btn{font-family:var(--body);font-size:15.5px;font-weight:600;border-radius:11px;padding:14px 24px;
+    cursor:pointer;border:1.5px solid transparent;transition:opacity .16s,transform .16s,background .16s}
+  .btn.primary{background:var(--geel);color:var(--ink)}
+  .btn.primary:hover{background:#F5B417}
+  .btn.primary:disabled{opacity:.4;cursor:not-allowed;background:var(--geel)}
+  .btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn.ghost:hover{border-color:var(--ink)}
+  .btn:active{transform:scale(.985)}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+  .back{background:none;border:none;font:inherit;font-size:13.5px;color:var(--muted);
+    cursor:pointer;padding:6px 0;margin-bottom:22px;display:inline-flex;align-items:center;gap:6px}
+  .back:hover{color:var(--ink)}
+
+  .item{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+    padding:14px 16px;display:flex;gap:14px;align-items:center;margin-bottom:10px}
+  .thumb{flex:none;width:62px;height:47px;border-radius:9px;overflow:hidden;position:relative;
+    background:#F3EEE2;border:1px solid var(--line)}
+  .thumb svg{position:absolute;inset:0;width:100%;height:100%}
+  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .item .body{flex:1;min-width:0}
+  .item .t{display:block;font-weight:600;font-size:15.5px}
+  .item .d{display:block;font-size:13px;color:var(--muted);margin-top:3px}
+  .item .m{font-variant-numeric:tabular-nums;font-weight:600;font-size:14.5px;white-space:nowrap}
+  .del{background:none;border:none;color:var(--muted);cursor:pointer;font:inherit;font-size:13px;padding:4px;text-decoration:underline}
+  .del:hover{color:#A8412F}
+
+  .note{background:var(--geel-zacht);border-radius:var(--r);padding:16px 18px;font-size:14px;line-height:1.55;margin-top:20px}
+  .done{text-align:center;padding:62px 0}
+  .done .mark{width:60px;height:60px;border-radius:50%;background:var(--geel);color:var(--ink);
+    display:grid;place-items:center;margin:0 auto 24px;font-size:27px;font-weight:700}
+  .done .sub{margin-left:auto;margin-right:auto}
+</style>
+
+<div id="app">
+  <header>
+    <div class="head-inner">
+      <img class="logo" src="data:image/png;base64,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" alt="Hor-Ex">
+      <div class="head-step" id="headStep"></div>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+  </header>
+  <main><div class="stage" id="stage"></div></main>
+</div>
+<div class="modal" id="modal" hidden></div>
+
+<script>
+/* ============================================================
+   ILLUSTRATIES — vallen automatisch weg zodra de foto laadt.
+   ============================================================ */
+const C = {ink:'#1E1E1E', geel:'#FEC129', bg:'#F3EEE2', lijn:'#B9AE96'};
+const svgWrap = inner => `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="200" height="150" fill="${C.bg}"/>${inner}</svg>`;
+
+const ILLUSTRATIE = {
+  'plisse-hor': svgWrap(`
+    <rect x="34" y="22" width="132" height="108" fill="#fff" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="34" y="22" width="66" height="108" fill="${C.geel}" opacity=".22"/>
+    ${Array.from({length:11},(_,i)=>`<path d="M${38+i*5.6} 24 L${41+i*5.6} 76 L${38+i*5.6} 128" fill="none" stroke="${C.ink}" stroke-width="1.6"/>`).join('')}
+    <line x1="100" y1="22" x2="100" y2="130" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="34" y1="130" x2="166" y2="130" stroke="${C.ink}" stroke-width="4"/>`),
+
+  'inzet-hor': svgWrap(`
+    <rect x="30" y="18" width="140" height="114" fill="#fff" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="44" y="32" width="112" height="86" fill="none" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="47" y="35" width="106" height="80" fill="${C.geel}" opacity=".18"/>
+    ${Array.from({length:14},(_,i)=>`<line x1="${47+i*7.6}" y1="35" x2="${47+i*7.6}" y2="115" stroke="${C.lijn}" stroke-width="1"/>`).join('')}
+    ${Array.from({length:10},(_,i)=>`<line x1="47" y1="${35+i*8.5}" x2="153" y2="${35+i*8.5}" stroke="${C.lijn}" stroke-width="1"/>`).join('')}
+    <circle cx="150" cy="75" r="4.5" fill="${C.geel}" stroke="${C.ink}" stroke-width="2"/>`),
+
+  'plisse-gordijn': svgWrap(`
+    <rect x="36" y="20" width="128" height="112" fill="#fff" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="39" y="23" width="122" height="52" fill="${C.geel}" opacity=".3"/>
+    ${Array.from({length:8},(_,i)=>`<line x1="39" y1="${26+i*6.5}" x2="161" y2="${26+i*6.5}" stroke="${C.ink}" stroke-width="1.7"/>`).join('')}
+    <line x1="39" y1="75" x2="161" y2="75" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="100" y1="75" x2="100" y2="84" stroke="${C.ink}" stroke-width="2.5"/>`),
+
+  'wave-gordijn': svgWrap(`
+    <rect x="30" y="16" width="140" height="118" fill="#fff" stroke="${C.ink}" stroke-width="3"/>
+    <line x1="24" y1="20" x2="176" y2="20" stroke="${C.ink}" stroke-width="4"/>
+    <path d="M32 22 C42 46 22 74 34 100 C44 122 30 128 34 132 L92 132 C88 122 100 108 92 84 C84 58 100 44 90 22 Z"
+          fill="${C.geel}" opacity=".28" stroke="${C.ink}" stroke-width="2.4"/>
+    <path d="M50 22 C60 48 42 76 54 104 C60 118 52 126 54 132" fill="none" stroke="${C.ink}" stroke-width="1.8"/>
+    <path d="M70 22 C80 48 62 76 74 104 C80 118 72 126 74 132" fill="none" stroke="${C.ink}" stroke-width="1.8"/>`),
+
+  'veranda-zonwering': svgWrap(`
+    <path d="M18 44 L100 14 L182 44" fill="none" stroke="${C.ink}" stroke-width="4" stroke-linejoin="round"/>
+    <line x1="18" y1="44" x2="182" y2="44" stroke="${C.ink}" stroke-width="4"/>
+    <rect x="46" y="48" width="108" height="52" fill="${C.geel}" opacity=".34" stroke="${C.ink}" stroke-width="2.4"/>
+    ${Array.from({length:7},(_,i)=>`<line x1="46" y1="${54+i*7}" x2="154" y2="${54+i*7}" stroke="${C.ink}" stroke-width="1" opacity=".5"/>`).join('')}
+    <line x1="46" y1="100" x2="154" y2="100" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="46" y1="44" x2="46" y2="134" stroke="${C.ink}" stroke-width="3"/>
+    <line x1="154" y1="44" x2="154" y2="134" stroke="${C.ink}" stroke-width="3"/>`)
+};
+
+/* ============================================================
+   MEETHULP — tekening + regels, per meetmethode.
+   Zet hier een videobestand neer en de popup toont die
+   in plaats van de tekening: video:'/meten-kozijn.mp4'
+   ============================================================ */
+const pijlDefs = `<defs>
+  <marker id="pl" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+    <path d="M7 3.5 L0 0 L0 7 Z" fill="${C.ink}"/></marker>
+  <marker id="pr" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
+    <path d="M0 3.5 L7 0 L7 7 Z" fill="${C.ink}"/></marker>
+</defs>`;
+const maatlijn = (x1,y1,x2,y2,kleur) =>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${kleur}" stroke-width="2"
+     marker-start="url(#pr)" marker-end="url(#pl)"/>`;
+
+const MEETHULP = {
+  gaas:{
+    titel:'Zo meet u het kozijn op',
+    video:'',
+    tekening:`<svg viewBox="0 0 340 250" xmlns="http://www.w3.org/2000/svg">${pijlDefs}
+      <rect width="340" height="250" fill="#FCF8EE"/>
+      <rect x="26" y="22" width="288" height="206" fill="#E9E2D2"/>
+      <rect x="54" y="46" width="232" height="158" fill="${C.ink}"/>
+      <rect x="66" y="58" width="208" height="134" fill="#fff"/>
+      ${maatlijn(66,76,274,76,C.ink)}
+      ${maatlijn(66,125,274,125,C.geel==='#FEC129'?'#C99310':C.ink)}
+      ${maatlijn(66,174,274,174,C.ink)}
+      ${maatlijn(96,58,96,192,C.ink)}
+      ${maatlijn(170,58,170,192,'#C99310')}
+      ${maatlijn(244,58,244,192,C.ink)}
+      <text x="170" y="20" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13"
+        font-weight="600" fill="${C.ink}">Binnenmaat kozijn</text>
+      <text x="290" y="129" font-family="DM Sans,sans-serif" font-size="11" fill="${C.ink}">3×</text>
+      <text x="170" y="222" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11"
+        fill="${C.ink}">meet breedte én hoogte op drie plekken</text></svg>`,
+    regels:[
+      'Meet de <b style="font-weight:600">binnenmaat</b> van het kozijn, dus van dagkant tot dagkant — niet over het metselwerk heen.',
+      'Meet de breedte boven, in het midden en onderaan. Doe hetzelfde voor de hoogte, links, midden en rechts.',
+      'Oude kozijnen staan zelden zuiver haaks. Verschillen de maten? Vul de <b style="font-weight:600">kleinste</b> in.',
+      'Noteer in millimeters, zonder afronden. 1247 mm is bruikbaarder dan "ongeveer 1,25 meter".'
+    ]},
+
+  doek:{
+    titel:'Zo meet u voor gordijnen en zonwering',
+    video:'',
+    tekening:`<svg viewBox="0 0 340 250" xmlns="http://www.w3.org/2000/svg">${pijlDefs}
+      <rect width="340" height="250" fill="#FCF8EE"/>
+      <rect x="30" y="40" width="280" height="10" fill="${C.ink}"/>
+      <rect x="86" y="66" width="168" height="112" fill="#fff" stroke="${C.ink}" stroke-width="3"/>
+      <line x1="170" y1="66" x2="170" y2="178" stroke="${C.ink}" stroke-width="2"/>
+      <line x1="20" y1="212" x2="320" y2="212" stroke="${C.ink}" stroke-width="3"/>
+      ${maatlijn(30,30,310,30,C.ink)}
+      ${maatlijn(300,52,300,210,'#C99310')}
+      <text x="170" y="22" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13"
+        font-weight="600" fill="${C.ink}">Breedte van de rail</text>
+      <text x="286" y="134" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12"
+        font-weight="600" fill="${C.ink}">Hoogte</text>
+      <text x="170" y="234" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11"
+        fill="${C.ink}">hoogte loopt tot de vloer of tot de vensterbank</text></svg>`,
+    regels:[
+      'Meet de breedte van de <b style="font-weight:600">rail of roede</b>, niet van het glas. Zit er nog geen rail? Meet de raamopening en tel links en rechts 15 cm op.',
+      'Meet de hoogte vanaf de rail tot waar het doek moet eindigen: de vloer, de vensterbank of net eronder.',
+      'Voor gordijnen tot op de vloer houdt u 1 tot 2 cm ruimte aan, anders sleept de stof.',
+      'Noteer in millimeters, zonder afronden.'
+    ]}
+};
+
+const meetSoort = p => p.vulling==='gaas' ? 'gaas' : 'doek';
+
+function openMeethulp(){
+  const h = MEETHULP[meetSoort(prodVan(d.product))];
+  const m = el('modal');
+  m.innerHTML = `<div class="modal-paneel" role="dialog" aria-modal="true" aria-label="${h.titel}">
+    <button class="modal-sluit" data-sluit aria-label="Sluiten">✕</button>
+    <h3>${h.titel}</h3>
+    ${h.video
+      ? `<video src="${h.video}" controls playsinline preload="metadata"></video>`
+      : `<div class="tekening">${h.tekening}</div>`}
+    <div class="regels">
+      ${h.regels.map((r,i)=>`<div class="regel"><b>${i+1}</b><span>${r}</span></div>`).join('')}
+    </div>
+    <div class="slot">Komt u er niet uit? Vul een schatting in — wij meten alles zelf na op locatie voordat er iets geproduceerd wordt.</div>
+  </div>`;
+  m.hidden = false;
+  document.body.style.overflow = 'hidden';
+  m.querySelector('[data-sluit]').focus();
+}
+function sluitMeethulp(){
+  el('modal').hidden = true;
+  el('modal').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   CONFIG — alle producten van hor-ex.nl.
+   `img` mag leeg blijven; dan blijft de illustratie staan.
+   ============================================================ */
+const PALETTEN = {
+  frame:[
+    {id:'wit',       naam:'Wit',            hex:'#FFFFFF'},
+    {id:'gebroken',  naam:'Gebroken wit',   hex:'#F0EBDF'},
+    {id:'antraciet', naam:'Antraciet',      hex:'#383E42'},
+    {id:'grijs',     naam:'Grijs RAL 7039', hex:'#7C7B71'},
+    {id:'zwart',     naam:'Zwart',          hex:'#1A1A1A'},
+    {id:'structuur', naam:'Structuurlak',   hex:'#2E3234', textuur:true}
+  ],
+  stof:[
+    {id:'gebroken',  naam:'Gebroken wit',   hex:'#F4F0E6'},
+    {id:'zand',      naam:'Zand',           hex:'#DCCFB6'},
+    {id:'taupe',     naam:'Taupe',          hex:'#A99884'},
+    {id:'lichtgrijs',naam:'Licht grijs',    hex:'#C9C7C1'},
+    {id:'antraciet', naam:'Antraciet',      hex:'#4A4E50'},
+    {id:'zwart',     naam:'Zwart',          hex:'#232323'}
+  ],
+  doek:[
+    {id:'gebroken',  naam:'Gebroken wit',   hex:'#F1EDE2'},
+    {id:'zand',      naam:'Zand',           hex:'#D9CBB0'},
+    {id:'grijs',     naam:'Grijs',          hex:'#8B8A84'},
+    {id:'antraciet', naam:'Antraciet',      hex:'#3D4245'}
+  ]
+};
+
+const GAAS = [
+  {id:'standaard', naam:'Standaard gaas',   omschrijving:'Extra sterk. Houdt insecten buiten, doorkijk blijft helder.'},
+  {id:'pollen',    naam:'Anti-pollen gaas', omschrijving:'Fijnere weving. Houdt ook pollen en stuifmeel tegen — fijn bij hooikoorts.'}
+];
+
+const PRODUCTEN = [
+  { id:'plisse-hor', naam:'Plissé horren', kort:'Schuift open als een harmonica',
+    img:'https://d8j0ntlcm91z4.cloudfront.net/user_3134LCyzspLWeLzqfBQFTH9bKOs/hf_20260820_105935_c8c8f83b-8bf5-4838-a979-a0a3cdca108a.png', palet:'frame', kleurLabel:'Welke kleur frame?', vulling:'gaas', gaasStap:true,
+    uitvoeringen:[
+      {id:'deur', naam:'Plissé hordeur',      omschrijving:'Achterdeur, tuindeur of schuifpui'},
+      {id:'raam', naam:'Plissé horraam',      omschrijving:'Voor ramen die u regelmatig opent'},
+      {id:'duo',  naam:'DUO — hor + gordijn', omschrijving:'Insectenwering en lichtregulering in één systeem'}
+    ]},
+  { id:'inzet-hor', naam:'Inzet horren', kort:'Klikt in het kozijn, zonder boren',
+    img:'https://d8j0ntlcm91z4.cloudfront.net/user_3134LCyzspLWeLzqfBQFTH9bKOs/hf_20260820_105935_ce68d902-5f9f-4a31-b5a0-1395187c3ae9.png', palet:'frame', kleurLabel:'Welke kleur frame?', vulling:'gaas', gaasStap:true,
+    uitvoeringen:[
+      {id:'vast',   naam:'Inzet horraam',        omschrijving:'Vast frame, klikt in het kozijn'},
+      {id:'schuif', naam:'Inzet plissé horraam', omschrijving:'Schuifbaar, open en dicht wanneer u wilt'}
+    ]},
+  { id:'plisse-gordijn', naam:'Plissé gordijnen', kort:'Stopt op elke gewenste hoogte',
+    img:'https://d8j0ntlcm91z4.cloudfront.net/user_3134LCyzspLWeLzqfBQFTH9bKOs/hf_20260820_105935_6226cce0-a3ef-463f-8bcb-2dc632356528.png', palet:'stof', kleurLabel:'Welke stofkleur?', vulling:'plisse', gaasStap:false, uitvoeringen:null },
+  { id:'wave-gordijn', naam:'Wave gordijnen', kort:'Strakke golven, plafond tot vloer',
+    img:'https://d8j0ntlcm91z4.cloudfront.net/user_3134LCyzspLWeLzqfBQFTH9bKOs/hf_20260820_111535_dba6a8a3-1f50-4917-942a-12dd8db1b1fc.png', palet:'stof', kleurLabel:'Welke stofkleur?', vulling:'wave', gaasStap:false, uitvoeringen:null },
+  { id:'veranda-zonwering', naam:'Veranda zonwering', kort:'Schermdoek tegen zon en inkijk',
+    img:'https://d8j0ntlcm91z4.cloudfront.net/user_3134LCyzspLWeLzqfBQFTH9bKOs/hf_20260820_111535_6ecc21ca-5f3e-4ea6-831f-98759098cd5b.png', palet:'doek', kleurLabel:'Welke doekkleur?', vulling:'doek', gaasStap:false, uitvoeringen:null }
+];
+
+const MIN_MM = 300, MAX_MM = 6000;
+
+/* ---------- state ---------- */
+let items = [];
+let d = null;
+let laatste = {};
+let scherm = 'intro';
+let klant = {naam:'',email:'',tel:'',adres:'',opmerking:''};
+
+const nieuw = () => ({product:null,uitvoering:null,kleur:null,gaas:laatste.gaas||null,ruimte:'',breedte:'',hoogte:''});
+
+/* ---------- helpers ---------- */
+const el  = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const prodVan  = id => PRODUCTEN.find(p=>p.id===id);
+const paletVan = p => PALETTEN[p.palet];
+const kleurVan = (p,id) => paletVan(p).find(k=>k.id===id);
+
+function stappenVoor(){
+  const p = d && d.product ? prodVan(d.product) : null;
+  if(!p) return ['product'];
+  const st = ['product'];
+  if(p.uitvoeringen) st.push('uitvoering');
+  st.push('kleur');
+  if(p.gaasStap) st.push('gaas');
+  st.push('maat');
+  return st;
+}
+/* waar de terugknop van dit scherm heen moet */
+const vorige = s => { const st = stappenVoor(); return st[st.indexOf(s)-1] || 'product'; };
+
+function vullingCss(p, kleurHex){
+  if(!p) return '';
+  if(p.vulling==='gaas'){
+    const dicht = d.gaas==='pollen' ? 2 : 3;
+    return 'background-color:rgba(255,255,255,.4);background-image:'
+      + `repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 .5px,transparent .5px ${dicht}px),`
+      + `repeating-linear-gradient(90deg,rgba(0,0,0,.14) 0 .5px,transparent .5px ${dicht}px);`;
+  }
+  if(p.vulling==='plisse') return `background-color:${kleurHex};background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.13) 0 1px,transparent 1px 8px);`;
+  if(p.vulling==='wave')   return `background-color:${kleurHex};background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.16) 0 2px,rgba(255,255,255,.22) 8px,transparent 18px 26px);`;
+  return `background-color:${kleurHex};background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 2px,transparent 2px 5px);`;
+}
+
+function ga(naar){ scherm = naar; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* auto-advance: keuze aantikken schuift vanzelf door */
+function kies(veld, waarde, volgende){
+  d[veld] = waarde;
+  render();
+  setTimeout(()=>{ if(volgende) ga(volgende); }, 230);
+}
+
+/* ---------- render ---------- */
+function render(){
+  const st = stappenVoor();
+  const idx = st.indexOf(scherm);
+  const inFlow = idx > -1;
+  el('headStep').textContent = inFlow
+    ? (st.length>1 ? `Stap ${idx+1} van ${st.length}` : 'Stap 1')
+    : (items.length ? `${items.length} ${items.length===1?'product':'producten'} toegevoegd` : '');
+  el('bar').style.width = inFlow ? `${idx/Math.max(st.length,4)*100+12}%`
+    : (scherm==='overzicht'?'88%':scherm==='gegevens'?'96%':scherm==='klaar'?'100%':'0%');
+  el('stage').innerHTML = ({intro:vIntro,product:vProduct,uitvoering:vUitvoering,kleur:vKleur,
+                            gaas:vGaas,maat:vMaat,overzicht:vOverzicht,gegevens:vGegevens,
+                            klaar:vKlaar})[scherm]();
+  bind();
+  if(scherm==='maat') updatePreview();
+}
+
+const terug = naar => `<button class="back" data-ga="${naar}">← Terug</button>`;
+const shot  = p => `<span class="pshot">${ILLUSTRATIE[p.id]||''}`
+  + (p.img?`<img src="${p.img}" alt="${p.naam}" loading="lazy" onerror="this.remove()">`:'')
+  + `<span class="tick">✓</span></span>`;
+
+function vIntro(){ return `<div class="screen">
+  <div class="eyebrow">Offerte aanvragen</div>
+  <h1>Stel uw raamoplossing samen<br>en ontvang een prijsopgave</h1>
+  <p class="sub">U kiest per raam of deur het product, de kleur en de afwerking, en vult de maten in. Meerdere producten voegt u achter elkaar toe. Duurt ongeveer twee minuten.</p>
+  <div class="note">Twijfelt u over de maten? Vul een schatting in. Wij meten altijd zelf na op locatie voordat er iets geproduceerd wordt.</div>
+  <div class="actions"><button class="btn primary" data-start>Beginnen</button></div>
+</div>`; }
+
+function vProduct(){
+  return `<div class="screen">
+  ${items.length ? terug('overzicht') : terug('intro')}
+  <div class="eyebrow">Stap 1</div>
+  <h1>Wat wilt u laten maken?</h1>
+  <p class="sub">Nog niet zeker? Kies wat het dichtst bij uw situatie komt — we nemen het bij de inmeting samen door.</p>
+  <div class="products">
+    ${PRODUCTEN.map(x=>`
+      <button class="pcard ${d.product===x.id?'on':''}" data-prod="${x.id}">
+        ${shot(x)}
+        <span class="pmeta"><span class="t">${x.naam}</span><span class="d">${x.kort}</span></span>
+      </button>`).join('')}
+  </div>
+</div>`;
+}
+
+function vUitvoering(){
+  const p = prodVan(d.product);
+  return `<div class="screen">
+  ${terug('product')}
+  <div class="eyebrow">Stap 2</div>
+  <h1>Welke uitvoering?</h1>
+  <p class="sub">${p.naam} zijn er in meerdere varianten. Kies wat bij uw raam of deur past.</p>
+  <div class="grid">
+    ${p.uitvoeringen.map(u=>`
+      <button class="card ${d.uitvoering===u.id?'on':''}" data-uitv="${u.id}">
+        <span class="body"><span class="t">${u.naam}</span><span class="d">${u.omschrijving}</span></span>
+      </button>`).join('')}
+  </div>
+</div>`;
+}
+
+function vKleur(){
+  const p = prodVan(d.product);
+  return `<div class="screen">
+  ${terug(vorige('kleur'))}
+  <div class="eyebrow">Stap ${stappenVoor().indexOf('kleur')+1}</div>
+  <h1>${p.kleurLabel}</h1>
+  <p class="sub">Kleuren wijken op een scherm altijd iets af. Bij de inmeting nemen we stalen mee zodat u ze in uw eigen licht kunt zien.</p>
+  <div class="swatches">
+    ${paletVan(p).map(k=>`
+      <button class="sw ${d.kleur===k.id?'on':''}" data-kleur="${k.id}">
+        <i style="background:${k.hex};${k.textuur?'background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.10) 0 2px,transparent 2px 4px)':''}"></i>
+        <span class="t">${k.naam}</span>
+      </button>`).join('')}
+  </div>
+</div>`; }
+
+function vGaas(){ return `<div class="screen">
+  ${terug(vorige('gaas'))}
+  <div class="eyebrow">Stap ${stappenVoor().indexOf('gaas')+1}</div>
+  <h1>Welk gaas?</h1>
+  <div class="grid">
+    ${GAAS.map(g=>{
+      const dicht = g.id==='pollen'?2:3;
+      const patroon = 'background-color:rgba(255,255,255,.4);background-image:'
+        + `repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 .5px,transparent .5px ${dicht}px),`
+        + `repeating-linear-gradient(90deg,rgba(0,0,0,.16) 0 .5px,transparent .5px ${dicht}px);`;
+      return `<button class="card ${d.gaas===g.id?'on':''}" data-gaas="${g.id}">
+        <span class="key" style="${patroon}"></span>
+        <span class="body"><span class="t">${g.naam}</span><span class="d">${g.omschrijving}</span></span>
+      </button>`;
+    }).join('')}
+  </div>
+</div>`; }
+
+function vMaat(){
+  const p  = prodVan(d.product);
+  const st = stappenVoor();
+  const heeftRand = p.vulling==='gaas';
+  return `<div class="screen">
+  ${terug(vorige('maat'))}
+  <div class="eyebrow">Stap ${st.length}</div>
+  <h1>Wat zijn de maten?</h1>
+  <p class="sub">${heeftRand
+    ? 'Meet de binnenmaat van het kozijn, op drie plekken. Twijfelt u? Neem de kleinste maat.'
+    : 'Meet de breedte van het raam of de rail, en de hoogte tot waar het doek moet vallen.'}</p>
+  <div class="measure">
+    <div>
+      <div class="field">
+        <label for="ruimte">Waar komt dit?</label>
+        <input id="ruimte" type="text" value="${esc(d.ruimte)}" placeholder="Bijv. slaapkamer voorzijde" autocomplete="off">
+        <div class="hint">Geef elk product een eigen naam. Zo weet u bij levering precies wat waar hoort.</div>
+      </div>
+      <button class="meethulp" data-meethulp>
+        <span class="mini">${MEETHULP[meetSoort(p)].tekening}</span>
+        <span class="mt"><b>Hoe meet ik dit op?</b><span>Voorbeeld met de juiste meetpunten</span></span>
+        <span class="pijl">→</span>
+      </button>
+      <div class="row">
+        <div class="field"><label for="breedte">Breedte</label>
+          <div class="unit"><input class="mm" id="breedte" type="text" inputmode="numeric" value="${esc(d.breedte)}" placeholder="1200" autocomplete="off"><b>mm</b></div></div>
+        <div class="field"><label for="hoogte">Hoogte</label>
+          <div class="unit"><input class="mm" id="hoogte" type="text" inputmode="numeric" value="${esc(d.hoogte)}" placeholder="2100" autocomplete="off"><b>mm</b></div></div>
+      </div>
+      <div id="warnBox"></div>
+      <div class="actions">
+        <button class="btn primary" data-add disabled>Toevoegen aan aanvraag</button>
+      </div>
+    </div>
+    <div class="preview">
+      <h4>Voorbeeld op schaal</h4>
+      <div class="stageframe">
+        <div class="frame" id="frame" style="border-width:${heeftRand?7:0}px;box-shadow:0 2px 12px rgba(30,30,30,.13)">
+          <div class="vulling" id="vulling"></div>
+          <span class="dim w" id="dimW"></span>
+          <span class="dim h" id="dimH"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+/* Alleen het voorbeeld bijwerken, NIET het hele scherm opnieuw opbouwen.
+   Anders springt de cursor bij elke toetsaanslag terug naar het begin
+   en typ je 2100 als 0012. */
+function updatePreview(){
+  const fr = el('frame'); if(!fr) return;
+  const p = prodVan(d.product);
+  const k = kleurVan(p, d.kleur) || {hex:'#383E42'};
+  const b = parseInt(d.breedte,10)||0, h = parseInt(d.hoogte,10)||0;
+  const s = (b&&h) ? Math.min(232/b, 172/h) : 0;
+
+  fr.style.width  = (b&&h ? Math.max(42,b*s) : 152) + 'px';
+  fr.style.height = (b&&h ? Math.max(42,h*s) : 112) + 'px';
+  fr.style.borderColor = p.vulling==='gaas' ? k.hex : 'transparent';
+  el('vulling').style.cssText = vullingCss(p, k.hex);
+  el('dimW').textContent = b ? b + ' mm' : '';
+  el('dimH').textContent = h ? h + ' mm' : '';
+
+  const buiten = (b && (b<MIN_MM||b>MAX_MM)) || (h && (h<MIN_MM||h>MAX_MM));
+  el('warnBox').innerHTML = buiten
+    ? `<div class="warn">Deze maat valt buiten wat we standaard produceren (${MIN_MM}–${MAX_MM} mm). Vul hem gerust in — we nemen persoonlijk contact op over de mogelijkheden.</div>`
+    : '';
+
+  const btn = document.querySelector('[data-add]');
+  if(btn) btn.disabled = !(d.ruimte.trim() && b>=MIN_MM && h>=MIN_MM);
+}
+
+function vOverzicht(){ return `<div class="screen">
+  <div class="eyebrow">Uw aanvraag</div>
+  <h1>${items.length} ${items.length===1?'product':'producten'} in uw aanvraag</h1>
+  <div style="margin-top:28px">
+    ${items.map((it,i)=>{
+      const p = prodVan(it.product);
+      const k = kleurVan(p, it.kleur);
+      const u = p.uitvoeringen ? p.uitvoeringen.find(x=>x.id===it.uitvoering) : null;
+      const g = p.gaasStap ? GAAS.find(x=>x.id===it.gaas) : null;
+      const regel = [u?u.naam:p.naam, k?k.naam:''].concat(g?[g.naam]:[]).filter(Boolean).join(' · ');
+      return `<div class="item">
+        <span class="thumb">${ILLUSTRATIE[p.id]||''}${p.img?`<img src="${p.img}" alt="" onerror="this.remove()">`:''}</span>
+        <span class="body"><span class="t">${esc(it.ruimte)}</span><span class="d">${regel}</span></span>
+        <span class="m">${it.breedte} × ${it.hoogte} mm</span>
+        <button class="del" data-del="${i}">verwijder</button>
+      </div>`;
+    }).join('')}
+  </div>
+  <div class="actions">
+    <button class="btn ghost" data-nieuw>+ Nog iets toevoegen</button>
+    <button class="btn primary" data-ga="gegevens">Verder</button>
+  </div>
+  <div class="note">Uw vorige keuzes staan alvast klaar bij het volgende product van hetzelfde type. Aanpassen kan altijd.</div>
+</div>`; }
+
+function vGegevens(){ return `<div class="screen">
+  ${terug('overzicht')}
+  <div class="eyebrow">Bijna klaar</div>
+  <h1>Waar mogen we de prijsopgave naartoe sturen?</h1>
+  <div style="margin-top:28px;max-width:470px">
+    <div class="row">
+      <div class="field"><label for="naam">Naam</label><input id="naam" type="text" value="${esc(klant.naam)}"></div>
+      <div class="field"><label for="tel">Telefoon</label><input id="tel" type="tel" value="${esc(klant.tel)}"></div>
+    </div>
+    <div class="field"><label for="email">E-mailadres</label><input id="email" type="email" value="${esc(klant.email)}"></div>
+    <div class="field"><label for="adres">Adres</label><input id="adres" type="text" value="${esc(klant.adres)}" placeholder="Straat, postcode, plaats">
+      <div class="hint">Nodig om te bepalen of we bij u kunnen inmeten.</div></div>
+    <div class="field"><label for="opmerking">Iets wat we moeten weten?</label><textarea id="opmerking" rows="3" placeholder="Optioneel">${esc(klant.opmerking)}</textarea></div>
+  </div>
+  <div class="actions"><button class="btn primary" data-verstuur>Aanvraag versturen</button></div>
+</div>`; }
+
+function vKlaar(){ return `<div class="screen done">
+  <div class="mark">✓</div>
+  <h1>Aanvraag verstuurd</h1>
+  <p class="sub">We hebben uw ${items.length} ${items.length===1?'maat':'maten'} ontvangen en nemen binnen één werkdag contact op om een inmeetafspraak te plannen. Een kopie staat in uw mailbox.</p>
+</div>`; }
+
+/* ---------- interactie ---------- */
+function bind(){
+  const q = (s,f) => document.querySelectorAll(s).forEach(f);
+
+  q('[data-ga]',    b => b.onclick = () => ga(b.dataset.ga));
+  q('[data-start]', b => b.onclick = () => { d = nieuw(); ga('product'); });
+  q('[data-nieuw]', b => b.onclick = () => { d = nieuw(); ga('product'); });
+
+  q('[data-prod]', b => b.onclick = () => {
+    const p = prodVan(b.dataset.prod);
+    d.product = p.id; d.uitvoering = null;
+    d.kleur = (laatste.palet===p.palet) ? laatste.kleur : null;
+    render();
+    setTimeout(()=>ga(p.uitvoeringen ? 'uitvoering' : 'kleur'), 230);
+  });
+  q('[data-uitv]', b => b.onclick = () => kies('uitvoering', b.dataset.uitv, 'kleur'));
+  q('[data-kleur]',b => b.onclick = () => kies('kleur', b.dataset.kleur, prodVan(d.product).gaasStap?'gaas':'maat'));
+  q('[data-gaas]', b => b.onclick = () => kies('gaas', b.dataset.gaas, 'maat'));
+
+  /* maatvelden: alleen de state en het voorbeeld bijwerken, geen her-render */
+  ['ruimte','breedte','hoogte'].forEach(id=>{
+    const i = el(id); if(!i) return;
+    i.oninput = () => {
+      if(id!=='ruimte'){
+        const schoon = i.value.replace(/\D/g,'').slice(0,5);
+        if(schoon !== i.value){
+          const eind = i.selectionStart - (i.value.length - schoon.length);
+          i.value = schoon;
+          i.setSelectionRange(eind, eind);
+        }
+      }
+      d[id] = i.value;
+      updatePreview();
+    };
+  });
+
+  const mh = document.querySelector('[data-meethulp]');
+  if(mh) mh.onclick = openMeethulp;
+
+  const add = document.querySelector('[data-add]');
+  if(add) add.onclick = () => {
+    items.push({...d});
+    laatste = {kleur:d.kleur, gaas:d.gaas, palet:prodVan(d.product).palet};
+    ga('overzicht');
+  };
+
+  q('[data-del]', b => b.onclick = () => {
+    items.splice(+b.dataset.del,1);
+    if(!items.length){ d = nieuw(); ga('intro'); } else render();
+  });
+
+  ['naam','email','tel','adres','opmerking'].forEach(id=>{
+    const i = el(id); if(i) i.oninput = () => klant[id] = i.value;
+  });
+
+  const v = document.querySelector('[data-verstuur]');
+  if(v) v.onclick = () => {
+    console.log('AANVRAAG →', {klant, items});   // hier komt de Supabase-insert + mail
+    ga('klaar');
+  };
+}
+
+/* popup sluiten: kruisje, klik ernaast of Escape */
+el('modal').addEventListener('click', e=>{
+  if(e.target.id==='modal' || e.target.closest('[data-sluit]')) sluitMeethulp();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && !el('modal').hidden) sluitMeethulp();
+});
+
+render();
+</script>
