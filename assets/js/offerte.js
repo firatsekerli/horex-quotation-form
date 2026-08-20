@@ -469,6 +469,66 @@
 		}
 
 		/**
+		 * Describe a stored item in one line: variant, colour and mesh.
+		 *
+		 * @param {Object} item Stored item.
+		 * @return {string} Summary.
+		 */
+		function summarise( item ) {
+			var product = bySlug( config.products, item.product );
+
+			if ( ! product ) {
+				return '';
+			}
+
+			var variant = bySlug( product.uitvoeringen, item.uitvoering );
+			var colour = bySlug( colours( product ), item.kleur );
+			var gaas = bySlug( config.gaas, item.gaas );
+
+			return [
+				variant ? variant.naam : product.naam,
+				colour ? colour.naam : '',
+				gaas ? gaas.naam : ''
+			].filter( Boolean ).join( ' · ' );
+		}
+
+		/**
+		 * The summary of everything added so far.
+		 *
+		 * @return {string} Markup.
+		 */
+		function viewOverzicht() {
+			var rows = items.map( function ( item, index ) {
+				var product = bySlug( config.products, item.product );
+				var drawing = ( config.tekeningen || {} )[ product ? product.illustratie : '' ] || '';
+				var photo = product && product.foto
+					? '<img src="' + esc( product.foto ) + '" alt="" onerror="this.remove()" />'
+					: '';
+
+				return '<li class="horex-item">'
+					+ '<span class="horex-item__thumb">' + drawing + photo + '</span>'
+					+ '<span class="horex-item__body">'
+					+ '<span class="horex-item__t">' + esc( item.ruimte ) + '</span>'
+					+ '<span class="horex-item__d">' + esc( summarise( item ) ) + '</span>'
+					+ '</span>'
+					+ '<span class="horex-item__m">' + item.breedte + ' &#215; ' + item.hoogte + ' mm</span>'
+					+ '<button type="button" class="horex-item__del" data-horex-remove="' + index + '">verwijder</button>'
+					+ '</li>';
+			} ).join( '' );
+
+			return '<div class="horex-screen">'
+				+ '<p class="horex-eyebrow">Uw aanvraag</p>'
+				+ '<h2 class="horex-title">' + items.length + ( 1 === items.length ? ' product' : ' producten' ) + ' in uw aanvraag</h2>'
+				+ '<ul class="horex-items">' + rows + '</ul>'
+				+ '<div class="horex-actions">'
+				+ '<button type="button" class="horex-btn horex-btn--ghost" data-horex-again>+ Nog iets toevoegen</button>'
+				+ '<button type="button" class="horex-btn horex-btn--primary" data-horex-go="gegevens">Verder</button>'
+				+ '</div>'
+				+ '<div class="horex-note">Uw vorige keuzes staan alvast klaar bij het volgende product van hetzelfde type. Aanpassen kan altijd.</div>'
+				+ '</div>';
+		}
+
+		/**
 		 * Redraw the scale preview and the add button, without touching the inputs.
 		 *
 		 * Re-rendering the screen on every keystroke sends the cursor back to the start
@@ -560,7 +620,8 @@
 			uitvoering: viewUitvoering,
 			kleur: viewKleur,
 			gaas: viewGaas,
-			maat: viewMaat
+			maat: viewMaat,
+			overzicht: viewOverzicht
 		};
 
 		/**
@@ -706,6 +767,29 @@
 
 			if ( event.target.closest( '[data-horex-close]' ) || event.target === modal ) {
 				closeHelp();
+
+				return;
+			}
+
+			var remove = event.target.closest( '[data-horex-remove]' );
+
+			if ( remove ) {
+				items.splice( parseInt( remove.getAttribute( 'data-horex-remove' ), 10 ), 1 );
+
+				if ( items.length ) {
+					render();
+				} else {
+					draft = blank();
+					go( 'intro' );
+				}
+
+				return;
+			}
+
+			if ( event.target.closest( '[data-horex-again]' ) ) {
+				// A fresh draft, but the carried colour and mesh come with it.
+				draft = blank();
+				go( 'product' );
 
 				return;
 			}

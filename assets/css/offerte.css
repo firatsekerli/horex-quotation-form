@@ -835,3 +835,92 @@
 	color: var( --horex-muted );
 	font-size: 14px;
 }
+
+/* Summary ---------------------------------------------------------------- */
+
+.horex-items {
+	margin: 28px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.horex-item {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-bottom: 10px;
+	padding: 14px 16px;
+	border: 1px solid var( --horex-line );
+	border-radius: var( --horex-radius );
+	background: var( --horex-paper );
+}
+
+.horex-item__thumb {
+	position: relative;
+	flex: none;
+	width: 62px;
+	height: 47px;
+	overflow: hidden;
+	border: 1px solid var( --horex-line );
+	border-radius: 9px;
+	background: #F3EEE2;
+}
+
+.horex-item__thumb svg,
+.horex-item__thumb img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.horex-item__body {
+	flex: 1;
+	min-width: 0;
+}
+
+.horex-item__t {
+	display: block;
+	font-size: 15.5px;
+	font-weight: 600;
+}
+
+.horex-item__d {
+	display: block;
+	margin-top: 3px;
+	color: var( --horex-muted );
+	font-size: 13px;
+}
+
+.horex-item__m {
+	white-space: nowrap;
+	font-size: 14.5px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.horex-item__del {
+	padding: 4px;
+	border: 0;
+	background: none;
+	color: var( --horex-muted );
+	cursor: pointer;
+	font: inherit;
+	font-size: 13px;
+	text-decoration: underline;
+}
+
+.horex-item__del:hover {
+	color: #A8412F;
+}
+
+@media ( max-width: 560px ) {
+	.horex-item {
+		flex-wrap: wrap;
+	}
+
+	.horex-item__m {
+		margin-left: 76px;
+	}
+}

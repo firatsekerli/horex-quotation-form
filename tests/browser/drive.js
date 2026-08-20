@@ -176,6 +176,60 @@ async function backToProduct( page ) {
 	const width = await page.locator( '[data-horex-progress]' ).evaluate( el => el.style.width );
 	check( 'progress bar has advanced', parseFloat( width ) > 12, true );
 
+	/* The loop: add one, add another, carry the finish over. */
+	await backToProduct( page );
+	await page.click( '[data-horex-product="plisse-horren"]' ); await page.waitForTimeout( 420 );
+	await page.click( '[data-horex-uitvoering="plisse-hordeur"]' ); await page.waitForTimeout( 420 );
+	await page.click( '[data-horex-kleur="antraciet"]' ); await page.waitForTimeout( 420 );
+	await page.click( '[data-horex-gaas="anti-pollen-gaas"]' ); await page.waitForTimeout( 420 );
+	await page.fill( '#horex-ruimte', 'Woonkamer schuifpui' );
+	await page.fill( '#horex-breedte', '2100' );
+	await page.fill( '#horex-hoogte', '2400' );
+	await page.waitForTimeout( 150 );
+	await page.click( '[data-horex-add]' );
+	await page.waitForTimeout( 400 );
+
+	check( 'the summary lists the product', await page.locator( '.horex-item' ).count(), 1 );
+	check( 'the summary names the room', await page.locator( '.horex-item__t' ).first().innerText(), 'Woonkamer schuifpui' );
+	check( 'the summary spells out the choices', await page.locator( '.horex-item__d' ).first().innerText(), 'Plissé hordeur · Antraciet · Anti-pollen gaas' );
+	check( 'the summary shows the measurements', await page.locator( '.horex-item__m' ).first().innerText(), '2100 × 2400 mm' );
+	check( 'the bar counts what is added', await page.locator( '[data-horex-step]' ).innerText(), '1 product toegevoegd' );
+
+	// Adding another of the same type pre-selects the finish.
+	await page.click( '[data-horex-again]' );
+	await page.waitForTimeout( 400 );
+	await page.click( '[data-horex-product="inzet-horren"]' ); await page.waitForTimeout( 420 );
+	await page.click( '[data-horex-uitvoering="inzet-horraam"]' ); await page.waitForTimeout( 420 );
+	check( 'the colour carried over', await page.locator( '.horex-swatch.is-on .horex-swatch__t' ).innerText(), 'Antraciet' );
+	await page.click( '[data-horex-kleur="antraciet"]' ); await page.waitForTimeout( 420 );
+	check( 'the mesh carried over too', await page.locator( '.horex-card.is-on .horex-card__t' ).innerText(), 'Anti-pollen gaas' );
+	await page.click( '[data-horex-gaas="anti-pollen-gaas"]' ); await page.waitForTimeout( 420 );
+	await page.fill( '#horex-ruimte', 'Slaapkamer voorzijde' );
+	await page.fill( '#horex-breedte', '900' );
+	await page.fill( '#horex-hoogte', '1200' );
+	await page.waitForTimeout( 150 );
+	await page.click( '[data-horex-add]' );
+	await page.waitForTimeout( 400 );
+
+	check( 'both products are listed', await page.locator( '.horex-item' ).count(), 2 );
+	check( 'the bar pluralises', await page.locator( '[data-horex-step]' ).innerText(), '2 producten toegevoegd' );
+
+	// A curtain does not inherit a frame colour.
+	await page.click( '[data-horex-again]' );
+	await page.waitForTimeout( 400 );
+	await page.click( '[data-horex-product="wave-gordijnen"]' ); await page.waitForTimeout( 420 );
+	check( 'a different palette does not carry over', await page.locator( '.horex-swatch.is-on' ).count(), 0 );
+
+	// Removing one leaves the other.
+	await backToProduct( page );
+	await page.click( '.horex-back' );
+	await page.waitForTimeout( 300 );
+	check( 'back from the product step returns to the summary', await page.locator( '.horex-item' ).count(), 2 );
+	await page.click( '[data-horex-remove="0"]' );
+	await page.waitForTimeout( 300 );
+	check( 'removing one leaves the other', await page.locator( '.horex-item' ).count(), 1 );
+	check( 'the right one was removed', await page.locator( '.horex-item__t' ).first().innerText(), 'Slaapkamer voorzijde' );
+
 	check( 'no JavaScript errors', errors, [] );
 
 	if ( process.env.HOREX_SHOT ) {
