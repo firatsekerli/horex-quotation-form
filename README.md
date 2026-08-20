@@ -17,10 +17,9 @@ aanvraag, geen bestelling.
 |---|---|
 | WordPress | 6.0 of hoger |
 | PHP | 7.4 of hoger |
-| Advanced Custom Fields **Pro** | 6.0 of hoger (vereist — de catalogus en de aanvragen draaien erop) |
 
-ACF Pro is verplicht: de options page is een Pro-functie. Zonder ACF Pro toont de plugin een
-admin-melding en doet verder niets.
+**Geen afhankelijkheden.** Geen ACF, geen Composer, geen npm, geen buildstap — alleen PHP, JS
+en CSS. De plugin werkt op elke standaard WordPress-installatie.
 
 ## Installatie
 
@@ -38,29 +37,42 @@ ontwikkelaar aangepast kan worden:
 - **Hor-Ex → Instellingen** — producten, uitvoeringen, kleuren, gaas, maatregels, meethulp en
   e-mailinstellingen
 
-Veldgroepen worden als lokale JSON opgeslagen in `acf-json/`, zodat ze in versiebeheer staan en
-via **Custom Fields → Sync available** te synchroniseren zijn.
+## Architectuur
+
+De hele instellingenpagina wordt beschreven in één PHP-array: `horex_settings_schema()` in
+`includes/settings-schema.php`. Dat schema is de enige bron van waarheid — het formulier, de
+opslag, de sanitizer en straks de front-end payload worden er allemaal uit gegenereerd.
+
+Een veld toevoegen is daardoor één wijziging op één plek, en de sanitizer kan per definitie
+niet uit de pas lopen met het formulier: wat niet in het schema staat, wordt bij het opslaan
+weggegooid.
+
+Alle instellingen staan in één geautoloade optie (`horex_settings`); aanvragen staan in post
+meta bij het `horex_aanvraag` posttype.
 
 ## Structuur
 
 ```
 horex-quotation-form.php     bootstrap: constants, includes, activatie
 includes/
-  class-horex.php            hoofdklasse: hooks, assets, config doorgeven
+  class-horex.php            hoofdklasse: hooks en assets
   cpt.php                    registratie horex_aanvraag + adminkolommen
-  options-page.php           acf_add_options_page + acf-json paden
-acf-json/                    lokale JSON van de veldgroepen
+  settings-schema.php        het schema: tabbladen, velden, standaardwaarden
+  settings.php               instellingenpagina: opslag, opslaan, sanitizen
+  settings-render.php        veldrenderers (tekst, kleur, afbeelding, wysiwyg, …)
 templates/                   shortcode-markup
-assets/js, assets/css        front-end
+assets/js, assets/css        admin- en front-end assets
 ```
 
 ## Ontwikkeling
 
 De build loopt in kleine, afzonderlijk testbare fases:
 
-- [x] **0 — Scaffold:** plugin-header, hoofdklasse, CPT zichtbaar, lege options page, acf-json paden
-- [ ] **1 — Catalogus:** producten, framekleuren, gaas, stof, doek, maten, meethulp, e-mail
-- [ ] **2 — Aanvraagvelden:** `group_horex_aanvraag` + adminkolommen
+- [x] **0 — Scaffold:** plugin-header, hoofdklasse, CPT zichtbaar, instellingenpagina met
+  schema-gestuurde velden (Maten, E-mail, Branding)
+- [ ] **1 — Catalogus:** repeatercomponent + producten, framekleuren, gaas, stof, doek,
+  meethulp, en de seeder met de bevestigde gegevens
+- [ ] **2 — Aanvraagvelden:** opslag en adminweergave van aanvragen + adminkolommen
 - [ ] **3 — Front-end shell:** shortcode, config doorgeven, productstap
 - [ ] **4 — Stap-engine:** auto-advance, transities, terugknop, voortgangsbalk
 - [ ] **5 — Matenscherm:** live preview, meethulp-popup, waarschuwing buiten bereik

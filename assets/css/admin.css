@@ -1,0 +1,63 @@
+/**
+ * Hor-Ex settings page.
+ */
+
+.horex-tab-description {
+	max-width: 46em;
+	margin: 1em 0 0;
+	color: #50575e;
+}
+
+/* Colour field ----------------------------------------------------------- */
+
+.horex-color {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.horex-color__picker {
+	width: 40px;
+	height: 32px;
+	padding: 2px;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	background: #fff;
+	cursor: pointer;
+}
+
+.horex-color__hex {
+	width: 9em;
+	text-transform: uppercase;
+}
+
+/* Image field ------------------------------------------------------------ */
+
+.horex-image__preview:empty {
+	display: none;
+}
+
+.horex-image__preview img {
+	display: block;
+	max-width: 150px;
+	height: auto;
+	margin-bottom: 8px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.horex-image__actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0;
+}
+
+.horex-image__remove {
+	color: #b32d2e;
+}
+
+.horex-image__remove[hidden] {
+	display: none;
+}

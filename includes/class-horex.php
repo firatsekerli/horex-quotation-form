@@ -18,7 +18,7 @@ final class Horex {
 	const CPT = 'horex_aanvraag';
 
 	/**
-	 * Slug of the ACF options page.
+	 * Slug of the settings page.
 	 */
 	const OPTIONS_SLUG = 'horex-instellingen';
 
@@ -50,11 +50,9 @@ final class Horex {
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'init', 'horex_register_cpt' );
-		add_action( 'admin_notices', array( $this, 'maybe_show_acf_notice' ) );
-
-		horex_register_acf_json_paths();
-
-		add_action( 'acf/init', 'horex_register_options_page' );
+		add_action( 'admin_menu', 'horex_register_settings_page' );
+		add_action( 'admin_enqueue_scripts', 'horex_maybe_enqueue_admin_assets' );
+		add_action( 'admin_post_horex_save_settings', 'horex_handle_settings_save' );
 	}
 
 	/**
@@ -62,7 +60,9 @@ final class Horex {
 	 */
 	private function includes() {
 		require_once HOREX_DIR . 'includes/cpt.php';
-		require_once HOREX_DIR . 'includes/options-page.php';
+		require_once HOREX_DIR . 'includes/settings-schema.php';
+		require_once HOREX_DIR . 'includes/settings.php';
+		require_once HOREX_DIR . 'includes/settings-render.php';
 	}
 
 	/**
@@ -70,30 +70,6 @@ final class Horex {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'horex', false, dirname( plugin_basename( HOREX_FILE ) ) . '/languages' );
-	}
-
-	/**
-	 * Is ACF Pro active? Options pages are a Pro-only feature.
-	 *
-	 * @return bool
-	 */
-	public static function has_acf_pro() {
-		return function_exists( 'acf_add_options_page' );
-	}
-
-	/**
-	 * Warn in the admin when ACF Pro is missing; the plugin needs it for its catalogue.
-	 */
-	public function maybe_show_acf_notice() {
-		if ( self::has_acf_pro() || ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
-
-		printf(
-			'<div class="notice notice-error"><p><strong>%1$s</strong> %2$s</p></div>',
-			esc_html__( 'Hor-Ex Offerteaanvraag:', 'horex' ),
-			esc_html__( 'Advanced Custom Fields Pro is vereist. Activeer ACF Pro om de catalogus en de aanvragen te kunnen beheren.', 'horex' )
-		);
 	}
 
 	/**
