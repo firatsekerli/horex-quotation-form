@@ -293,47 +293,348 @@
 	line-height: 1.4;
 }
 
-/* Placeholder for steps still to come ------------------------------------ */
+/* Choice cards ----------------------------------------------------------- */
 
-.horex-todo {
+.horex-cards {
+	display: grid;
+	gap: 10px;
 	margin-top: 28px;
-	padding: 22px;
-	border: 1.5px dashed var( --horex-line );
+}
+
+.horex-card {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 18px 19px;
+	border: 1.5px solid var( --horex-line );
+	border-radius: var( --horex-radius );
+	background: var( --horex-paper );
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	text-align: left;
+	transition: border-color .16s, transform .16s, box-shadow .16s, background .16s;
+}
+
+.horex-card:hover {
+	border-color: var( --horex-geel );
+	transform: translateY( -1px );
+	box-shadow: var( --horex-shadow );
+}
+
+.horex-card:focus-visible {
+	outline: 2px solid var( --horex-ink );
+	outline-offset: 2px;
+}
+
+.horex-card.is-on {
+	border-color: var( --horex-geel );
+	background: var( --horex-geel-zacht );
+}
+
+.horex-card__body {
+	flex: 1;
+}
+
+.horex-card__t {
+	display: block;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: -.01em;
+}
+
+.horex-card__d {
+	display: block;
+	margin-top: 4px;
+	color: var( --horex-muted );
+	font-size: 13.5px;
+	line-height: 1.45;
+}
+
+.horex-card__key {
+	flex: none;
+	width: 27px;
+	height: 27px;
+	border: 1.5px solid var( --horex-line );
+	border-radius: 8px;
+}
+
+/* Colour swatches -------------------------------------------------------- */
+
+.horex-swatches {
+	display: grid;
+	grid-template-columns: repeat( 3, 1fr );
+	gap: 10px;
+	margin-top: 28px;
+}
+
+@media ( max-width: 480px ) {
+	.horex-swatches { grid-template-columns: repeat( 2, 1fr ); }
+}
+
+.horex-swatch {
+	padding: 12px;
+	border: 1.5px solid var( --horex-line );
+	border-radius: var( --horex-radius );
+	background: var( --horex-paper );
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	text-align: center;
+	transition: border-color .16s, transform .16s, background .16s;
+}
+
+.horex-swatch:hover {
+	border-color: var( --horex-geel );
+	transform: translateY( -1px );
+}
+
+.horex-swatch:focus-visible {
+	outline: 2px solid var( --horex-ink );
+	outline-offset: 2px;
+}
+
+.horex-swatch.is-on {
+	border-color: var( --horex-geel );
+	background: var( --horex-geel-zacht );
+}
+
+.horex-swatch__face {
+	display: block;
+	height: 54px;
+	margin-bottom: 10px;
+	border: 1px solid rgba( 0, 0, 0, .12 );
+	border-radius: 9px;
+}
+
+.horex-swatch__t {
+	font-size: 13.5px;
+	font-weight: 500;
+}
+
+/* Measurements ----------------------------------------------------------- */
+
+.horex-measure {
+	display: grid;
+	grid-template-columns: 1fr 250px;
+	gap: 30px;
+	align-items: start;
+	margin-top: 28px;
+}
+
+@media ( max-width: 680px ) {
+	.horex-measure { grid-template-columns: 1fr; }
+}
+
+.horex-field {
+	margin-bottom: 19px;
+}
+
+.horex-label {
+	display: block;
+	margin-bottom: 7px;
+	font-size: 13.5px;
+	font-weight: 600;
+}
+
+.horex-input {
+	width: 100%;
+	padding: 13px 14px;
+	border: 1.5px solid var( --horex-line );
+	border-radius: 11px;
+	background: var( --horex-paper );
+	color: var( --horex-ink );
+	font-family: var( --horex-body );
+	font-size: 16px;
+	transition: border-color .16s, box-shadow .16s;
+}
+
+.horex-input:focus {
+	outline: none;
+	border-color: var( --horex-geel );
+	box-shadow: 0 0 0 3px var( --horex-geel-zacht );
+}
+
+.horex-input--mm {
+	font-variant-numeric: tabular-nums;
+}
+
+.horex-hint {
+	margin: 6px 0 0;
+	color: var( --horex-muted );
+	font-size: 12.5px;
+	line-height: 1.45;
+}
+
+.horex-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+.horex-unit {
+	position: relative;
+	display: block;
+}
+
+.horex-unit b {
+	position: absolute;
+	top: 50%;
+	right: 13px;
+	transform: translateY( -50% );
+	color: var( --horex-muted );
+	font-size: 13px;
+	font-weight: 500;
+	pointer-events: none;
+}
+
+.horex-warn {
+	margin-top: 15px;
+	padding: 11px 13px;
+	border-left: 3px solid var( --horex-geel );
+	border-radius: 0 9px 9px 0;
+	background: var( --horex-geel-zacht );
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+/* Scale preview ---------------------------------------------------------- */
+
+.horex-preview {
+	position: sticky;
+	top: calc( var( --horex-offset ) + 76px );
+	padding: 20px;
+	border: 1px solid var( --horex-line );
 	border-radius: var( --horex-radius );
 	background: var( --horex-paper );
 }
 
-.horex-todo__label {
-	display: block;
-	margin-bottom: 6px;
+@media ( max-width: 680px ) {
+	.horex-preview { position: static; }
+}
+
+.horex-preview__title {
+	margin: 0 0 18px;
 	color: var( --horex-muted );
-	font-size: 11.5px;
+	font-size: 11px;
 	font-weight: 600;
-	letter-spacing: .12em;
+	letter-spacing: .13em;
 	text-transform: uppercase;
 }
 
-.horex-todo__steps {
-	margin: 14px 0 0;
-	padding: 0;
-	list-style: none;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
+.horex-preview__stage {
+	display: grid;
+	place-items: center;
+	height: 205px;
 }
 
-.horex-todo__steps li {
-	padding: 4px 11px;
-	border-radius: 20px;
+.horex-frame {
+	position: relative;
+	border-style: solid;
+	box-shadow: 0 2px 12px rgba( 30, 30, 30, .13 );
+	transition: width .2s, height .2s, border-color .2s;
+}
+
+.horex-fill {
+	position: absolute;
+	inset: 0;
+}
+
+.horex-dim {
+	position: absolute;
+	color: var( --horex-muted );
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.horex-dim--w {
+	bottom: -21px;
+	left: 50%;
+	transform: translateX( -50% );
+}
+
+.horex-dim--h {
+	top: 50%;
+	right: -9px;
+	transform: translate( 100%, -50% );
+}
+
+/* Measuring help --------------------------------------------------------- */
+
+.horex-meethulp {
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	width: 100%;
+	margin-bottom: 19px;
+	padding: 11px 13px;
+	border: 1.5px solid var( --horex-line );
+	border-radius: 11px;
+	background: var( --horex-paper );
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	text-align: left;
+	transition: border-color .16s, box-shadow .16s, transform .16s;
+}
+
+.horex-meethulp:hover {
+	border-color: var( --horex-geel );
+	box-shadow: var( --horex-shadow );
+	transform: translateY( -1px );
+}
+
+.horex-meethulp:focus-visible {
+	outline: 2px solid var( --horex-ink );
+	outline-offset: 2px;
+}
+
+.horex-meethulp__mini {
+	flex: none;
+	width: 56px;
+	height: 44px;
+	overflow: hidden;
+	border-radius: 8px;
 	background: #F3EEE2;
+}
+
+.horex-meethulp__mini svg,
+.horex-meethulp__mini img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.horex-meethulp__text {
+	flex: 1;
+}
+
+.horex-meethulp__text b {
+	display: block;
+	font-size: 14.5px;
+	font-weight: 600;
+}
+
+.horex-meethulp__text span {
+	display: block;
+	margin-top: 2px;
 	color: var( --horex-muted );
 	font-size: 12.5px;
 }
 
-.horex-todo__steps li.is-now {
+.horex-meethulp__arrow {
+	display: grid;
+	flex: none;
+	place-items: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
 	background: var( --horex-geel );
 	color: var( --horex-ink );
-	font-weight: 600;
+	font-size: 13px;
+	font-weight: 700;
 }
 
 /* Buttons ---------------------------------------------------------------- */
@@ -405,6 +706,115 @@
    goes away. */
 .horex-modal[hidden] {
 	display: none;
+}
+
+.horex-modal__panel {
+	position: relative;
+	width: 100%;
+	max-width: 560px;
+	max-height: 92vh;
+	overflow: auto;
+	padding: 26px;
+	border-radius: 18px;
+	background: var( --horex-canvas );
+	animation: horex-rise .34s cubic-bezier( .16, 1, .3, 1 ) both;
+}
+
+@keyframes horex-rise {
+	from { opacity: 0; transform: translateY( 18px ) scale( .98 ); }
+	to   { opacity: 1; transform: none; }
+}
+
+.horex-modal__close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	border: 1.5px solid var( --horex-line );
+	border-radius: 50%;
+	background: var( --horex-paper );
+	color: var( --horex-ink );
+	cursor: pointer;
+	font: inherit;
+	font-size: 15px;
+}
+
+.horex-modal__close:hover {
+	border-color: var( --horex-ink );
+}
+
+.horex-modal__title {
+	margin: 0;
+	padding-right: 40px;
+	font-family: var( --horex-display );
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 1.15;
+}
+
+.horex-drawing {
+	margin-top: 18px;
+	padding: 14px;
+	border: 1px solid var( --horex-line );
+	border-radius: 13px;
+	background: var( --horex-paper );
+}
+
+.horex-drawing svg,
+.horex-drawing img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.horex-modal video {
+	display: block;
+	width: 100%;
+	margin-top: 18px;
+	border-radius: 13px;
+	background: #000;
+}
+
+.horex-steps {
+	display: grid;
+	gap: 12px;
+	margin: 20px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.horex-step {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	font-size: 14.5px;
+	line-height: 1.5;
+}
+
+.horex-step b {
+	display: grid;
+	flex: none;
+	place-items: center;
+	width: 24px;
+	height: 24px;
+	margin-top: 1px;
+	border-radius: 50%;
+	background: var( --horex-geel );
+	color: var( --horex-ink );
+	font-size: 12.5px;
+	font-weight: 700;
+}
+
+.horex-modal__foot {
+	margin: 20px 0 0;
+	padding-top: 14px;
+	border-top: 1px solid var( --horex-line );
+	color: var( --horex-muted );
+	font-size: 13px;
+	line-height: 1.5;
 }
 
 /* Fallbacks -------------------------------------------------------------- */

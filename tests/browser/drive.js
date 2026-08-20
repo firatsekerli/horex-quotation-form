@@ -21,6 +21,24 @@ function check( label, got, want ) {
 	if ( ! ok ) console.log( `      got:  ${ JSON.stringify( got ) }\n      want: ${ JSON.stringify( want ) }` );
 }
 
+/**
+ * Walk the back button until the product step is reached.
+ *
+ * There is no jump-to-start link by design: the back chain is the way out, so this
+ * exercises it.
+ *
+ * @param {Object} page Playwright page.
+ */
+async function backToProduct( page ) {
+	for ( let i = 0; i < 6; i++ ) {
+		if ( await page.locator( '.horex-pcard' ).count() ) return;
+		await page.click( '.horex-back' );
+		await page.waitForTimeout( 260 );
+	}
+
+	throw new Error( 'could not walk back to the product step' );
+}
+
 ( async () => {
 	const browser = await chromium.launch( { executablePath: CHROME } );
 	const page = await browser.newPage( { viewport: { width: 900, height: 900 } } );
@@ -49,25 +67,107 @@ function check( label, got, want ) {
 	const box = await page.locator( '.horex-pcard' ).first().boundingBox();
 	check( 'cards have real size on screen', box.width > 100 && box.height > 100, true );
 
-	// Insect screen: five steps.
+	// Insect screen: the full five steps, each screen real.
 	await page.click( '[data-horex-product="plisse-horren"]' );
 	await page.waitForTimeout( 500 );
 	check( 'insect screen advances to step 2 of 5', await page.locator( '[data-horex-step]' ).innerText(), 'Stap 2 van 5' );
 	check( 'the variant heading is shown', await page.locator( '.horex-title' ).first().innerText(), 'Welke uitvoering?' );
-	check( 'the computed order is listed', await page.locator( '.horex-todo__steps li' ).allInnerTexts(), [ 'Product', 'Uitvoering', 'Kleur', 'Gaas', 'Maten' ] );
+	check( 'variants come from the catalogue', await page.locator( '.horex-card__t' ).allInnerTexts(), [ 'Plissé hordeur', 'Plissé horraam', 'DUO — hor + gordijn' ] );
+	check( 'variants carry their subtitles', await page.locator( '.horex-card__d' ).first().innerText(), 'Achterdeur, tuindeur of schuifpui' );
 
-	// Back, then a curtain: three steps.
-	await page.click( '[data-horex-go="product"]' );
+	// Tapping advances on its own — no next button.
+	await page.click( '[data-horex-uitvoering="plisse-hordeur"]' );
+	await page.waitForTimeout( 500 );
+	check( 'auto-advance reaches the colour step', await page.locator( '[data-horex-step]' ).innerText(), 'Stap 3 van 5' );
+	check( 'the frame question is asked', await page.locator( '.horex-title' ).first().innerText(), 'Welke kleur frame?' );
+	check( 'six frame colours render', await page.locator( '.horex-swatch' ).count(), 6 );
+
+	await page.click( '[data-horex-kleur="antraciet"]' );
+	await page.waitForTimeout( 500 );
+	check( 'auto-advance reaches the mesh step', await page.locator( '[data-horex-step]' ).innerText(), 'Stap 4 van 5' );
+	check( 'both mesh types render', await page.locator( '.horex-card' ).count(), 2 );
+
+	await page.click( '[data-horex-gaas="anti-pollen-gaas"]' );
+	await page.waitForTimeout( 500 );
+	check( 'auto-advance reaches the measurements', await page.locator( '[data-horex-step]' ).innerText(), 'Stap 5 van 5' );
+	check( 'measurement fields are in millimetres', await page.locator( '.horex-unit b' ).first().innerText(), 'mm' );
+	check( 'the add button starts disabled', await page.locator( '[data-horex-add]' ).isDisabled(), true );
+
+	// The cursor must not jump: 2100 typed left to right must stay 2100.
+	await page.fill( '#horex-ruimte', 'Woonkamer schuifpui' );
+	await page.click( '#horex-breedte' );
+	await page.type( '#horex-breedte', '2100', { delay: 30 } );
+	check( 'typing a width does not reorder the digits', await page.inputValue( '#horex-breedte' ), '2100' );
+
+	await page.click( '#horex-hoogte' );
+	await page.type( '#horex-hoogte', '2400', { delay: 30 } );
+	check( 'typing a height does not reorder the digits', await page.inputValue( '#horex-hoogte' ), '2400' );
+	check( 'letters are rejected in a measurement', await ( async () => {
+		await page.fill( '#horex-breedte', '' );
+		await page.type( '#horex-breedte', '12a0b0' );
+		const v = await page.inputValue( '#horex-breedte' );
+		await page.fill( '#horex-breedte', '2100' );
+		return v;
+	} )(), '1200' );
+
+	check( 'the add button is now enabled', await page.locator( '[data-horex-add]' ).isDisabled(), false );
+	check( 'the room name survived typing', await page.inputValue( '#horex-ruimte' ), 'Woonkamer schuifpui' );
+
+	// The preview scales with the numbers. It transitions over .2s, so let it settle
+	// before measuring or the assertion races the animation.
+	await page.waitForTimeout( 400 );
+	const frame = await page.locator( '[data-horex-frame]' ).boundingBox();
+	check( 'the preview is taller than it is wide, as entered', frame.height > frame.width, true );
+	check( 'the width is labelled', await page.locator( '[data-horex-dim-w]' ).innerText(), '2100 mm' );
+	check( 'the height is labelled', await page.locator( '[data-horex-dim-h]' ).innerText(), '2400 mm' );
+
+	// Out of range warns but never blocks.
+	await page.fill( '#horex-breedte', '6200' );
+	await page.waitForTimeout( 100 );
+	check( 'an oversize measurement warns', await page.locator( '.horex-warn' ).count(), 1 );
+	check( 'an oversize measurement is still accepted', await page.locator( '[data-horex-add]' ).isDisabled(), false );
+	await page.fill( '#horex-breedte', '120' );
+	await page.waitForTimeout( 100 );
+	check( 'an undersize measurement warns', await page.locator( '.horex-warn' ).count(), 1 );
+	check( 'an undersize measurement is still accepted', await page.locator( '[data-horex-add]' ).isDisabled(), false );
+	await page.fill( '#horex-breedte', '2100' );
+	await page.waitForTimeout( 100 );
+	check( 'an in-range measurement does not warn', await page.locator( '.horex-warn' ).count(), 0 );
+
+	// Measuring help.
+	await page.click( '[data-horex-meethulp]' );
+	await page.waitForTimeout( 300 );
+	check( 'the measuring help opens', await page.locator( '.horex-modal__panel' ).isVisible(), true );
+	check( 'it shows the numbered steps', await page.locator( '.horex-step' ).count(), 5 );
+	check( 'it shows the shipped diagram', await page.locator( '.horex-drawing svg' ).count(), 1 );
+	await page.keyboard.press( 'Escape' );
 	await page.waitForTimeout( 200 );
+	check( 'escape closes it', await page.locator( '[data-horex-modal]' ).isHidden(), true );
+
+	// Back preserves what was already answered.
+	await page.click( '[data-horex-go="gaas"]' );
+	await page.waitForTimeout( 300 );
+	check( 'the previous mesh choice is still marked', await page.locator( '.horex-card.is-on' ).count(), 1 );
+	await page.click( '[data-horex-gaas="anti-pollen-gaas"]' );
+	await page.waitForTimeout( 500 );
+	check( 'the measurements survived the detour', await page.inputValue( '#horex-breedte' ), '2100' );
+	check( 'the room name survived the detour', await page.inputValue( '#horex-ruimte' ), 'Woonkamer schuifpui' );
+
+	// Back to the start, then a curtain: three steps.
+	await backToProduct( page );
+	check( 'the back chain reaches the product step', await page.locator( '.horex-pcard' ).count(), 5 );
 	await page.click( '[data-horex-product="wave-gordijnen"]' );
 	await page.waitForTimeout( 500 );
 	check( 'curtain advances to step 2 of 3', await page.locator( '[data-horex-step]' ).innerText(), 'Stap 2 van 3' );
-	check( 'curtain skips variant and mesh', await page.locator( '.horex-todo__steps li' ).allInnerTexts(), [ 'Product', 'Kleur', 'Maten' ] );
-	check( 'the fabric question is asked', await page.locator( '.horex-title' ).first().innerText(), 'Welke stofkleur?' );
+	check( 'curtain skips variant and lands on colour', await page.locator( '.horex-title' ).first().innerText(), 'Welke stofkleur?' );
+
+	await page.click( '.horex-swatch >> nth=0' );
+	await page.waitForTimeout( 500 );
+	check( 'curtain skips mesh and lands on measurements', await page.locator( '[data-horex-step]' ).innerText(), 'Stap 3 van 3' );
+	check( 'a curtain preview has no frame border', await page.locator( '[data-horex-frame]' ).evaluate( el => el.style.borderWidth ), '0px' );
 
 	// Sun shading asks its own question.
-	await page.click( '[data-horex-go="product"]' );
-	await page.waitForTimeout( 200 );
+	await backToProduct( page );
 	await page.click( '[data-horex-product="veranda-zonwering"]' );
 	await page.waitForTimeout( 500 );
 	check( 'the canvas question is asked', await page.locator( '.horex-title' ).first().innerText(), 'Welke doekkleur?' );
@@ -78,8 +178,6 @@ function check( label, got, want ) {
 
 	check( 'no JavaScript errors', errors, [] );
 
-	await page.click( '[data-horex-go="product"]' );
-	await page.waitForTimeout( 300 );
 	if ( process.env.HOREX_SHOT ) {
 		await page.screenshot( { path: process.env.HOREX_SHOT, fullPage: true } );
 	}
