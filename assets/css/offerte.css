@@ -89,10 +89,19 @@
 	max-width: 820px;
 	margin: 0 auto;
 	padding: 46px 22px 96px;
+
+	/* Screens differ in height. A floor keeps the page — and whatever the theme puts
+	   below the shortcode — from jumping between the shorter and taller steps. */
+	min-height: 60vh;
 }
 
 .horex-screen {
 	animation: horex-in .42s cubic-bezier( .16, 1, .3, 1 ) both;
+}
+
+/* Redrawing a screen's contents without changing screen should not replay it. */
+.horex-screen--instant {
+	animation: none;
 }
 
 @keyframes horex-in {

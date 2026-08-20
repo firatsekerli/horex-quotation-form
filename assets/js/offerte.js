@@ -71,6 +71,16 @@
 	}
 
 	/**
+	 * How long a tapped choice stays visible before the next step slides in.
+	 */
+	var CHOICE_DELAY = 230;
+
+	/**
+	 * Length of the screen entry animation, matching horex-in in the stylesheet.
+	 */
+	var SCREEN_ANIMATION = 420;
+
+	/**
 	 * Build one configurator on a root element.
 	 *
 	 * @param {HTMLElement} root The [data-horex] element.
@@ -101,6 +111,7 @@
 		var carried = {};
 		var screen = 'intro';
 		var sending = false;
+		var heightTimer = 0;
 		var reference = '';
 		var trap = '';
 		var customer = { naam: '', email: '', telefoon: '', adres: '', postcode: '', plaats: '', opmerkingen: '' };
@@ -768,8 +779,11 @@
 
 		/**
 		 * Draw the current screen and update the bar.
+		 *
+		 * @param {boolean} quiet Redraw in place, without replaying the entry animation.
+		 *                        Used when the screen is not changing, only its contents.
 		 */
-		function render() {
+		function render( quiet ) {
 			var order = steps();
 			var index = order.indexOf( screen );
 			var inFlow = index > -1;
@@ -790,9 +804,54 @@
 
 			stage.innerHTML = views[ screen ] ? views[ screen ]() : viewIntro();
 
+			if ( quiet && stage.firstElementChild ) {
+				stage.firstElementChild.classList.add( 'horex-screen--instant' );
+			}
+
 			if ( 'maat' === screen ) {
 				updatePreview();
 			}
+		}
+
+		/**
+		 * Hold the stage at its taller size while the new screen fades in.
+		 *
+		 * Screens differ in height. Without this the container snaps to the new size
+		 * the instant the markup is replaced, which drags the page — and anything
+		 * below it — while the entry animation and the scroll are still running.
+		 *
+		 * @param {number} before Stage height before the swap.
+		 */
+		function holdHeight( before ) {
+			var after = stage.offsetHeight;
+
+			if ( ! before || before === after ) {
+				return;
+			}
+
+			stage.style.minHeight = Math.max( before, after ) + 'px';
+
+			window.clearTimeout( heightTimer );
+
+			heightTimer = window.setTimeout( function () {
+				stage.style.minHeight = '';
+			}, SCREEN_ANIMATION );
+		}
+
+		/**
+		 * Bring the configurator into view, clear of anything pinned above it.
+		 */
+		function scrollIntoView() {
+			var bar = root.querySelector( '.horex-bar' );
+			var clearance = ( root.classList.contains( 'horex--sticky' ) && bar ) ? bar.offsetHeight : 0;
+			var offset = parseInt( window.getComputedStyle( root ).getPropertyValue( '--horex-offset' ), 10 ) || 0;
+			var top = root.getBoundingClientRect().top + window.pageYOffset - clearance - offset;
+			var reduced = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+
+			window.scrollTo( {
+				top: Math.max( 0, top ),
+				behavior: reduced ? 'auto' : 'smooth'
+			} );
 		}
 
 		/**
@@ -801,28 +860,79 @@
 		 * @param {string} target Screen key.
 		 */
 		function go( target ) {
+			var before = stage.offsetHeight;
+
 			screen = target;
 			render();
+			holdHeight( before );
 
-			var top = root.getBoundingClientRect().top + window.pageYOffset;
-
-			window.scrollTo( { top: top, behavior: 'smooth' } );
+			// Scroll once layout has settled, so the target cannot move underneath it.
+			window.requestAnimationFrame( scrollIntoView );
 		}
 
 		/**
-		 * Record a choice, let it highlight, then move on by itself.
+		 * Mark the tapped option as chosen.
 		 *
-		 * @param {string} field Draft field.
-		 * @param {string} value Chosen key.
-		 * @param {string} target Screen to advance to.
+		 * Done by toggling a class rather than by re-rendering: rebuilding the screen
+		 * restarts its entry animation, and since the next step follows before that
+		 * animation finishes, the screen would visibly flash.
+		 *
+		 * @param {string} attribute Attribute identifying the options.
+		 * @param {string} value     Chosen key.
 		 */
-		function choose( field, value, target ) {
-			draft[ field ] = value;
-			render();
+		function highlight( attribute, value ) {
+			root.querySelectorAll( '[' + attribute + ']' ).forEach( function ( option ) {
+				option.classList.toggle( 'is-on', option.getAttribute( attribute ) === value );
+			} );
+		}
+
+		/**
+		 * Let a choice register on screen, then move on by itself.
+		 *
+		 * @param {string} attribute Attribute identifying the options.
+		 * @param {string} value     Chosen key.
+		 * @param {string} target    Screen to advance to.
+		 */
+		function advance( attribute, value, target ) {
+			highlight( attribute, value );
 
 			window.setTimeout( function () {
 				go( target );
-			}, 230 );
+			}, CHOICE_DELAY );
+		}
+
+		/**
+		 * Record a choice and advance.
+		 *
+		 * @param {string} field     Draft field.
+		 * @param {string} value     Chosen key.
+		 * @param {string} attribute Attribute identifying the options.
+		 * @param {string} target    Screen to advance to.
+		 */
+		function choose( field, value, attribute, target ) {
+			draft[ field ] = value;
+			advance( attribute, value, target );
+		}
+
+		/**
+		 * Take a product, carrying over what still applies, and advance.
+		 *
+		 * @param {string} slug Product key.
+		 */
+		function pickProduct( slug ) {
+			var product = bySlug( config.products, slug );
+
+			if ( ! product ) {
+				return;
+			}
+
+			draft.product = product.slug;
+			draft.uitvoering = null;
+
+			// Carry the previous colour over when the palette is the same one.
+			draft.kleur = carried.kleurType === product.kleurType ? carried.kleur : null;
+
+			advance( 'data-horex-product', slug, next( 'product' ) );
 		}
 
 		/* Events ----------------------------------------------------------- */
@@ -854,25 +964,7 @@
 			var pick = event.target.closest( '[data-horex-product]' );
 
 			if ( pick ) {
-				var product = bySlug( config.products, pick.getAttribute( 'data-horex-product' ) );
-
-				if ( ! product ) {
-					return;
-				}
-
-				draft.product = product.slug;
-				draft.uitvoering = null;
-
-				// Carry the previous colour over when the palette is the same one.
-				draft.kleur = carried.kleurType === product.kleurType ? carried.kleur : null;
-
-				render();
-
-				var order = steps();
-
-				window.setTimeout( function () {
-					go( order[ 1 ] || 'maat' );
-				}, 230 );
+				pickProduct( pick.getAttribute( 'data-horex-product' ) );
 
 				return;
 			}
@@ -880,7 +972,7 @@
 			var variant = event.target.closest( '[data-horex-uitvoering]' );
 
 			if ( variant ) {
-				choose( 'uitvoering', variant.getAttribute( 'data-horex-uitvoering' ), next( 'uitvoering' ) );
+				choose( 'uitvoering', variant.getAttribute( 'data-horex-uitvoering' ), 'data-horex-uitvoering', next( 'uitvoering' ) );
 
 				return;
 			}
@@ -888,7 +980,7 @@
 			var colour = event.target.closest( '[data-horex-kleur]' );
 
 			if ( colour ) {
-				choose( 'kleur', colour.getAttribute( 'data-horex-kleur' ), next( 'kleur' ) );
+				choose( 'kleur', colour.getAttribute( 'data-horex-kleur' ), 'data-horex-kleur', next( 'kleur' ) );
 
 				return;
 			}
@@ -896,7 +988,7 @@
 			var gaas = event.target.closest( '[data-horex-gaas]' );
 
 			if ( gaas ) {
-				choose( 'gaas', gaas.getAttribute( 'data-horex-gaas' ), next( 'gaas' ) );
+				choose( 'gaas', gaas.getAttribute( 'data-horex-gaas' ), 'data-horex-gaas', next( 'gaas' ) );
 
 				return;
 			}
@@ -919,7 +1011,8 @@
 				items.splice( parseInt( remove.getAttribute( 'data-horex-remove' ), 10 ), 1 );
 
 				if ( items.length ) {
-					render();
+					// The screen is not changing, only one row leaving it.
+					render( true );
 				} else {
 					draft = blank();
 					go( 'intro' );

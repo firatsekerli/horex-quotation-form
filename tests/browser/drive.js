@@ -345,6 +345,90 @@ async function p120( page, ms ) {
 	check( 'the send button becomes usable again', await page.locator( '[data-horex-send]' ).isDisabled(), false );
 	check( 'the customer is not sent to the confirmation', await page.locator( '.horex-done' ).count(), 0 );
 
+	/* Transitions: one rebuild per choice, no mid-flight restart. */
+	await page.reload();
+	await page.click( '[data-horex-start]' );
+	await page.waitForTimeout( 600 );
+
+	// Count how many times the stage is rebuilt, and whether the height is held.
+	await page.evaluate( () => {
+		const stage = document.querySelector( '[data-horex-stage]' );
+		window.__rebuilds = 0;
+		window.__heldDuringSwap = false;
+		new MutationObserver( () => {
+			window.__rebuilds++;
+			if ( stage.style.minHeight ) {
+				window.__heldDuringSwap = true;
+			}
+		} ).observe( stage, { childList: true } );
+	} );
+
+	await page.click( '[data-horex-product="plisse-horren"]' );
+	await page.waitForTimeout( 700 );
+
+	check(
+		'a choice rebuilds the stage once, not twice',
+		await page.evaluate( () => window.__rebuilds ),
+		1
+	);
+	// The checkmark must appear on the tapped card straight away, while that screen
+	// is still the one on show — not after the next screen has replaced it.
+	await page.click( '[data-horex-go="product"]' );
+	await page.waitForTimeout( 600 );
+
+	const marked = await page.evaluate( () => {
+		const card = document.querySelector( '[data-horex-product="inzet-horren"]' );
+		card.click();
+		return { on: card.classList.contains( 'is-on' ), attached: card.isConnected };
+	} );
+
+	check( 'the tapped card is marked immediately', marked.on, true );
+	check( 'and marked in place, without being replaced', marked.attached, true );
+	await page.waitForTimeout( 700 );
+
+	// The entry animation must run start to finish, not restart part-way.
+	const restarted = await page.evaluate( () => {
+		return new Promise( resolve => {
+			const stage = document.querySelector( '[data-horex-stage]' );
+			let starts = 0;
+			const onStart = () => starts++;
+			stage.addEventListener( 'animationstart', onStart, true );
+			document.querySelector( '[data-horex-uitvoering]' ).click();
+			window.setTimeout( () => {
+				stage.removeEventListener( 'animationstart', onStart, true );
+				resolve( starts );
+			}, 900 );
+		} );
+	} );
+	check( 'the entry animation runs once per step', restarted, 1 );
+
+	// Height is held across a swap between differently sized screens.
+	await page.waitForTimeout( 300 );
+	const held = await page.evaluate( () => {
+		const stage = document.querySelector( '[data-horex-stage]' );
+		const before = stage.offsetHeight;
+		document.querySelector( '[data-horex-kleur]' ).click();
+		return new Promise( resolve => {
+			window.setTimeout( () => resolve( { before, min: stage.style.minHeight } ), 300 );
+		} );
+	} );
+	check( 'the stage height is pinned during the swap', '' !== held.min, true );
+
+	await page.waitForTimeout( 900 );
+	check(
+		'and released once the screen has settled',
+		await page.evaluate( () => document.querySelector( '[data-horex-stage]' ).style.minHeight ),
+		''
+	);
+
+	// The heading must not end up beneath the sticky bar.
+	const clear = await page.evaluate( () => {
+		const bar = document.querySelector( '.horex-bar' );
+		const heading = document.querySelector( '.horex-title' );
+		return heading.getBoundingClientRect().top >= bar.getBoundingClientRect().bottom;
+	} );
+	check( 'the step heading clears the sticky bar', clear, true );
+
 	check( 'no JavaScript errors', errors, [] );
 
 	if ( process.env.HOREX_SHOT ) {
