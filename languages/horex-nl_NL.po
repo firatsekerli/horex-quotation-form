@@ -189,7 +189,7 @@ msgstr "Product"
 #: includes/settings-schema.php:137
 #: includes/settings-schema.php:174
 #: includes/settings-schema.php:221
-#: includes/settings-schema.php:389
+#: includes/settings-schema.php:396
 #: includes/submission-schema.php:56
 #: includes/submission.php:318
 msgid "Name"
@@ -207,7 +207,7 @@ msgstr "Eén korte regel onder de naam op de productkaart."
 #: includes/settings-schema.php:148
 #: includes/settings-schema.php:179
 #: includes/settings-schema.php:226
-#: includes/settings-schema.php:394
+#: includes/settings-schema.php:401
 msgid "Key"
 msgstr "Sleutel"
 
@@ -286,7 +286,7 @@ msgstr "Kleur toevoegen"
 
 #: includes/settings-schema.php:170
 #: includes/settings-schema.php:184
-#: includes/settings-schema.php:404
+#: includes/settings-schema.php:411
 #: includes/submission-schema.php:129
 msgid "Colour"
 msgstr "Kleur"
@@ -304,7 +304,7 @@ msgid "Draw a subtle texture over the colour"
 msgstr "Teken een subtiele structuur over de kleur"
 
 #: includes/settings-schema.php:201
-#: includes/settings-schema.php:399
+#: includes/settings-schema.php:406
 msgid "Swatch image"
 msgstr "Swatch-afbeelding"
 
@@ -334,7 +334,7 @@ msgid "Mesh type"
 msgstr "Gaassoort"
 
 #: includes/settings-schema.php:231
-#: includes/settings-schema.php:409
+#: includes/settings-schema.php:416
 msgid "Description"
 msgstr "Omschrijving"
 
@@ -493,55 +493,67 @@ msgid "Branding"
 msgstr "Branding"
 
 #: includes/settings-schema.php:361
-msgid "The logo with the white wordmark sits on the configurator's dark header."
-msgstr "Het logo met het witte woordmerk staat op de donkere header van de configurator."
+msgid "The bar above the configurator, and the two typefaces it is designed in."
+msgstr "De balk boven de configurator, en de twee lettertypen waarin die ontworpen is."
 
 #: includes/settings-schema.php:365
 msgid "Logo (light)"
 msgstr "Logo (licht)"
 
 #: includes/settings-schema.php:366
-msgid "Optional. Without a logo the header shows the name Hor-Ex as text."
-msgstr "Optioneel. Zonder logo toont de header de naam Hor-Ex als tekst."
+msgid "Optional, shown on the dark bar above the configurator. Leave it empty when the site header already carries the logo."
+msgstr "Optioneel, staat op de donkere balk boven de configurator. Laat leeg als de header van de site het logo al toont."
 
-#: includes/settings-schema.php:400
+#: includes/settings-schema.php:370
+msgid "Fonts"
+msgstr "Lettertypen"
+
+#: includes/settings-schema.php:371
+msgid "Load Playfair Display and DM Sans from Google Fonts"
+msgstr "Playfair Display en DM Sans laden via Google Fonts"
+
+#: includes/settings-schema.php:373
+msgid "The configurator is designed in these two typefaces. Turn this off if the theme already loads them, or if you would rather self-host them — loading them from Google sends visitor IP addresses to Google, which needs consent under the GDPR."
+msgstr "De configurator is in deze twee lettertypen ontworpen. Zet dit uit als het thema ze al laadt, of als u ze liever zelf host — laden via Google stuurt IP-adressen van bezoekers naar Google, waarvoor onder de AVG toestemming nodig is."
+
+#: includes/settings-schema.php:407
 msgid "A crop of the fabric. Without an image the hex colour is used."
 msgstr "Een uitsnede van de stof. Zonder afbeelding wordt de hexkleur gebruikt."
 
-#: includes/settings-schema.php:405
+#: includes/settings-schema.php:412
 msgid "Fallback for when there is no swatch."
 msgstr "Terugval wanneer er geen swatch is."
 
-#: includes/settings-schema.php:424
+#: includes/settings-schema.php:431
 msgid "Title"
 msgstr "Titel"
 
-#: includes/settings-schema.php:429
+#: includes/settings-schema.php:436
 msgid "Diagram"
 msgstr "Diagram"
 
-#: includes/settings-schema.php:430
+#: includes/settings-schema.php:437
 msgid "Drawing showing which measurement is meant."
 msgstr "Tekening die laat zien welke maat bedoeld wordt."
 
-#: includes/settings-schema.php:434
+#: includes/settings-schema.php:441
 msgid "Steps"
 msgstr "Stappen"
 
-#: includes/settings-schema.php:435
+#: includes/settings-schema.php:442
 msgid "Add step"
 msgstr "Stap toevoegen"
 
-#: includes/settings-schema.php:437
-#: includes/settings-schema.php:441
+#: includes/settings-schema.php:444
+#: includes/settings-schema.php:448
 msgid "Step"
 msgstr "Stap"
 
-#: includes/settings-schema.php:448
+#: includes/settings-schema.php:455
 msgid "Video"
 msgstr "Video"
 
-#: includes/settings-schema.php:449
+#: includes/settings-schema.php:456
 msgid "Optional. A short clip of someone actually measuring works better than text."
 msgstr "Optioneel. Een korte clip van iemand die daadwerkelijk opmeet werkt beter dan tekst."
 

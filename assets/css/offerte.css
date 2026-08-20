@@ -1,0 +1,408 @@
+/**
+ * Hor-Ex configurator.
+ *
+ * Every rule is scoped under .horex. The shortcode drops into a page builder, so bare
+ * element selectors would leak into the surrounding page.
+ */
+
+.horex {
+	--horex-geel: #FEC129;
+	--horex-geel-zacht: #FFF3D2;
+	--horex-ink: #1E1E1E;
+	--horex-canvas: #FFFAED;
+	--horex-paper: #FFFFFF;
+	--horex-line: #EDE4CE;
+	--horex-muted: #857E6C;
+	--horex-radius: 14px;
+	--horex-offset: 0px;
+	--horex-shadow: 0 1px 2px rgba( 30, 30, 30, .04 ), 0 10px 28px rgba( 30, 30, 30, .07 );
+	--horex-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+	--horex-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+	position: relative;
+	box-sizing: border-box;
+	background: var( --horex-canvas );
+	color: var( --horex-ink );
+	font-family: var( --horex-body );
+	font-size: 17px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+.horex *,
+.horex *::before,
+.horex *::after {
+	box-sizing: border-box;
+}
+
+/* Bar -------------------------------------------------------------------- */
+
+.horex-bar {
+	z-index: 20;
+	background: var( --horex-ink );
+}
+
+.horex--sticky .horex-bar {
+	position: sticky;
+	top: var( --horex-offset );
+}
+
+.horex-bar__inner {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	max-width: 820px;
+	margin: 0 auto;
+	padding: 13px 22px;
+	min-height: 26px;
+}
+
+.horex-bar__logo {
+	display: block;
+	height: 26px;
+	width: auto;
+}
+
+.horex-bar__step {
+	margin-left: auto;
+	color: rgba( 255, 250, 237, .6 );
+	font-size: 12.5px;
+	font-variant-numeric: tabular-nums;
+}
+
+.horex-bar__track {
+	height: 3px;
+	background: rgba( 255, 250, 237, .14 );
+}
+
+.horex-bar__fill {
+	display: block;
+	height: 100%;
+	width: 0;
+	background: var( --horex-geel );
+	transition: width .5s cubic-bezier( .4, 0, .2, 1 );
+}
+
+/* Stage ------------------------------------------------------------------ */
+
+.horex-stage {
+	max-width: 820px;
+	margin: 0 auto;
+	padding: 46px 22px 96px;
+}
+
+.horex-screen {
+	animation: horex-in .42s cubic-bezier( .16, 1, .3, 1 ) both;
+}
+
+@keyframes horex-in {
+	from { opacity: 0; transform: translateY( 14px ); }
+	to   { opacity: 1; transform: none; }
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.horex-screen { animation: none; }
+	.horex * { transition: none !important; }
+}
+
+.horex-eyebrow {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	margin: 0 0 13px;
+	color: var( --horex-muted );
+	font-size: 11.5px;
+	font-weight: 600;
+	letter-spacing: .15em;
+	text-transform: uppercase;
+}
+
+.horex-eyebrow::before {
+	content: '';
+	flex: none;
+	width: 19px;
+	height: 11px;
+	background: repeating-linear-gradient( 90deg, var( --horex-geel ) 0 3px, transparent 3px 6px );
+}
+
+.horex-title {
+	margin: 0;
+	padding: 0;
+	color: var( --horex-ink );
+	font-family: var( --horex-display );
+	font-size: 40px;
+	font-weight: 700;
+	line-height: 1.08;
+	letter-spacing: -.015em;
+}
+
+@media ( max-width: 560px ) {
+	.horex-title { font-size: 31px; }
+}
+
+.horex-sub {
+	max-width: 48ch;
+	margin: 12px 0 0;
+	color: var( --horex-muted );
+	font-size: 16px;
+	line-height: 1.55;
+}
+
+.horex-note {
+	margin: 20px 0 0;
+	padding: 16px 18px;
+	border-radius: var( --horex-radius );
+	background: var( --horex-geel-zacht );
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+/* Back ------------------------------------------------------------------- */
+
+.horex-back {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0 0 22px;
+	padding: 6px 0;
+	border: 0;
+	background: none;
+	color: var( --horex-muted );
+	cursor: pointer;
+	font: inherit;
+	font-size: 13.5px;
+}
+
+.horex-back:hover {
+	color: var( --horex-ink );
+}
+
+/* Product cards ---------------------------------------------------------- */
+
+.horex-products {
+	display: grid;
+	grid-template-columns: repeat( 3, 1fr );
+	gap: 11px;
+	margin-top: 28px;
+}
+
+@media ( max-width: 700px ) {
+	.horex-products { grid-template-columns: 1fr 1fr; }
+}
+
+@media ( max-width: 380px ) {
+	.horex-products { grid-template-columns: 1fr; }
+}
+
+.horex-pcard {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	padding: 0;
+	border: 1.5px solid var( --horex-line );
+	border-radius: var( --horex-radius );
+	background: var( --horex-paper );
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	text-align: left;
+	transition: border-color .18s, transform .18s, box-shadow .18s;
+}
+
+.horex-pcard:hover {
+	border-color: var( --horex-geel );
+	transform: translateY( -2px );
+	box-shadow: var( --horex-shadow );
+}
+
+.horex-pcard:focus-visible {
+	outline: 2px solid var( --horex-ink );
+	outline-offset: 2px;
+}
+
+.horex-pcard.is-on {
+	border-color: var( --horex-geel );
+	box-shadow: 0 0 0 3px var( --horex-geel-zacht );
+}
+
+.horex-shot {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	overflow: hidden;
+	background: #F3EEE2;
+}
+
+.horex-shot svg,
+.horex-shot img {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.horex-shot img {
+	object-fit: cover;
+	transition: transform .5s cubic-bezier( .16, 1, .3, 1 );
+}
+
+.horex-pcard:hover .horex-shot img {
+	transform: scale( 1.04 );
+}
+
+.horex-tick {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 2;
+	display: none;
+	place-items: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: var( --horex-geel );
+	color: var( --horex-ink );
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.horex-pcard.is-on .horex-tick {
+	display: grid;
+}
+
+.horex-pmeta {
+	display: block;
+	padding: 11px 12px 13px;
+}
+
+.horex-pmeta__t {
+	display: block;
+	font-size: 14.5px;
+	font-weight: 600;
+	line-height: 1.25;
+	letter-spacing: -.01em;
+}
+
+.horex-pmeta__d {
+	display: block;
+	margin-top: 3px;
+	color: var( --horex-muted );
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+/* Placeholder for steps still to come ------------------------------------ */
+
+.horex-todo {
+	margin-top: 28px;
+	padding: 22px;
+	border: 1.5px dashed var( --horex-line );
+	border-radius: var( --horex-radius );
+	background: var( --horex-paper );
+}
+
+.horex-todo__label {
+	display: block;
+	margin-bottom: 6px;
+	color: var( --horex-muted );
+	font-size: 11.5px;
+	font-weight: 600;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+}
+
+.horex-todo__steps {
+	margin: 14px 0 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.horex-todo__steps li {
+	padding: 4px 11px;
+	border-radius: 20px;
+	background: #F3EEE2;
+	color: var( --horex-muted );
+	font-size: 12.5px;
+}
+
+.horex-todo__steps li.is-now {
+	background: var( --horex-geel );
+	color: var( --horex-ink );
+	font-weight: 600;
+}
+
+/* Buttons ---------------------------------------------------------------- */
+
+.horex-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 30px;
+}
+
+.horex-btn {
+	border: 1.5px solid transparent;
+	border-radius: 11px;
+	padding: 14px 24px;
+	cursor: pointer;
+	font-family: var( --horex-body );
+	font-size: 15.5px;
+	font-weight: 600;
+	transition: background .16s, transform .16s, border-color .16s;
+}
+
+.horex-btn--primary {
+	background: var( --horex-geel );
+	color: var( --horex-ink );
+}
+
+.horex-btn--primary:hover {
+	background: #F5B417;
+}
+
+.horex-btn--ghost {
+	border-color: var( --horex-line );
+	background: transparent;
+	color: var( --horex-ink );
+}
+
+.horex-btn--ghost:hover {
+	border-color: var( --horex-ink );
+}
+
+.horex-btn:active {
+	transform: scale( .985 );
+}
+
+.horex-btn:focus-visible {
+	outline: 2px solid var( --horex-ink );
+	outline-offset: 2px;
+}
+
+.horex-btn[disabled] {
+	opacity: .4;
+	cursor: not-allowed;
+}
+
+/* Modal ------------------------------------------------------------------ */
+
+.horex-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgba( 30, 30, 30, .55 );
+}
+
+/* Without this, display:grid beats the hidden attribute and the overlay never
+   goes away. */
+.horex-modal[hidden] {
+	display: none;
+}

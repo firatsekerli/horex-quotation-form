@@ -22,6 +22,7 @@ final class Horex {
 $GLOBALS['horex_test_options'] = array();
 $GLOBALS['horex_test_meta']    = array();
 $GLOBALS['horex_test_posts']   = array();
+$GLOBALS['horex_test_shortcodes'] = array();
 
 function __( $t, $d = null ) { return $t; }
 function _e( $t, $d = null ) { echo $t; }
@@ -91,6 +92,24 @@ function wp_editor( $content, $id, $settings = array() ) {
 	printf( '<textarea name="%s">%s</textarea>', esc_attr( $settings['textarea_name'] ), esc_textarea( $content ) );
 }
 
+function admin_url( $path = '' ) { return 'https://example.test/wp-admin/' . ltrim( $path, '/' ); }
+function wp_create_nonce( $action ) { return 'nonce-' . $action; }
+function add_shortcode( $tag, $callback ) { $GLOBALS['horex_test_shortcodes'][ $tag ] = $callback; return true; }
+function shortcode_atts( $pairs, $atts, $tag = '' ) {
+	$out = array();
+	foreach ( $pairs as $name => $default ) {
+		$out[ $name ] = array_key_exists( $name, (array) $atts ) ? $atts[ $name ] : $default;
+	}
+	return $out;
+}
+function wp_register_style() { return true; }
+function wp_register_script() { return true; }
+function wp_enqueue_style() { return true; }
+function wp_enqueue_script() { return true; }
+function wp_localize_script() { return true; }
+function wp_enqueue_media() { return true; }
+function esc_url_raw_stub() {}
+
 function remove_action( $hook, $callback, $priority = 10 ) { return true; }
 function add_action( $hook, $callback, $priority = 10, $args = 1 ) { return true; }
 function add_filter( $hook, $callback, $priority = 10, $args = 1 ) { return true; }
@@ -120,6 +139,8 @@ require_once dirname( __DIR__ ) . '/includes/settings-render.php';
 require_once dirname( __DIR__ ) . '/includes/defaults.php';
 require_once dirname( __DIR__ ) . '/includes/submission-schema.php';
 require_once dirname( __DIR__ ) . '/includes/submission.php';
+require_once dirname( __DIR__ ) . '/includes/illustrations.php';
+require_once dirname( __DIR__ ) . '/includes/frontend.php';
 
 $GLOBALS['horex_test_failures'] = 0;
 

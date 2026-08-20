@@ -28,6 +28,20 @@ en CSS. De plugin werkt op elke standaard WordPress-installatie.
 3. Ga naar **Hor-Ex → Instellingen** en vul de catalogus aan.
 4. Plaats de shortcode `[horex_offerte]` op de offertepagina.
 
+De shortcode rendert alleen de configurator zelf. Header en footer komen van het thema of
+de pagebuilder, dus hij past zonder aanpassing in een kolom in Breakdance.
+
+| Attribuut | Standaard | |
+|---|---|---|
+| `sticky` | `ja` | Laat de balk met de voortgang meelopen bij het scrollen |
+| `offset` | `0` | Aantal pixels dat vrijgehouden wordt voor een meelopende site-header |
+
+```
+[horex_offerte]
+[horex_offerte sticky="nee"]
+[horex_offerte offset="80"]
+```
+
 ## Aanvragen
 
 Een aanvraag wordt opgeslagen als één post meta-array bij het `horex_aanvraag` posttype.
@@ -82,12 +96,15 @@ includes/
   defaults.php               de startcatalogus, eenmalig ingeladen
   submission-schema.php      wat een aanvraag bevat
   submission.php             opslag, metaboxen, adminkolommen, referentienummers
+  frontend.php               shortcode, assets, catalogus richting JavaScript
+  illustrations.php          de meegeleverde tekeningen en meetdiagrammen
 tests/
   bootstrap.php              WordPress-stubs voor de tests
   test-sanitize.php          controle op de sanitizer
   test-submission.php        controle op opslaan van aanvragen
   test-render.php            controle op de veldrenderers en repeater-templates
   test-catalogue.php         controle op de seeder en de catalogusmigratie
+  test-frontend.php          controle op de catalogus richting JavaScript en de stapvolgorde
   run.php                    draait alle suites
 bin/
   lib-po.php                 gedeelde .po/.mo-functies
@@ -100,6 +117,20 @@ templates/                   shortcode-markup
 assets/js, assets/css        admin- en front-end assets
 ```
 
+## De configurator
+
+De stapvolgorde wordt nergens vastgelegd, maar afgeleid van het gekozen product:
+
+| Type | Stappen |
+|---|---|
+| `horren` | Product → Uitvoering → Kleur (frame) → Gaas → Maten |
+| `gordijn` | Product → Kleur (stof) → Maten |
+| `zonwering` | Product → Kleur (doek) → Maten |
+
+Een stap waarvan de lijst leeg is, verdwijnt in plaats van dood te lopen. Op het eerste
+scherm staat alleen "Stap 1", zonder totaal — dat is pas bekend zodra er een product
+gekozen is, en "van 5" dat omslaat naar "van 3" leest als een storing.
+
 ## Taal
 
 De beheerkant volgt de taal van de ingelogde gebruiker (**Gebruikers → Profiel → Taal**).
@@ -107,9 +138,11 @@ De brontekst in de code is Engels; Nederlands wordt meegeleverd als vertaling in
 `languages/horex-nl_NL.mo`. Een beheerder die Engels instelt krijgt dus een Engelse
 beheerkant, terwijl de site zelf Nederlands blijft.
 
-Wat de klant ziet, verandert daar niet door. Productnamen, meetstappen, de
-waarschuwingstekst en de e-mailteksten zijn **opgeslagen inhoud**, geen interface — die
-blijven Nederlands, ongeacht welke taal een beheerder kiest.
+Wat de klant ziet, verandert daar niet door. De configurator is **altijd Nederlands**,
+ongeacht de taal van de site of van de ingelogde beheerder. Productnamen, meetstappen, de
+waarschuwingstekst en de e-mailteksten zijn opgeslagen inhoud, en de teksten in de
+configurator zelf staan als Nederlandse tekst in de code in plaats van als vertaalbare
+tekst. De brief is daar stellig over: de app is Nederlands.
 
 Vertaling aanpassen of een taal toevoegen:
 
@@ -142,7 +175,7 @@ De build loopt in kleine, afzonderlijk testbare fases:
 - [x] **1 — Catalogus:** repeatercomponent + producten, framekleuren, gaas, stof, doek,
   meethulp, en de seeder met de bevestigde gegevens
 - [x] **2 — Aanvraagvelden:** opslag en adminweergave van aanvragen + adminkolommen
-- [ ] **3 — Front-end shell:** shortcode, config doorgeven, productstap
+- [x] **3 — Front-end shell:** shortcode, config doorgeven, productstap
 - [ ] **4 — Stap-engine:** auto-advance, transities, terugknop, voortgangsbalk
 - [ ] **5 — Matenscherm:** live preview, meethulp-popup, waarschuwing buiten bereik
 - [ ] **6 — Overzicht:** samenvatting + "Nog iets toevoegen" met overname van kleur en gaas

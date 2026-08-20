@@ -188,7 +188,7 @@ msgstr ""
 #: includes/settings-schema.php:137
 #: includes/settings-schema.php:174
 #: includes/settings-schema.php:221
-#: includes/settings-schema.php:389
+#: includes/settings-schema.php:396
 #: includes/submission-schema.php:56
 #: includes/submission.php:318
 msgid "Name"
@@ -206,7 +206,7 @@ msgstr ""
 #: includes/settings-schema.php:148
 #: includes/settings-schema.php:179
 #: includes/settings-schema.php:226
-#: includes/settings-schema.php:394
+#: includes/settings-schema.php:401
 msgid "Key"
 msgstr ""
 
@@ -285,7 +285,7 @@ msgstr ""
 
 #: includes/settings-schema.php:170
 #: includes/settings-schema.php:184
-#: includes/settings-schema.php:404
+#: includes/settings-schema.php:411
 #: includes/submission-schema.php:129
 msgid "Colour"
 msgstr ""
@@ -303,7 +303,7 @@ msgid "Draw a subtle texture over the colour"
 msgstr ""
 
 #: includes/settings-schema.php:201
-#: includes/settings-schema.php:399
+#: includes/settings-schema.php:406
 msgid "Swatch image"
 msgstr ""
 
@@ -333,7 +333,7 @@ msgid "Mesh type"
 msgstr ""
 
 #: includes/settings-schema.php:231
-#: includes/settings-schema.php:409
+#: includes/settings-schema.php:416
 msgid "Description"
 msgstr ""
 
@@ -492,7 +492,7 @@ msgid "Branding"
 msgstr ""
 
 #: includes/settings-schema.php:361
-msgid "The logo with the white wordmark sits on the configurator's dark header."
+msgid "The bar above the configurator, and the two typefaces it is designed in."
 msgstr ""
 
 #: includes/settings-schema.php:365
@@ -500,47 +500,59 @@ msgid "Logo (light)"
 msgstr ""
 
 #: includes/settings-schema.php:366
-msgid "Optional. Without a logo the header shows the name Hor-Ex as text."
+msgid "Optional, shown on the dark bar above the configurator. Leave it empty when the site header already carries the logo."
 msgstr ""
 
-#: includes/settings-schema.php:400
+#: includes/settings-schema.php:370
+msgid "Fonts"
+msgstr ""
+
+#: includes/settings-schema.php:371
+msgid "Load Playfair Display and DM Sans from Google Fonts"
+msgstr ""
+
+#: includes/settings-schema.php:373
+msgid "The configurator is designed in these two typefaces. Turn this off if the theme already loads them, or if you would rather self-host them — loading them from Google sends visitor IP addresses to Google, which needs consent under the GDPR."
+msgstr ""
+
+#: includes/settings-schema.php:407
 msgid "A crop of the fabric. Without an image the hex colour is used."
 msgstr ""
 
-#: includes/settings-schema.php:405
+#: includes/settings-schema.php:412
 msgid "Fallback for when there is no swatch."
 msgstr ""
 
-#: includes/settings-schema.php:424
+#: includes/settings-schema.php:431
 msgid "Title"
 msgstr ""
 
-#: includes/settings-schema.php:429
+#: includes/settings-schema.php:436
 msgid "Diagram"
 msgstr ""
 
-#: includes/settings-schema.php:430
+#: includes/settings-schema.php:437
 msgid "Drawing showing which measurement is meant."
 msgstr ""
 
-#: includes/settings-schema.php:434
+#: includes/settings-schema.php:441
 msgid "Steps"
 msgstr ""
 
-#: includes/settings-schema.php:435
+#: includes/settings-schema.php:442
 msgid "Add step"
 msgstr ""
 
-#: includes/settings-schema.php:437
-#: includes/settings-schema.php:441
+#: includes/settings-schema.php:444
+#: includes/settings-schema.php:448
 msgid "Step"
 msgstr ""
 
-#: includes/settings-schema.php:448
+#: includes/settings-schema.php:455
 msgid "Video"
 msgstr ""
 
-#: includes/settings-schema.php:449
+#: includes/settings-schema.php:456
 msgid "Optional. A short clip of someone actually measuring works better than text."
 msgstr ""
 

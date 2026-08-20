@@ -358,12 +358,19 @@ function horex_settings_schema() {
 		),
 		'branding'     => array(
 			'label'       => __( 'Branding', 'horex' ),
-			'description' => __( 'The logo with the white wordmark sits on the configurator\'s dark header.', 'horex' ),
+			'description' => __( 'The bar above the configurator, and the two typefaces it is designed in.', 'horex' ),
 			'fields'      => array(
-				'logo_licht' => array(
+				'logo_licht'   => array(
 					'type'        => 'image',
 					'label'       => __( 'Logo (light)', 'horex' ),
-					'description' => __( 'Optional. Without a logo the header shows the name Hor-Ex as text.', 'horex' ),
+					'description' => __( 'Optional, shown on the dark bar above the configurator. Leave it empty when the site header already carries the logo.', 'horex' ),
+				),
+				'google_fonts' => array(
+					'type'        => 'checkbox',
+					'label'       => __( 'Fonts', 'horex' ),
+					'toggle'      => __( 'Load Playfair Display and DM Sans from Google Fonts', 'horex' ),
+					'default'     => true,
+					'description' => __( 'The configurator is designed in these two typefaces. Turn this off if the theme already loads them, or if you would rather self-host them — loading them from Google sends visitor IP addresses to Google, which needs consent under the GDPR.', 'horex' ),
 				),
 			),
 		),
