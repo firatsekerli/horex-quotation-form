@@ -107,6 +107,9 @@ function wp_register_script() { return true; }
 function wp_enqueue_style() { return true; }
 function wp_enqueue_script() { return true; }
 function wp_localize_script() { return true; }
+function wp_style_is( $handle, $status = 'enqueued' ) { return true; }
+function wp_script_is( $handle, $status = 'enqueued' ) { return true; }
+function wp_json_encode( $data, $flags = 0, $depth = 512 ) { return json_encode( $data, $flags, $depth ); }
 function wp_enqueue_media() { return true; }
 function esc_url_raw_stub() {}
 

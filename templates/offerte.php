@@ -45,4 +45,8 @@ $horex_logo = horex_attachment_url( (int) horex_get_setting( 'logo_licht' ), 'me
 	</div>
 
 	<div class="horex-modal" data-horex-modal hidden></div>
+
+	<script type="application/json" data-horex-config>
+		<?php echo horex_config_json(); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON, tag-escaped. ?>
+	</script>
 </div>

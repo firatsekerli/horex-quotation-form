@@ -74,10 +74,14 @@ function horex_render_shortcode( $atts = array() ) {
 		HOREX_SHORTCODE
 	);
 
+	// A page builder can render content outside the normal template flow, where
+	// wp_enqueue_scripts may already have run — or not have run at all.
+	if ( ! wp_style_is( 'horex-offerte', 'registered' ) ) {
+		horex_register_frontend_assets();
+	}
+
 	wp_enqueue_style( 'horex-offerte' );
 	wp_enqueue_script( 'horex-offerte' );
-
-	wp_localize_script( 'horex-offerte', 'horexConfig', horex_frontend_config() );
 
 	$sticky = in_array( strtolower( $atts['sticky'] ), array( 'ja', 'yes', 'true', '1' ), true );
 	$offset = absint( $atts['offset'] );
@@ -86,6 +90,23 @@ function horex_render_shortcode( $atts = array() ) {
 	require HOREX_DIR . 'templates/offerte.php';
 
 	return (string) ob_get_clean();
+}
+
+/**
+ * The catalogue, encoded for the JSON block inside the shortcode markup.
+ *
+ * Carried in the markup rather than through wp_localize_script: that emits a separate
+ * inline script, and any plugin that defers, combines or reorders scripts can land it
+ * after the file that reads it, leaving the configurator with no catalogue at all.
+ * Markup cannot be reordered away from the element it belongs to.
+ *
+ * JSON_HEX_TAG escapes < and >, so an SVG in the payload can never close the script
+ * tag early.
+ *
+ * @return string
+ */
+function horex_config_json() {
+	return (string) wp_json_encode( horex_frontend_config(), JSON_HEX_TAG | JSON_HEX_AMP );
 }
 
 /**

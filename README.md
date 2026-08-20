@@ -105,6 +105,7 @@ tests/
   test-render.php            controle op de veldrenderers en repeater-templates
   test-catalogue.php         controle op de seeder en de catalogusmigratie
   test-frontend.php          controle op de catalogus richting JavaScript en de stapvolgorde
+  browser/                   de configurator in een echte browser doorlopen
   run.php                    draait alle suites
 bin/
   lib-po.php                 gedeelde .po/.mo-functies

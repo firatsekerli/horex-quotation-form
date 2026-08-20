@@ -151,6 +151,25 @@ check( 'shortcode renders the stage', substr_count( $html, 'data-horex-stage' ),
 check( 'shortcode renders the progress bar', substr_count( $html, 'data-horex-progress' ), 1 );
 check( 'shortcode sticks by default', substr_count( $html, 'horex--sticky' ), 1 );
 check( 'shortcode warns without JavaScript', substr_count( $html, '<noscript>' ), 1 );
+
+/*
+ * The catalogue must travel inside the markup. Handing it over through a separate
+ * inline script lets any plugin that defers or combines scripts land it after the
+ * file that reads it, and the configurator renders blank steps with no error.
+ */
+check( 'the catalogue is embedded in the markup', substr_count( $html, 'data-horex-config' ), 1 );
+
+preg_match( '#<script type="application/json" data-horex-config>(.*?)</script>#s', $html, $embedded );
+check( 'the embedded block is present', isset( $embedded[1] ), true );
+
+$payload = json_decode( trim( $embedded[1] ), true );
+check( 'the embedded block is valid JSON', is_array( $payload ), true );
+check( 'it carries the products', count( $payload['products'] ), 5 );
+check( 'it carries the drawings', count( $payload['tekeningen'] ), 5 );
+
+// JSON_HEX_TAG: an SVG in the payload must not be able to close the script tag.
+check( 'no raw angle brackets can close the tag early', false !== strpos( $embedded[1], '<' ), false );
+check( 'the drawings survive the escaping', false !== strpos( $payload['tekeningen']['plisse-hor'], '<svg' ), true );
 check( 'balanced div tags', substr_count( $html, '<div' ), substr_count( $html, '</div>' ) );
 
 $loose = horex_render_shortcode( array( 'sticky' => 'nee', 'offset' => '80' ) );

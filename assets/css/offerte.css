@@ -406,3 +406,22 @@
 .horex-modal[hidden] {
 	display: none;
 }
+
+/* Fallbacks -------------------------------------------------------------- */
+
+.horex-alert {
+	display: grid;
+	gap: 6px;
+	margin-top: 28px;
+	padding: 18px 20px;
+	border-left: 3px solid var( --horex-geel );
+	border-radius: 0 var( --horex-radius ) var( --horex-radius ) 0;
+	background: var( --horex-geel-zacht );
+	font-size: 15px;
+	line-height: 1.55;
+}
+
+.horex-alert span {
+	color: var( --horex-muted );
+	font-size: 14px;
+}

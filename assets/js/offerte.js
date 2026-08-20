@@ -7,7 +7,31 @@
 ( function () {
 	'use strict';
 
-	var config = window.horexConfig || {};
+	/**
+	 * Read the catalogue belonging to one configurator.
+	 *
+	 * The payload travels inside the element's own markup, so it cannot be separated
+	 * from it by a plugin that defers or combines scripts.
+	 *
+	 * @param {HTMLElement} root The [data-horex] element.
+	 * @return {Object|null} Catalogue, or null when it cannot be read.
+	 */
+	function readConfig( root ) {
+		var node = root.querySelector( '[data-horex-config]' );
+
+		if ( node ) {
+			try {
+				return JSON.parse( node.textContent );
+			} catch ( error ) {
+				window.console && window.console.error( 'Hor-Ex: de configuratie kon niet gelezen worden.', error );
+
+				return null;
+			}
+		}
+
+		// Older markup passed the catalogue through wp_localize_script.
+		return window.horexConfig || null;
+	}
 
 	/**
 	 * Escape a value for insertion into markup.
@@ -47,6 +71,17 @@
 		var progress = root.querySelector( '[data-horex-progress]' );
 
 		if ( ! stage ) {
+			return;
+		}
+
+		var config = readConfig( root );
+
+		if ( ! config ) {
+			stage.innerHTML = '<div class="horex-screen"><div class="horex-alert">'
+				+ '<strong>De configurator kon niet geladen worden.</strong>'
+				+ '<span>Ververs de pagina, of bel ons gerust — dan nemen we uw maten telefonisch door.</span>'
+				+ '</div></div>';
+
 			return;
 		}
 
@@ -162,7 +197,21 @@
 		 * @return {string} Markup.
 		 */
 		function viewProduct() {
-			var cards = ( config.products || [] ).map( function ( product ) {
+			var products = config.products || [];
+
+			if ( ! products.length ) {
+				window.console && window.console.warn( 'Hor-Ex: er zijn geen producten ingesteld.' );
+
+				return '<div class="horex-screen">'
+					+ back( 'intro' )
+					+ '<h2 class="horex-title">Wat wilt u laten maken?</h2>'
+					+ '<div class="horex-alert">'
+					+ '<strong>Er staan nog geen producten klaar.</strong>'
+					+ '<span>Neem gerust contact met ons op — dan nemen we uw wensen persoonlijk door.</span>'
+					+ '</div></div>';
+			}
+
+			var cards = products.map( function ( product ) {
 				var drawing = ( config.tekeningen || {} )[ product.illustratie ] || '';
 				var photo = product.foto
 					? '<img src="' + esc( product.foto ) + '" alt="' + esc( product.naam ) + '" loading="lazy" onerror="this.remove()" />'
