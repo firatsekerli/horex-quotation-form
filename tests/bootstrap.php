@@ -23,6 +23,10 @@ $GLOBALS['horex_test_options'] = array();
 $GLOBALS['horex_test_meta']    = array();
 $GLOBALS['horex_test_posts']   = array();
 $GLOBALS['horex_test_shortcodes'] = array();
+$GLOBALS['horex_test_transients'] = array();
+$GLOBALS['horex_test_mail']       = array();
+
+defined( 'MINUTE_IN_SECONDS' ) || define( 'MINUTE_IN_SECONDS', 60 );
 
 function __( $t, $d = null ) { return $t; }
 function _e( $t, $d = null ) { echo $t; }
@@ -116,6 +120,16 @@ function esc_url_raw_stub() {}
 function remove_action( $hook, $callback, $priority = 10 ) { return true; }
 function add_action( $hook, $callback, $priority = 10, $args = 1 ) { return true; }
 function add_filter( $hook, $callback, $priority = 10, $args = 1 ) { return true; }
+function wpautop( $v ) { return '<p>' . (string) $v . '</p>'; }
+function get_the_date( $format, $post_id = 0 ) { return gmdate( $format ); }
+function get_edit_post_link( $post_id, $context = '' ) { return 'https://example.test/wp-admin/post.php?post=' . (int) $post_id; }
+function get_transient( $key ) { return isset( $GLOBALS['horex_test_transients'][ $key ] ) ? $GLOBALS['horex_test_transients'][ $key ] : false; }
+function set_transient( $key, $value, $ttl = 0 ) { $GLOBALS['horex_test_transients'][ $key ] = $value; return true; }
+function wp_unslash( $value ) { return is_array( $value ) ? array_map( 'wp_unslash', $value ) : stripslashes( (string) $value ); }
+function wp_mail( $to, $subject, $body, $headers = array() ) {
+	$GLOBALS['horex_test_mail'][] = compact( 'to', 'subject', 'body', 'headers' );
+	return true;
+}
 
 function get_posts( $args ) {
 	$wanted  = isset( $args['meta_value'] ) ? $args['meta_value'] : null;
@@ -144,6 +158,8 @@ require_once dirname( __DIR__ ) . '/includes/submission-schema.php';
 require_once dirname( __DIR__ ) . '/includes/submission.php';
 require_once dirname( __DIR__ ) . '/includes/illustrations.php';
 require_once dirname( __DIR__ ) . '/includes/frontend.php';
+require_once dirname( __DIR__ ) . '/includes/ajax.php';
+require_once dirname( __DIR__ ) . '/includes/email.php';
 
 $GLOBALS['horex_test_failures'] = 0;
 

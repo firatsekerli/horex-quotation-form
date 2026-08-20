@@ -924,3 +924,54 @@
 		margin-left: 76px;
 	}
 }
+
+/* Contact ---------------------------------------------------------------- */
+
+.horex-form {
+	max-width: 470px;
+	margin-top: 28px;
+}
+
+.horex-form textarea.horex-input {
+	resize: vertical;
+}
+
+/* Never shown to a person; only a bot fills it in. */
+.horex-trap {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* Confirmation ----------------------------------------------------------- */
+
+.horex-done {
+	padding: 62px 0;
+	text-align: center;
+}
+
+.horex-done .horex-sub {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.horex-done__mark {
+	display: grid;
+	place-items: center;
+	width: 60px;
+	height: 60px;
+	margin: 0 auto 24px;
+	border-radius: 50%;
+	background: var( --horex-geel );
+	color: var( --horex-ink );
+	font-size: 27px;
+	font-weight: 700;
+}
+
+.horex-reference {
+	margin: 20px 0 0;
+	color: var( --horex-muted );
+	font-size: 14px;
+}

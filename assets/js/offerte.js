@@ -101,6 +101,8 @@
 		var carried = {};
 		var screen = 'intro';
 		var sending = false;
+		var reference = '';
+		var trap = '';
 		var customer = { naam: '', email: '', telefoon: '', adres: '', postcode: '', plaats: '', opmerkingen: '' };
 
 		/**
@@ -483,7 +485,7 @@
 
 			var variant = bySlug( product.uitvoeringen, item.uitvoering );
 			var colour = bySlug( colours( product ), item.kleur );
-			var gaas = bySlug( config.gaas, item.gaas );
+			var gaas = 'horren' === product.type ? bySlug( config.gaas, item.gaas ) : null;
 
 			return [
 				variant ? variant.naam : product.naam,
@@ -526,6 +528,144 @@
 				+ '</div>'
 				+ '<div class="horex-note">Uw vorige keuzes staan alvast klaar bij het volgende product van hetzelfde type. Aanpassen kan altijd.</div>'
 				+ '</div>';
+		}
+
+		/**
+		 * One contact field.
+		 *
+		 * @param {string} name        Field key.
+		 * @param {string} label       Visible label.
+		 * @param {string} type        Input type.
+		 * @param {string} hint        Optional hint.
+		 * @param {string} placeholder Optional placeholder.
+		 * @return {string} Markup.
+		 */
+		function contactField( name, label, type, hint, placeholder ) {
+			return '<div class="horex-field">'
+				+ '<label class="horex-label" for="horex-' + name + '">' + esc( label ) + '</label>'
+				+ '<input class="horex-input" id="horex-' + name + '" type="' + type + '" data-horex-klant="' + name + '"'
+				+ ' value="' + esc( customer[ name ] ) + '"'
+				+ ( placeholder ? ' placeholder="' + esc( placeholder ) + '"' : '' )
+				+ ' autocomplete="' + ( 'email' === name ? 'email' : ( 'telefoon' === name ? 'tel' : 'on' ) ) + '" />'
+				+ ( hint ? '<p class="horex-hint">' + esc( hint ) + '</p>' : '' )
+				+ '</div>';
+		}
+
+		/**
+		 * Where to send the quote.
+		 *
+		 * @return {string} Markup.
+		 */
+		function viewGegevens() {
+			return '<div class="horex-screen">'
+				+ back( 'overzicht' )
+				+ '<p class="horex-eyebrow">Bijna klaar</p>'
+				+ '<h2 class="horex-title">Waar mogen we de prijsopgave naartoe sturen?</h2>'
+				+ '<div class="horex-form">'
+				+ '<div class="horex-row">'
+				+ contactField( 'naam', 'Naam', 'text', '', '' )
+				+ contactField( 'telefoon', 'Telefoon', 'tel', '', '' )
+				+ '</div>'
+				+ contactField( 'email', 'E-mailadres', 'email', '', '' )
+				+ contactField( 'adres', 'Adres', 'text', '', 'Straat en huisnummer' )
+				+ '<div class="horex-row">'
+				+ contactField( 'postcode', 'Postcode', 'text', '', '' )
+				+ contactField( 'plaats', 'Plaats', 'text', '', '' )
+				+ '</div>'
+				+ '<p class="horex-hint">Uw adres hebben we nodig om te bepalen of we bij u kunnen inmeten.</p>'
+				+ '<div class="horex-field" style="margin-top:19px">'
+				+ '<label class="horex-label" for="horex-opmerkingen">Iets wat we moeten weten?</label>'
+				+ '<textarea class="horex-input" id="horex-opmerkingen" rows="3" data-horex-klant="opmerkingen" placeholder="Optioneel">' + esc( customer.opmerkingen ) + '</textarea>'
+				+ '</div>'
+				// Bots fill everything in; a customer never sees this.
+				+ '<div class="horex-trap" aria-hidden="true">'
+				+ '<label for="horex-website">Website</label>'
+				+ '<input id="horex-website" type="text" data-horex-trap tabindex="-1" autocomplete="off" />'
+				+ '</div>'
+				+ '</div>'
+				+ '<div data-horex-error></div>'
+				+ '<div class="horex-actions">'
+				+ '<button type="button" class="horex-btn horex-btn--primary" data-horex-send>Aanvraag versturen</button>'
+				+ '</div>'
+				+ '</div>';
+		}
+
+		/**
+		 * The confirmation.
+		 *
+		 * @return {string} Markup.
+		 */
+		function viewKlaar() {
+			var count = items.length;
+
+			return '<div class="horex-screen horex-done">'
+				+ '<div class="horex-done__mark">&#10003;</div>'
+				+ '<h2 class="horex-title">Aanvraag verstuurd</h2>'
+				+ '<p class="horex-sub">We hebben uw ' + count + ( 1 === count ? ' maat' : ' maten' )
+				+ ' ontvangen en nemen binnen één werkdag contact op om een inmeetafspraak te plannen. '
+				+ 'Een kopie staat in uw mailbox.</p>'
+				+ ( reference ? '<p class="horex-reference">Uw referentie: <strong>' + esc( reference ) + '</strong></p>' : '' )
+				+ '</div>';
+		}
+
+		/**
+		 * Send the request.
+		 */
+		function send() {
+			if ( sending ) {
+				return;
+			}
+
+			var button = root.querySelector( '[data-horex-send]' );
+			var errorBox = root.querySelector( '[data-horex-error]' );
+
+			var problem = '';
+
+			if ( ! customer.naam.trim() ) {
+				problem = 'Vul uw naam in.';
+			} else if ( ! /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test( customer.email.trim() ) ) {
+				problem = 'Vul een geldig e-mailadres in, dan kunnen we de prijsopgave versturen.';
+			}
+
+			if ( problem ) {
+				errorBox.innerHTML = '<div class="horex-warn">' + esc( problem ) + '</div>';
+
+				return;
+			}
+
+			sending = true;
+			button.disabled = true;
+			button.textContent = 'Versturen…';
+			errorBox.innerHTML = '';
+
+			var body = new window.FormData();
+
+			body.append( 'action', config.action );
+			body.append( 'nonce', config.nonce );
+			body.append( 'website', trap );
+			body.append( 'aanvraag', JSON.stringify( { klant: customer, items: items } ) );
+
+			window.fetch( config.ajaxUrl, { method: 'POST', body: body, credentials: 'same-origin' } )
+				.then( function ( response ) {
+					return response.json();
+				} )
+				.then( function ( result ) {
+					if ( ! result || ! result.success ) {
+						throw new Error( result && result.data && result.data.message
+							? result.data.message
+							: 'Er ging iets mis bij het versturen.' );
+					}
+
+					reference = result.data && result.data.referentie ? result.data.referentie : '';
+					sending = false;
+					go( 'klaar' );
+				} )
+				.catch( function ( error ) {
+					sending = false;
+					button.disabled = false;
+					button.textContent = 'Aanvraag versturen';
+					errorBox.innerHTML = '<div class="horex-warn">' + esc( error.message ) + '</div>';
+				} );
 		}
 
 		/**
@@ -621,7 +761,9 @@
 			kleur: viewKleur,
 			gaas: viewGaas,
 			maat: viewMaat,
-			overzicht: viewOverzicht
+			overzicht: viewOverzicht,
+			gegevens: viewGegevens,
+			klaar: viewKlaar
 		};
 
 		/**
@@ -643,7 +785,7 @@
 			if ( progress ) {
 				progress.style.width = inFlow
 					? ( index / Math.max( order.length, 4 ) * 100 + 12 ) + '%'
-					: ( 'intro' === screen ? '0%' : '88%' );
+					: ( { intro: '0%', overzicht: '88%', gegevens: '96%', klaar: '100%' }[ screen ] || '88%' );
 			}
 
 			stage.innerHTML = views[ screen ] ? views[ screen ]() : viewIntro();
@@ -794,12 +936,22 @@
 				return;
 			}
 
+			if ( event.target.closest( '[data-horex-send]' ) ) {
+				send();
+
+				return;
+			}
+
 			if ( event.target.closest( '[data-horex-add]' ) ) {
+				var chosen = current();
+
 				items.push( {
 					product: draft.product,
 					uitvoering: draft.uitvoering,
 					kleur: draft.kleur,
-					gaas: draft.gaas,
+					// The mesh carries over between insect screens, but must not
+					// follow onto a curtain or an awning, which have no mesh at all.
+					gaas: 'horren' === chosen.type ? draft.gaas : null,
 					ruimte: draft.ruimte.trim(),
 					breedte: mm( draft.breedte ),
 					hoogte: mm( draft.hoogte )
@@ -808,8 +960,8 @@
 				// Almost everyone picks the same finish throughout the house.
 				carried = {
 					kleur: draft.kleur,
-					gaas: draft.gaas,
-					kleurType: current().kleurType
+					gaas: 'horren' === chosen.type ? draft.gaas : carried.gaas,
+					kleurType: chosen.kleurType
 				};
 
 				go( 'overzicht' );
@@ -819,6 +971,20 @@
 		// Measurement fields update the preview only — never the whole screen.
 		root.addEventListener( 'input', function ( event ) {
 			if ( ! ( event.target instanceof Element ) ) {
+				return;
+			}
+
+			var contact = event.target.closest( '[data-horex-klant]' );
+
+			if ( contact ) {
+				customer[ contact.getAttribute( 'data-horex-klant' ) ] = contact.value;
+
+				return;
+			}
+
+			if ( event.target.closest( '[data-horex-trap]' ) ) {
+				trap = event.target.value;
+
 				return;
 			}
 

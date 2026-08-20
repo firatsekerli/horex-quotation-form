@@ -66,6 +66,7 @@ final class Horex {
 		add_action( 'pre_get_posts', 'horex_submission_sort' );
 
 		horex_register_shortcode();
+		horex_register_ajax();
 		add_action( 'admin_post_horex_save_settings', 'horex_handle_settings_save' );
 	}
 
@@ -82,6 +83,8 @@ final class Horex {
 		require_once HOREX_DIR . 'includes/submission.php';
 		require_once HOREX_DIR . 'includes/illustrations.php';
 		require_once HOREX_DIR . 'includes/frontend.php';
+		require_once HOREX_DIR . 'includes/ajax.php';
+		require_once HOREX_DIR . 'includes/email.php';
 	}
 
 	/**

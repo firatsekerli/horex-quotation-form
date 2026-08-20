@@ -97,6 +97,8 @@ includes/
   submission-schema.php      wat een aanvraag bevat
   submission.php             opslag, metaboxen, adminkolommen, referentienummers
   frontend.php               shortcode, assets, catalogus richting JavaScript
+  ajax.php                   horex_submit: nonce, honeypot, sleutels omzetten
+  email.php                  meettabel voor Hor-Ex en de kopie voor de klant
   illustrations.php          de meegeleverde tekeningen en meetdiagrammen
 tests/
   bootstrap.php              WordPress-stubs voor de tests
@@ -105,6 +107,7 @@ tests/
   test-render.php            controle op de veldrenderers en repeater-templates
   test-catalogue.php         controle op de seeder en de catalogusmigratie
   test-frontend.php          controle op de catalogus richting JavaScript en de stapvolgorde
+  test-submit.php            controle op de verzendpoort en de e-mails
   browser/                   de configurator in een echte browser doorlopen
   run.php                    draait alle suites
 bin/
@@ -177,10 +180,10 @@ De build loopt in kleine, afzonderlijk testbare fases:
   meethulp, en de seeder met de bevestigde gegevens
 - [x] **2 — Aanvraagvelden:** opslag en adminweergave van aanvragen + adminkolommen
 - [x] **3 — Front-end shell:** shortcode, config doorgeven, productstap
-- [ ] **4 — Stap-engine:** auto-advance, transities, terugknop, voortgangsbalk
-- [ ] **5 — Matenscherm:** live preview, meethulp-popup, waarschuwing buiten bereik
-- [ ] **6 — Overzicht:** samenvatting + "Nog iets toevoegen" met overname van kleur en gaas
-- [ ] **7 — Gegevens + verzenden:** AJAX, sanitize-gate, opslaan, referentienummer, e-mails
+- [x] **4 — Stap-engine:** auto-advance, transities, terugknop, voortgangsbalk
+- [x] **5 — Matenscherm:** live preview, meethulp-popup, waarschuwing buiten bereik
+- [x] **6 — Overzicht:** samenvatting + "Nog iets toevoegen" met overname van kleur en gaas
+- [x] **7 — Gegevens + verzenden:** AJAX, sanitize-gate, opslaan, referentienummer, e-mails
 - [ ] **8 — Afwerking:** foto per maat, voortgang bewaren, spambescherming
 
 ## Licentie

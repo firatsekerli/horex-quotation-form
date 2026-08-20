@@ -39,13 +39,29 @@ async function backToProduct( page ) {
 	throw new Error( 'could not walk back to the product step' );
 }
 
+/**
+ * Short wait helper, for readability in the walk-throughs.
+ *
+ * @param {Object} page Playwright page.
+ * @param {number} ms   Milliseconds.
+ */
+async function p120( page, ms ) {
+	await page.waitForTimeout( ms || 120 );
+}
+
 ( async () => {
 	const browser = await chromium.launch( { executablePath: CHROME } );
 	const page = await browser.newPage( { viewport: { width: 900, height: 900 } } );
 
 	const errors = [];
 	page.on( 'pageerror', e => errors.push( String( e ) ) );
-	page.on( 'console', m => { if ( m.type() === 'error' ) errors.push( m.text() ); } );
+	// A failed HTTP response is logged as a console error too. The refusal path below
+	// provokes one on purpose, so only script errors are collected here.
+	page.on( 'console', m => {
+		if ( m.type() === 'error' && ! /Failed to load resource/.test( m.text() ) ) {
+			errors.push( m.text() );
+		}
+	} );
 
 	await page.goto( PAGE.startsWith( '/' ) ? 'file://' + PAGE : PAGE );
 	await page.waitForTimeout( 200 );
@@ -220,15 +236,114 @@ async function backToProduct( page ) {
 	await page.click( '[data-horex-product="wave-gordijnen"]' ); await page.waitForTimeout( 420 );
 	check( 'a different palette does not carry over', await page.locator( '.horex-swatch.is-on' ).count(), 0 );
 
-	// Removing one leaves the other.
-	await backToProduct( page );
+	// A carried mesh must not follow onto a product that has no mesh step.
+	await page.click( '.horex-swatch >> nth=0' ); await page.waitForTimeout( 420 );
+	await page.fill( '#horex-ruimte', 'Woonkamer raam' );
+	await page.fill( '#horex-breedte', '1400' );
+	await page.fill( '#horex-hoogte', '2600' );
+	await page.waitForTimeout( 150 );
+	await page.click( '[data-horex-add]' ); await page.waitForTimeout( 400 );
+	check(
+		'a curtain is never described as having mesh',
+		/gaas/i.test( await page.locator( '.horex-item__d >> nth=2' ).innerText() ),
+		false
+	);
+	check( 'an insect screen still is', /gaas/i.test( await page.locator( '.horex-item__d >> nth=0' ).innerText() ), true );
+	await page.click( '[data-horex-remove="2"]' ); await page.waitForTimeout( 300 );
+	check( 'removing the curtain leaves the two screens', await page.locator( '.horex-item' ).count(), 2 );
+
+	// The product step can be reached from the summary and leads back to it.
+	await page.click( '[data-horex-again]' );
+	await page.waitForTimeout( 350 );
+	check( 'adding another starts at the product step', await page.locator( '.horex-pcard' ).count(), 5 );
 	await page.click( '.horex-back' );
 	await page.waitForTimeout( 300 );
 	check( 'back from the product step returns to the summary', await page.locator( '.horex-item' ).count(), 2 );
+
+	// Removing one leaves the other.
 	await page.click( '[data-horex-remove="0"]' );
 	await page.waitForTimeout( 300 );
 	check( 'removing one leaves the other', await page.locator( '.horex-item' ).count(), 1 );
 	check( 'the right one was removed', await page.locator( '.horex-item__t' ).first().innerText(), 'Slaapkamer voorzijde' );
+
+	/* Contact details and sending. */
+	let posted = null;
+
+	await page.route( '**/admin-ajax.php', async route => {
+		posted = route.request().postData();
+		await route.fulfill( {
+			status: 200,
+			contentType: 'application/json',
+			body: JSON.stringify( { success: true, data: { referentie: 'HX-2026-0042' } } )
+		} );
+	} );
+
+	await page.click( '[data-horex-go="gegevens"]' );
+	await page.waitForTimeout( 300 );
+	check( 'the contact screen is reached', await page.locator( '.horex-title' ).first().innerText(), 'Waar mogen we de prijsopgave naartoe sturen?' );
+	check( 'the honeypot is present', await page.locator( '[data-horex-trap]' ).count(), 1 );
+	check( 'the honeypot is off screen', await page.locator( '.horex-trap' ).evaluate( el => el.getBoundingClientRect().left < 0 ), true );
+
+	// A missing name is caught before anything is sent.
+	await page.click( '[data-horex-send]' );
+	await page.waitForTimeout( 200 );
+	check( 'a missing name is refused', await page.locator( '.horex-warn' ).innerText(), 'Vul uw naam in.' );
+	check( 'nothing was sent', posted, null );
+
+	await page.fill( '#horex-naam', 'Anna de Vries' );
+	await page.fill( '#horex-email', 'niet-een-adres' );
+	await page.click( '[data-horex-send]' );
+	await page.waitForTimeout( 200 );
+	check( 'a bad email address is refused', ( await page.locator( '.horex-warn' ).innerText() ).slice( 0, 33 ), 'Vul een geldig e-mailadres in, da' );
+	check( 'still nothing was sent', posted, null );
+
+	await page.fill( '#horex-email', 'anna@example.nl' );
+	await page.fill( '#horex-telefoon', '06 12345678' );
+	await page.fill( '#horex-adres', 'Dorpsstraat 1' );
+	await page.fill( '#horex-postcode', '5361 AA' );
+	await page.fill( '#horex-plaats', 'Grave' );
+	await page.click( '[data-horex-send]' );
+	await page.waitForTimeout( 600 );
+
+	check( 'the confirmation is shown', await page.locator( '.horex-title' ).first().innerText(), 'Aanvraag verstuurd' );
+	check( 'the reference is shown', await page.locator( '.horex-reference' ).innerText(), 'Uw referentie: HX-2026-0042' );
+	check( 'the progress bar is full', await page.locator( '[data-horex-progress]' ).evaluate( el => el.style.width ), '100%' );
+
+	// What actually went over the wire.
+	check( 'the request was sent', posted !== null, true );
+	const sentAction = /name="action"\r?\n\r?\n([^\r\n]+)/.exec( posted );
+	check( 'it names the endpoint action', sentAction && sentAction[ 1 ], 'horex_submit' );
+	const sentBody = /name="aanvraag"\r?\n\r?\n([\s\S]*?)\r?\n------/.exec( posted );
+	const parsed = JSON.parse( sentBody[ 1 ] );
+	check( 'it carries the customer', parsed.klant.naam, 'Anna de Vries' );
+	check( 'it carries the postcode', parsed.klant.postcode, '5361 AA' );
+	check( 'it carries the measurement', parsed.items[ 0 ].ruimte, 'Slaapkamer voorzijde' );
+	check( 'it sends keys, not labels', parsed.items[ 0 ].product, 'inzet-horren' );
+	check( 'measurements are numbers', parsed.items[ 0 ].breedte, 900 );
+
+	// A refusal from the server is shown, not swallowed.
+	await page.goto( PAGE.startsWith( '/' ) ? 'file://' + PAGE : PAGE );
+	await page.route( '**/admin-ajax.php', route => route.fulfill( {
+		status: 429,
+		contentType: 'application/json',
+		body: JSON.stringify( { success: false, data: { message: 'Probeer het over een paar minuten opnieuw.' } } )
+	} ) );
+	await page.click( '[data-horex-start]' ); await p120( page );
+	await page.click( '[data-horex-product="veranda-zonwering"]' ); await p120( page, 420 );
+	await page.click( '.horex-swatch >> nth=0' ); await p120( page, 420 );
+	await page.fill( '#horex-ruimte', 'Veranda' );
+	await page.fill( '#horex-breedte', '6200' );
+	await page.fill( '#horex-hoogte', '2500' );
+	await page.waitForTimeout( 150 );
+	await page.click( '[data-horex-add]' ); await p120( page, 400 );
+	await page.click( '[data-horex-go="gegevens"]' ); await p120( page, 300 );
+	await page.fill( '#horex-naam', 'Bram Jansen' );
+	await page.fill( '#horex-email', 'bram@example.nl' );
+	await page.click( '[data-horex-send]' );
+	await page.waitForTimeout( 600 );
+	check( 'a server refusal is shown to the customer', await page.locator( '.horex-warn' ).innerText(), 'Probeer het over een paar minuten opnieuw.' );
+	check( 'the send button becomes usable again', await page.locator( '[data-horex-send]' ).isDisabled(), false );
+	check( 'the customer is not sent to the confirmation', await page.locator( '.horex-done' ).count(), 0 );
 
 	check( 'no JavaScript errors', errors, [] );
 
