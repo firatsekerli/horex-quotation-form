@@ -1,0 +1,14 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Dependencies & build output
+node_modules/
+vendor/
+
+# Local environment
+.env
+*.log
