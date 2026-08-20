@@ -28,6 +28,39 @@ function horex_product_types() {
 }
 
 /**
+ * How a product is drawn in the live measurement preview.
+ *
+ * Not derivable from the product type: plissé and wave curtains are both `gordijn`
+ * yet look nothing alike, so each product says how it fills its frame.
+ *
+ * @return array
+ */
+function horex_preview_fills() {
+	return array(
+		'gaas'   => __( 'Mesh — visible frame, woven fill', 'horex' ),
+		'plisse' => __( 'Pleated — horizontal folds', 'horex' ),
+		'wave'   => __( 'Wave — vertical folds', 'horex' ),
+		'doek'   => __( 'Canvas — flat fabric', 'horex' ),
+	);
+}
+
+/**
+ * The drawings shipped with the plugin, shown until a real photo is uploaded.
+ *
+ * @return array
+ */
+function horex_illustrations() {
+	return array(
+		''                  => __( '— none —', 'horex' ),
+		'plisse-hor'        => __( 'Pleated insect screen', 'horex' ),
+		'inzet-hor'         => __( 'Fitted insect screen', 'horex' ),
+		'plisse-gordijn'    => __( 'Pleated curtain', 'horex' ),
+		'wave-gordijn'      => __( 'Wave curtain', 'horex' ),
+		'veranda-zonwering' => __( 'Veranda sun shading', 'horex' ),
+	);
+}
+
+/**
  * Describe the settings page, tab by tab.
  *
  * Each tab has a label and a list of fields. Each field has at minimum a `type` and a
@@ -53,6 +86,12 @@ function horex_settings_schema() {
 							'label' => __( 'Name', 'horex' ),
 							'width' => 'half',
 						),
+						'kort'         => array(
+							'type'        => 'text',
+							'label'       => __( 'Card subtitle', 'horex' ),
+							'width'       => 'half',
+							'description' => __( 'One short line under the name on the product card.', 'horex' ),
+						),
 						'slug'         => array(
 							'type'        => 'slug',
 							'label'       => __( 'Key', 'horex' ),
@@ -65,10 +104,25 @@ function horex_settings_schema() {
 							'choices' => horex_product_types(),
 							'default' => 'horren',
 						),
+						'vulling'      => array(
+							'type'        => 'select',
+							'label'       => __( 'Preview fill', 'horex' ),
+							'width'       => 'half',
+							'choices'     => horex_preview_fills(),
+							'default'     => 'gaas',
+							'description' => __( 'How this product is drawn in the live preview beside the measurement fields.', 'horex' ),
+						),
+						'illustratie'  => array(
+							'type'        => 'select',
+							'label'       => __( 'Drawing', 'horex' ),
+							'width'       => 'half',
+							'choices'     => horex_illustrations(),
+							'description' => __( 'Shown on the card until a photo is uploaded, and behind a photo that fails to load.', 'horex' ),
+						),
 						'foto'         => array(
 							'type'        => 'image',
 							'label'       => __( 'Photo', 'horex' ),
-							'description' => __( 'The project photo on the product card. Without a photo the card shows a coloured tile.', 'horex' ),
+							'description' => __( 'The project photo on the product card. It covers the drawing above.', 'horex' ),
 						),
 						'uitvoeringen' => array(
 							'type'        => 'repeater',
@@ -78,17 +132,23 @@ function horex_settings_schema() {
 							'singular'    => __( 'Variant', 'horex' ),
 							'description' => __( 'Only applies to insect screens. Curtains and sun shading skip this step.', 'horex' ),
 							'fields'      => array(
-								'naam' => array(
+								'naam'         => array(
 									'type'  => 'text',
 									'label' => __( 'Name', 'horex' ),
 									'width' => 'half',
 								),
-								'slug' => array(
+								'omschrijving' => array(
+									'type'        => 'text',
+									'label'       => __( 'Subtitle', 'horex' ),
+									'width'       => 'half',
+									'description' => __( 'One line under the name, for example which door or window this suits.', 'horex' ),
+								),
+								'slug'         => array(
 									'type'     => 'slug',
 									'label'    => __( 'Key', 'horex' ),
 									'advanced' => true,
 								),
-								'foto' => array(
+								'foto'         => array(
 									'type'  => 'image',
 									'label' => __( 'Photo', 'horex' ),
 								),
@@ -130,6 +190,12 @@ function horex_settings_schema() {
 							'width'       => 'half',
 							'placeholder' => 'RAL 7039',
 						),
+						'textuur' => array(
+							'type'   => 'checkbox',
+							'label'  => __( 'Textured', 'horex' ),
+							'toggle' => __( 'Draw a subtle texture over the colour', 'horex' ),
+							'width'  => 'half',
+						),
 						'swatch' => array(
 							'type'        => 'image',
 							'label'       => __( 'Swatch image', 'horex' ),
@@ -166,6 +232,12 @@ function horex_settings_schema() {
 							'rows'        => 2,
 							'description' => __( 'One line of explanation under the name, for example what this type is suitable for.', 'horex' ),
 						),
+						'fijnmazig'    => array(
+							'type'        => 'checkbox',
+							'label'       => __( 'Fine mesh', 'horex' ),
+							'toggle'      => __( 'Weave more finely in the preview', 'horex' ),
+							'description' => __( 'For anti-pollen and other close-woven types.', 'horex' ),
+						),
 						'foto'        => array(
 							'type'  => 'image',
 							'label' => __( 'Photo', 'horex' ),
@@ -176,7 +248,7 @@ function horex_settings_schema() {
 		),
 		'stof'         => array(
 			'label'       => __( 'Fabric colours', 'horex' ),
-			'description' => __( 'The colours for products of type curtain. Fabrics are textured, so prefer a swatch image here.', 'horex' ),
+			'description' => __( 'Placeholder range — replace these with Hor-Ex\'s real fabric swatches before going live. The colours for products of type curtain. Fabrics are textured, so prefer a swatch image here.', 'horex' ),
 			'fields'      => array(
 				'stof_colours' => array(
 					'type'      => 'repeater',
@@ -190,7 +262,7 @@ function horex_settings_schema() {
 		),
 		'doek'         => array(
 			'label'       => __( 'Canvas colours', 'horex' ),
-			'description' => __( 'The colours for products of type sun shading.', 'horex' ),
+			'description' => __( 'Placeholder range — replace these with Hor-Ex\'s real canvas swatches before going live. The colours for products of type sun shading.', 'horex' ),
 			'fields'      => array(
 				'doek_colours' => array(
 					'type'      => 'repeater',

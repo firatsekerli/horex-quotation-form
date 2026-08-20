@@ -41,10 +41,11 @@ check(
 	horex_repeater_mode( horex_meethulp_fields()['stappen'] ),
 	'simple'
 );
+// Variants carry a name, a subtitle and a photo, so they collapse like products do.
 check(
-	'variants render plain, not collapsible',
+	'variants render as collapsible cards',
 	horex_repeater_mode( $products['fields']['uitvoeringen'] ),
-	'plain'
+	'collapsible'
 );
 
 /* Input names. */
@@ -65,7 +66,14 @@ check(
 check( 'nested repeater is one level deeper', substr_count( $html, 'data-depth="1"' ), 6 );
 
 /* Rows start collapsed; the blank template row does not. */
-check( 'existing rows start collapsed', substr_count( $html, 'horex-row is-collapsed' ), 5 );
+$seeded  = horex_get_setting( 'products' );
+$variants = array_sum( array_map( function ( $product ) { return count( $product['uitvoeringen'] ); }, $seeded ) );
+
+check(
+	'every rendered row starts collapsed',
+	substr_count( $html, 'horex-row is-collapsed' ),
+	count( $seeded ) + $variants
+);
 
 /* Keys are tucked behind Advanced, and shown in the header. */
 // Exactly one key field and one Advanced block per row, and the key never appears

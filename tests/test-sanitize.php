@@ -53,8 +53,13 @@ $posted = array(
 );
 $clean = horex_sanitize_settings( $posted, $schema['producten']['fields'] );
 check( 'unknown top-level key dropped', array_keys( $clean ), array( 'products' ) );
-check( 'unknown sub-field dropped', array_keys( $clean['products'][0] ), array( 'naam', 'slug', 'type', 'foto', 'uitvoeringen' ) );
-check( 'schema sub-fields all kept', isset( $clean['products'][0]['foto'] ), true );
+// Derived from the schema, so adding a field cannot quietly slip past the gate.
+check(
+	'surviving keys are exactly the schema sub-fields',
+	array_keys( $clean['products'][0] ),
+	array_keys( $schema['producten']['fields']['products']['fields'] )
+);
+check( 'the stowaway sub-field is gone', array_key_exists( 'evil', $clean['products'][0] ), false );
 
 /* 3. Duplicate slugs get suffixed so state keys stay unique. */
 $posted = array(

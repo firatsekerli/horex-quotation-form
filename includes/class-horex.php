@@ -53,8 +53,10 @@ final class Horex {
 		add_action( 'admin_menu', 'horex_register_settings_page' );
 		add_action( 'admin_enqueue_scripts', 'horex_maybe_enqueue_admin_assets' );
 
-		// Seeds installs that were activated before the seeder existed.
+		// Seeds installs that were activated before the seeder existed, and fills in
+		// catalogue fields added after an install was first seeded.
 		add_action( 'admin_init', 'horex_maybe_seed' );
+		add_action( 'admin_init', 'horex_migrate_catalogue', 11 );
 
 		add_action( 'add_meta_boxes_' . self::CPT, 'horex_register_submission_meta_boxes' );
 		add_action( 'save_post_' . self::CPT, 'horex_handle_submission_save' );
@@ -91,6 +93,7 @@ final class Horex {
 	public static function activate() {
 		horex_register_cpt();
 		horex_maybe_seed();
+		horex_migrate_catalogue();
 		flush_rewrite_rules();
 	}
 

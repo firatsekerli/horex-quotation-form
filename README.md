@@ -87,6 +87,7 @@ tests/
   test-sanitize.php          controle op de sanitizer
   test-submission.php        controle op opslaan van aanvragen
   test-render.php            controle op de veldrenderers en repeater-templates
+  test-catalogue.php         controle op de seeder en de catalogusmigratie
   run.php                    draait alle suites
 bin/
   lib-po.php                 gedeelde .po/.mo-functies

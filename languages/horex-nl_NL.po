@@ -126,330 +126,422 @@ msgstr "Gordijn — geen uitvoering of gaas, stofkleuren"
 msgid "Sun shading — no variant or mesh, canvas colours"
 msgstr "Zonwering — geen uitvoering of gaas, doekkleuren"
 
+#: includes/settings-schema.php:40
+msgid "Mesh — visible frame, woven fill"
+msgstr "Gaas — zichtbaar frame, geweven vulling"
+
 #: includes/settings-schema.php:41
-#: includes/settings-schema.php:46
+msgid "Pleated — horizontal folds"
+msgstr "Plissé — horizontale vouwen"
+
+#: includes/settings-schema.php:42
+msgid "Wave — vertical folds"
+msgstr "Wave — verticale plooien"
+
+#: includes/settings-schema.php:43
+msgid "Canvas — flat fabric"
+msgstr "Doek — vlakke stof"
+
+#: includes/settings-schema.php:54
+msgid "— none —"
+msgstr "— geen —"
+
+#: includes/settings-schema.php:55
+msgid "Pleated insect screen"
+msgstr "Plissé hor"
+
+#: includes/settings-schema.php:56
+msgid "Fitted insect screen"
+msgstr "Inzet hor"
+
+#: includes/settings-schema.php:57
+msgid "Pleated curtain"
+msgstr "Plissé gordijn"
+
+#: includes/settings-schema.php:58
+msgid "Wave curtain"
+msgstr "Wave gordijn"
+
+#: includes/settings-schema.php:59
+msgid "Veranda sun shading"
+msgstr "Veranda zonwering"
+
+#: includes/settings-schema.php:74
+#: includes/settings-schema.php:79
 #: includes/submission.php:320
 msgid "Products"
 msgstr "Producten"
 
-#: includes/settings-schema.php:42
+#: includes/settings-schema.php:75
 msgid "The product cards in the configurator, in this order. The type decides which steps the customer goes through: insect screens get a variant and mesh step, curtains and sun shading do not."
 msgstr "De productkaarten in de configurator, in deze volgorde. Het type bepaalt welke stappen de klant doorloopt: horren krijgen een uitvoering- en gaasstap, gordijnen en zonwering niet."
 
-#: includes/settings-schema.php:47
+#: includes/settings-schema.php:80
 msgid "Add product"
 msgstr "Product toevoegen"
 
-#: includes/settings-schema.php:49
+#: includes/settings-schema.php:82
 #: includes/submission-schema.php:112
 msgid "Product"
 msgstr "Product"
 
-#: includes/settings-schema.php:53
-#: includes/settings-schema.php:83
-#: includes/settings-schema.php:114
-#: includes/settings-schema.php:155
-#: includes/settings-schema.php:317
+#: includes/settings-schema.php:86
+#: includes/settings-schema.php:137
+#: includes/settings-schema.php:174
+#: includes/settings-schema.php:221
+#: includes/settings-schema.php:389
 #: includes/submission-schema.php:56
 #: includes/submission.php:318
 msgid "Name"
 msgstr "Naam"
 
-#: includes/settings-schema.php:58
-#: includes/settings-schema.php:88
-#: includes/settings-schema.php:119
-#: includes/settings-schema.php:160
-#: includes/settings-schema.php:322
+#: includes/settings-schema.php:91
+msgid "Card subtitle"
+msgstr "Ondertitel op de kaart"
+
+#: includes/settings-schema.php:93
+msgid "One short line under the name on the product card."
+msgstr "Eén korte regel onder de naam op de productkaart."
+
+#: includes/settings-schema.php:97
+#: includes/settings-schema.php:148
+#: includes/settings-schema.php:179
+#: includes/settings-schema.php:226
+#: includes/settings-schema.php:394
 msgid "Key"
 msgstr "Sleutel"
 
-#: includes/settings-schema.php:60
+#: includes/settings-schema.php:99
 msgid "Stable key used in requests. Filled automatically from the name; changing it breaks the link with requests that already exist."
 msgstr "Vaste sleutel in aanvragen. Wordt automatisch uit de naam gevuld; wijzigen verbreekt de koppeling met bestaande aanvragen."
 
-#: includes/settings-schema.php:64
+#: includes/settings-schema.php:103
 msgid "Type"
 msgstr "Type"
 
-#: includes/settings-schema.php:70
-#: includes/settings-schema.php:93
-#: includes/settings-schema.php:171
+#: includes/settings-schema.php:109
+msgid "Preview fill"
+msgstr "Weergave in voorbeeld"
+
+#: includes/settings-schema.php:113
+msgid "How this product is drawn in the live preview beside the measurement fields."
+msgstr "Hoe dit product getekend wordt in het voorbeeld naast de maatvelden."
+
+#: includes/settings-schema.php:117
+msgid "Drawing"
+msgstr "Tekening"
+
+#: includes/settings-schema.php:120
+msgid "Shown on the card until a photo is uploaded, and behind a photo that fails to load."
+msgstr "Staat op de kaart zolang er geen foto is, en achter een foto die niet laadt."
+
+#: includes/settings-schema.php:124
+#: includes/settings-schema.php:153
+#: includes/settings-schema.php:243
 #: includes/submission-schema.php:161
 msgid "Photo"
 msgstr "Foto"
 
-#: includes/settings-schema.php:71
-msgid "The project photo on the product card. Without a photo the card shows a coloured tile."
-msgstr "De projectfoto op de productkaart. Zonder foto toont de kaart een gekleurd vlak."
+#: includes/settings-schema.php:125
+msgid "The project photo on the product card. It covers the drawing above."
+msgstr "De projectfoto op de productkaart. Deze ligt over de tekening hierboven."
 
-#: includes/settings-schema.php:75
+#: includes/settings-schema.php:129
 msgid "Variants"
 msgstr "Uitvoeringen"
 
-#: includes/settings-schema.php:76
+#: includes/settings-schema.php:130
 msgid "Add variant"
 msgstr "Uitvoering toevoegen"
 
-#: includes/settings-schema.php:78
+#: includes/settings-schema.php:132
 #: includes/submission-schema.php:117
 msgid "Variant"
 msgstr "Uitvoering"
 
-#: includes/settings-schema.php:79
+#: includes/settings-schema.php:133
 msgid "Only applies to insect screens. Curtains and sun shading skip this step."
 msgstr "Alleen van toepassing op horren. Gordijnen en zonwering slaan deze stap over."
 
-#: includes/settings-schema.php:102
-#: includes/settings-schema.php:107
+#: includes/settings-schema.php:142
+msgid "Subtitle"
+msgstr "Ondertitel"
+
+#: includes/settings-schema.php:144
+msgid "One line under the name, for example which door or window this suits."
+msgstr "Eén regel onder de naam, bijvoorbeeld voor welke deur of welk raam dit geschikt is."
+
+#: includes/settings-schema.php:162
+#: includes/settings-schema.php:167
 msgid "Frame colours"
 msgstr "Framekleuren"
 
-#: includes/settings-schema.php:103
+#: includes/settings-schema.php:163
 msgid "The colours for products of type insect screen. Use a hex colour for solid coatings; add an image for textured coatings, which is then shown as the swatch."
 msgstr "De kleuren voor producten van het type horren. Gebruik een hexkleur voor egale lakken; kies daarnaast een afbeelding voor structuurlakken, die dan als swatch getoond wordt."
 
-#: includes/settings-schema.php:108
+#: includes/settings-schema.php:168
 msgid "Add colour"
 msgstr "Kleur toevoegen"
 
-#: includes/settings-schema.php:110
-#: includes/settings-schema.php:124
-#: includes/settings-schema.php:332
+#: includes/settings-schema.php:170
+#: includes/settings-schema.php:184
+#: includes/settings-schema.php:404
 #: includes/submission-schema.php:129
 msgid "Colour"
 msgstr "Kleur"
 
-#: includes/settings-schema.php:129
+#: includes/settings-schema.php:189
 msgid "RAL"
 msgstr "RAL"
 
-#: includes/settings-schema.php:135
-#: includes/settings-schema.php:327
+#: includes/settings-schema.php:195
+msgid "Textured"
+msgstr "Structuur"
+
+#: includes/settings-schema.php:196
+msgid "Draw a subtle texture over the colour"
+msgstr "Teken een subtiele structuur over de kleur"
+
+#: includes/settings-schema.php:201
+#: includes/settings-schema.php:399
 msgid "Swatch image"
 msgstr "Swatch-afbeelding"
 
-#: includes/settings-schema.php:136
+#: includes/settings-schema.php:202
 msgid "Optional, for textured coatings. Takes precedence over the hex colour."
 msgstr "Optioneel, voor structuurlakken. Gaat voor op de hexkleur."
 
-#: includes/settings-schema.php:143
+#: includes/settings-schema.php:209
 #: includes/submission-schema.php:123
 msgid "Mesh"
 msgstr "Gaas"
 
-#: includes/settings-schema.php:144
+#: includes/settings-schema.php:210
 msgid "The mesh types in the final choice step for insect screens."
 msgstr "De gaassoorten in de laatste keuzestap van horren."
 
-#: includes/settings-schema.php:148
+#: includes/settings-schema.php:214
 msgid "Mesh types"
 msgstr "Gaassoorten"
 
-#: includes/settings-schema.php:149
+#: includes/settings-schema.php:215
 msgid "Add mesh type"
 msgstr "Gaassoort toevoegen"
 
-#: includes/settings-schema.php:151
+#: includes/settings-schema.php:217
 msgid "Mesh type"
 msgstr "Gaassoort"
 
-#: includes/settings-schema.php:165
-#: includes/settings-schema.php:337
+#: includes/settings-schema.php:231
+#: includes/settings-schema.php:409
 msgid "Description"
 msgstr "Omschrijving"
 
-#: includes/settings-schema.php:167
+#: includes/settings-schema.php:233
 msgid "One line of explanation under the name, for example what this type is suitable for."
 msgstr "Eén regel uitleg onder de naam, bijvoorbeeld waarvoor deze soort geschikt is."
 
-#: includes/settings-schema.php:178
-#: includes/settings-schema.php:183
+#: includes/settings-schema.php:237
+msgid "Fine mesh"
+msgstr "Fijnmazig"
+
+#: includes/settings-schema.php:238
+msgid "Weave more finely in the preview"
+msgstr "Fijner weven in het voorbeeld"
+
+#: includes/settings-schema.php:239
+msgid "For anti-pollen and other close-woven types."
+msgstr "Voor anti-pollen en andere fijn geweven soorten."
+
+#: includes/settings-schema.php:250
+#: includes/settings-schema.php:255
 msgid "Fabric colours"
 msgstr "Stofkleuren"
 
-#: includes/settings-schema.php:179
-msgid "The colours for products of type curtain. Fabrics are textured, so prefer a swatch image here."
-msgstr "De kleuren voor producten van het type gordijn. Stoffen zijn textuur, dus gebruik hier bij voorkeur een swatch-afbeelding."
+#: includes/settings-schema.php:251
+msgid "Placeholder range — replace these with Hor-Ex's real fabric swatches before going live. The colours for products of type curtain. Fabrics are textured, so prefer a swatch image here."
+msgstr "Voorbeeldreeks — vervang deze door de echte stofstalen van Hor-Ex voordat de site live gaat. De kleuren voor producten van het type gordijn. Stoffen zijn textuur, dus gebruik hier bij voorkeur een swatch-afbeelding."
 
-#: includes/settings-schema.php:184
+#: includes/settings-schema.php:256
 msgid "Add fabric colour"
 msgstr "Stofkleur toevoegen"
 
-#: includes/settings-schema.php:186
+#: includes/settings-schema.php:258
 msgid "Fabric colour"
 msgstr "Stofkleur"
 
-#: includes/settings-schema.php:192
-#: includes/settings-schema.php:197
+#: includes/settings-schema.php:264
+#: includes/settings-schema.php:269
 msgid "Canvas colours"
 msgstr "Doekkleuren"
 
-#: includes/settings-schema.php:193
-msgid "The colours for products of type sun shading."
-msgstr "De kleuren voor producten van het type zonwering."
+#: includes/settings-schema.php:265
+msgid "Placeholder range — replace these with Hor-Ex's real canvas swatches before going live. The colours for products of type sun shading."
+msgstr "Voorbeeldreeks — vervang deze door de echte doekstalen van Hor-Ex voordat de site live gaat. De kleuren voor producten van het type zonwering."
 
-#: includes/settings-schema.php:198
+#: includes/settings-schema.php:270
 msgid "Add canvas colour"
 msgstr "Doekkleur toevoegen"
 
-#: includes/settings-schema.php:200
+#: includes/settings-schema.php:272
 msgid "Canvas colour"
 msgstr "Doekkleur"
 
-#: includes/settings-schema.php:206
+#: includes/settings-schema.php:278
 msgid "Measurements"
 msgstr "Maten"
 
-#: includes/settings-schema.php:207
+#: includes/settings-schema.php:279
 msgid "Measurements are always entered in millimetres. Outside this range the customer is warned, but never blocked — a 6.2 metre veranda is a real customer, not a typo."
 msgstr "Maten worden altijd in millimeters ingevoerd. Buiten dit bereik wordt de klant gewaarschuwd, maar nooit geblokkeerd — een veranda van 6,2 meter is een echte klant."
 
-#: includes/settings-schema.php:211
+#: includes/settings-schema.php:283
 msgid "Minimum size (mm)"
 msgstr "Minimale maat (mm)"
 
-#: includes/settings-schema.php:215
+#: includes/settings-schema.php:287
 msgid "Below this size the customer sees a note."
 msgstr "Onder deze maat krijgt de klant een opmerking te zien."
 
-#: includes/settings-schema.php:219
+#: includes/settings-schema.php:291
 msgid "Maximum size (mm)"
 msgstr "Maximale maat (mm)"
 
-#: includes/settings-schema.php:223
+#: includes/settings-schema.php:295
 msgid "Above this size the customer sees a note."
 msgstr "Boven deze maat krijgt de klant een opmerking te zien."
 
-#: includes/settings-schema.php:227
+#: includes/settings-schema.php:299
 msgid "Warning text"
 msgstr "Waarschuwingstekst"
 
-#: includes/settings-schema.php:234
+#: includes/settings-schema.php:306
 msgid "Measuring help"
 msgstr "Meethulp"
 
-#: includes/settings-schema.php:235
+#: includes/settings-schema.php:307
 msgid "The explanation behind \"How do I measure this?\" above the measurement fields. Wrong measurements are the biggest cost in made-to-measure work — this is the cheapest place to prevent them."
 msgstr "De uitleg achter \"Hoe meet ik dit op?\" boven de maatvelden. Verkeerde maten zijn de grootste kostenpost bij maatwerk — dit is de goedkoopste plek om ze te voorkomen."
 
-#: includes/settings-schema.php:239
+#: includes/settings-schema.php:311
 msgid "Insect screens"
 msgstr "Horren"
 
-#: includes/settings-schema.php:240
+#: includes/settings-schema.php:312
 msgid "Shown for products of type insect screen."
 msgstr "Getoond bij producten van het type horren."
 
-#: includes/settings-schema.php:245
+#: includes/settings-schema.php:317
 msgid "Curtains and sun shading"
 msgstr "Gordijnen en zonwering"
 
-#: includes/settings-schema.php:246
+#: includes/settings-schema.php:318
 msgid "Shown for products of type curtain and sun shading."
 msgstr "Getoond bij producten van het type gordijn en zonwering."
 
-#: includes/settings-schema.php:252
+#: includes/settings-schema.php:324
 msgid "Email"
 msgstr "E-mail"
 
-#: includes/settings-schema.php:253
+#: includes/settings-schema.php:325
 msgid "Who receives a new request, and what does the customer see in the confirmation email?"
 msgstr "Wie krijgt een nieuwe aanvraag binnen, en wat ziet de klant in de bevestigingsmail?"
 
-#: includes/settings-schema.php:257
+#: includes/settings-schema.php:329
 msgid "Recipients"
 msgstr "Ontvangers"
 
-#: includes/settings-schema.php:259
+#: includes/settings-schema.php:331
 msgid "One email address per line. Leave empty to use the site's admin address."
 msgstr "Eén e-mailadres per regel. Leeg laten gebruikt het beheerdersadres van de site."
 
-#: includes/settings-schema.php:263
+#: includes/settings-schema.php:335
 msgid "Internal email subject"
 msgstr "Onderwerp interne mail"
 
-#: includes/settings-schema.php:265
+#: includes/settings-schema.php:337
 msgid "The reference number is appended to this automatically."
 msgstr "Het referentienummer wordt hier automatisch achter geplaatst."
 
-#: includes/settings-schema.php:269
+#: includes/settings-schema.php:341
 msgid "Copy to the customer"
 msgstr "Kopie naar de klant"
 
-#: includes/settings-schema.php:270
+#: includes/settings-schema.php:342
 msgid "Send the customer a copy of the request"
 msgstr "Stuur de klant een kopie van de aanvraag"
 
-#: includes/settings-schema.php:275
+#: includes/settings-schema.php:347
 msgid "Intro text for the customer confirmation"
 msgstr "Introtekst klantbevestiging"
 
-#: includes/settings-schema.php:277
+#: includes/settings-schema.php:349
 msgid "Appears above the summary in the email to the customer."
 msgstr "Staat boven het overzicht in de mail aan de klant."
 
-#: includes/settings-schema.php:281
+#: includes/settings-schema.php:353
 msgid "Reference prefix"
 msgstr "Referentieprefix"
 
-#: includes/settings-schema.php:283
+#: includes/settings-schema.php:355
 msgid "Prefix of the reference number, for example HX-2026-0031."
 msgstr "Voorvoegsel van het referentienummer, bijvoorbeeld HX-2026-0031."
 
-#: includes/settings-schema.php:288
+#: includes/settings-schema.php:360
 msgid "Branding"
 msgstr "Branding"
 
-#: includes/settings-schema.php:289
+#: includes/settings-schema.php:361
 msgid "The logo with the white wordmark sits on the configurator's dark header."
 msgstr "Het logo met het witte woordmerk staat op de donkere header van de configurator."
 
-#: includes/settings-schema.php:293
+#: includes/settings-schema.php:365
 msgid "Logo (light)"
 msgstr "Logo (licht)"
 
-#: includes/settings-schema.php:294
+#: includes/settings-schema.php:366
 msgid "Optional. Without a logo the header shows the name Hor-Ex as text."
 msgstr "Optioneel. Zonder logo toont de header de naam Hor-Ex als tekst."
 
-#: includes/settings-schema.php:328
+#: includes/settings-schema.php:400
 msgid "A crop of the fabric. Without an image the hex colour is used."
 msgstr "Een uitsnede van de stof. Zonder afbeelding wordt de hexkleur gebruikt."
 
-#: includes/settings-schema.php:333
+#: includes/settings-schema.php:405
 msgid "Fallback for when there is no swatch."
 msgstr "Terugval wanneer er geen swatch is."
 
-#: includes/settings-schema.php:352
+#: includes/settings-schema.php:424
 msgid "Title"
 msgstr "Titel"
 
-#: includes/settings-schema.php:357
+#: includes/settings-schema.php:429
 msgid "Diagram"
 msgstr "Diagram"
 
-#: includes/settings-schema.php:358
+#: includes/settings-schema.php:430
 msgid "Drawing showing which measurement is meant."
 msgstr "Tekening die laat zien welke maat bedoeld wordt."
 
-#: includes/settings-schema.php:362
+#: includes/settings-schema.php:434
 msgid "Steps"
 msgstr "Stappen"
 
-#: includes/settings-schema.php:363
+#: includes/settings-schema.php:435
 msgid "Add step"
 msgstr "Stap toevoegen"
 
-#: includes/settings-schema.php:365
-#: includes/settings-schema.php:369
+#: includes/settings-schema.php:437
+#: includes/settings-schema.php:441
 msgid "Step"
 msgstr "Stap"
 
-#: includes/settings-schema.php:376
+#: includes/settings-schema.php:448
 msgid "Video"
 msgstr "Video"
 
-#: includes/settings-schema.php:377
+#: includes/settings-schema.php:449
 msgid "Optional. A short clip of someone actually measuring works better than text."
 msgstr "Optioneel. Een korte clip van iemand die daadwerkelijk opmeet werkt beter dan tekst."
 
