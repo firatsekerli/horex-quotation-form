@@ -50,7 +50,9 @@ function horex_register_cpt() {
 			'menu_icon'           => 'dashicons-clipboard',
 			'capability_type'     => 'post',
 			'map_meta_cap'        => true,
-			'supports'            => array( 'title' ),
+			// No editor, no title box: the title is generated from the reference and
+			// the customer name, and everything else lives in the meta boxes.
+			'supports'            => false,
 		)
 	);
 }

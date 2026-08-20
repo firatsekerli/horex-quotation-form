@@ -121,6 +121,17 @@ function horex_settings_hook( $set = null ) {
 function horex_maybe_enqueue_admin_assets( $hook_suffix ) {
 	if ( $hook_suffix && $hook_suffix === horex_settings_hook() ) {
 		horex_enqueue_admin_assets();
+
+		return;
+	}
+
+	// The request editor uses the same repeater and media pickers.
+	if ( in_array( $hook_suffix, array( 'post.php', 'post-new.php' ), true ) ) {
+		$screen = get_current_screen();
+
+		if ( $screen && Horex::CPT === $screen->post_type ) {
+			horex_enqueue_admin_assets();
+		}
 	}
 }
 
@@ -348,6 +359,12 @@ function horex_sanitize_value( $value, array $field ) {
 		case 'url':
 			return is_scalar( $value ) ? esc_url_raw( trim( (string) $value ) ) : '';
 
+		case 'email':
+			return is_scalar( $value ) ? sanitize_email( trim( (string) $value ) ) : '';
+
+		case 'tel':
+			return is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
+
 		case 'color':
 			$color = is_scalar( $value ) ? sanitize_hex_color( trim( (string) $value ) ) : '';
 
@@ -424,6 +441,7 @@ function horex_sanitize_repeater( $value, array $field ) {
 	}
 
 	$label_key = isset( $field['row_label'] ) ? $field['row_label'] : '';
+	$keep_rows = ! empty( $field['keep_rows'] );
 	$rows      = array();
 
 	foreach ( $value as $row ) {
@@ -433,7 +451,13 @@ function horex_sanitize_repeater( $value, array $field ) {
 
 		$clean = horex_sanitize_subfields( $row, $field['fields'] );
 
-		if ( $label_key && '' === trim( (string) $clean[ $label_key ] ) ) {
+		// keep_rows marks data we must not lose — a request the customer submitted.
+		// There, only a row with nothing in it at all is discarded.
+		$drop = $keep_rows
+			? horex_row_is_empty( $clean, $field['fields'] )
+			: ( $label_key && '' === trim( (string) $clean[ $label_key ] ) );
+
+		if ( $drop ) {
 			continue;
 		}
 
@@ -441,6 +465,44 @@ function horex_sanitize_repeater( $value, array $field ) {
 	}
 
 	return horex_fill_row_slugs( $rows, $field );
+}
+
+/**
+ * Does this row hold nothing at all?
+ *
+ * A value equal to its field's default does not count as content, so a row left at
+ * its defaults is still empty.
+ *
+ * @param array $row    Sanitised row.
+ * @param array $fields Schema sub-fields.
+ * @return bool
+ */
+function horex_row_is_empty( array $row, array $fields ) {
+	foreach ( $fields as $name => $field ) {
+		if ( ! array_key_exists( $name, $row ) ) {
+			continue;
+		}
+
+		$value = $row[ $name ];
+
+		if ( is_array( $value ) ) {
+			if ( $value ) {
+				return false;
+			}
+
+			continue;
+		}
+
+		if ( '' === $value || 0 === $value || false === $value ) {
+			continue;
+		}
+
+		if ( $value !== horex_field_default( $field ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /**

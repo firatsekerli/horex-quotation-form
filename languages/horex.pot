@@ -1,12 +1,14 @@
-# Translation template for the Hor-Ex quotation plugin.
+# Translation file for the Hor-Ex quotation plugin.
 #
-# Source strings are English; the customer-facing catalogue content
-# (product names, measuring steps, email defaults) is stored data and stays
-# Dutch regardless of the language a WordPress user picks.
+# Source strings are English. The customer-facing catalogue content — product
+# names, measuring steps, email defaults — is stored data, not interface, and
+# stays Dutch regardless of the language a WordPress user picks.
+#
+# Regenerate with: php bin/make-pot.php && php bin/po2mo.php
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Hor-Ex Offerteaanvraag 0.1.0\n"
+"Project-Id-Version: Hor-Ex Offerteaanvraag\n"
 "Report-Msgid-Bugs-To: https://github.com/firatsekerli/horex-quotation-form/issues\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -64,38 +66,38 @@ msgstr ""
 msgid "Request updated"
 msgstr ""
 
-#: includes/settings-render.php:183
+#: includes/settings-render.php:194
 msgid "Nothing added yet."
 msgstr ""
 
-#: includes/settings-render.php:188
+#: includes/settings-render.php:199
 msgid "Add row"
 msgstr ""
 
-#: includes/settings-render.php:221
+#: includes/settings-render.php:232
 msgid "Move up"
 msgstr ""
 
-#: includes/settings-render.php:222
+#: includes/settings-render.php:233
 msgid "Move down"
 msgstr ""
 
-#: includes/settings-render.php:223
-#: includes/settings-render.php:223
-#: includes/settings-render.php:351
+#: includes/settings-render.php:234
+#: includes/settings-render.php:234
+#: includes/settings-render.php:362
 msgid "Remove"
 msgstr ""
 
-#: includes/settings-render.php:307
+#: includes/settings-render.php:318
 msgid "Choose colour"
 msgstr ""
 
-#: includes/settings-render.php:348
+#: includes/settings-render.php:359
 msgid "Replace"
 msgstr ""
 
-#: includes/settings-render.php:348
-#: includes/settings.php:530
+#: includes/settings-render.php:359
+#: includes/settings.php:592
 msgid "Choose image"
 msgstr ""
 
@@ -113,6 +115,7 @@ msgstr ""
 
 #: includes/settings-schema.php:41
 #: includes/settings-schema.php:46
+#: includes/submission.php:311
 msgid "Products"
 msgstr ""
 
@@ -125,6 +128,7 @@ msgid "Add product"
 msgstr ""
 
 #: includes/settings-schema.php:49
+#: includes/submission-schema.php:112
 msgid "Product"
 msgstr ""
 
@@ -133,6 +137,8 @@ msgstr ""
 #: includes/settings-schema.php:114
 #: includes/settings-schema.php:155
 #: includes/settings-schema.php:317
+#: includes/submission-schema.php:56
+#: includes/submission.php:309
 msgid "Name"
 msgstr ""
 
@@ -155,6 +161,7 @@ msgstr ""
 #: includes/settings-schema.php:70
 #: includes/settings-schema.php:93
 #: includes/settings-schema.php:171
+#: includes/submission-schema.php:161
 msgid "Photo"
 msgstr ""
 
@@ -171,6 +178,7 @@ msgid "Add variant"
 msgstr ""
 
 #: includes/settings-schema.php:78
+#: includes/submission-schema.php:117
 msgid "Variant"
 msgstr ""
 
@@ -194,6 +202,7 @@ msgstr ""
 #: includes/settings-schema.php:110
 #: includes/settings-schema.php:124
 #: includes/settings-schema.php:332
+#: includes/submission-schema.php:129
 msgid "Colour"
 msgstr ""
 
@@ -211,6 +220,7 @@ msgid "Optional, for textured coatings. Takes precedence over the hex colour."
 msgstr ""
 
 #: includes/settings-schema.php:143
+#: includes/submission-schema.php:123
 msgid "Mesh"
 msgstr ""
 
@@ -431,7 +441,7 @@ msgid "Optional. A short clip of someone actually measuring works better than te
 msgstr ""
 
 #: includes/settings.php:88
-#: includes/settings.php:158
+#: includes/settings.php:169
 msgid "Hor-Ex Settings"
 msgstr ""
 
@@ -439,27 +449,163 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/settings.php:147
-#: includes/settings.php:269
+#: includes/settings.php:158
+#: includes/settings.php:280
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/settings.php:163
+#: includes/settings.php:174
 msgid "Settings saved."
 msgstr ""
 
-#: includes/settings.php:187
+#: includes/settings.php:198
 msgid "Save"
 msgstr ""
 
-#: includes/settings.php:276
+#: includes/settings.php:287
 msgid "Unknown tab."
 msgstr ""
 
-#: includes/settings.php:531
+#: includes/settings.php:593
 msgid "Use this image"
 msgstr ""
 
-#: includes/settings.php:532
+#: includes/settings.php:594
 msgid "Remove this row?"
+msgstr ""
+
+#: includes/submission-schema.php:23
+msgid "New"
+msgstr ""
+
+#: includes/submission-schema.php:24
+msgid "Contacted"
+msgstr ""
+
+#: includes/submission-schema.php:25
+msgid "Scheduled"
+msgstr ""
+
+#: includes/submission-schema.php:26
+msgid "Completed"
+msgstr ""
+
+#: includes/submission-schema.php:37
+msgid "Frame"
+msgstr ""
+
+#: includes/submission-schema.php:38
+msgid "Fabric"
+msgstr ""
+
+#: includes/submission-schema.php:39
+msgid "Canvas"
+msgstr ""
+
+#: includes/submission-schema.php:51
+msgid "Customer details"
+msgstr ""
+
+#: includes/submission-schema.php:61
+msgid "Email address"
+msgstr ""
+
+#: includes/submission-schema.php:66
+msgid "Phone number"
+msgstr ""
+
+#: includes/submission-schema.php:71
+msgid "Address"
+msgstr ""
+
+#: includes/submission-schema.php:76
+msgid "Postcode"
+msgstr ""
+
+#: includes/submission-schema.php:81
+msgid "Town"
+msgstr ""
+
+#: includes/submission-schema.php:86
+msgid "Notes from the customer"
+msgstr ""
+
+#: includes/submission-schema.php:92
+#: includes/submission-schema.php:97
+msgid "Products and measurements"
+msgstr ""
+
+#: includes/submission-schema.php:98
+msgid "Add measurement"
+msgstr ""
+
+#: includes/submission-schema.php:100
+msgid "Measurement"
+msgstr ""
+
+#: includes/submission-schema.php:106
+msgid "Room"
+msgstr ""
+
+#: includes/submission-schema.php:108
+msgid "Where this one goes, for example \"Woonkamer schuifpui\"."
+msgstr ""
+
+#: includes/submission-schema.php:119
+#: includes/submission-schema.php:125
+msgid "Empty for curtains and sun shading."
+msgstr ""
+
+#: includes/submission-schema.php:134
+msgid "Colour type"
+msgstr ""
+
+#: includes/submission-schema.php:141
+msgid "Width (mm)"
+msgstr ""
+
+#: includes/submission-schema.php:148
+msgid "Height (mm)"
+msgstr ""
+
+#: includes/submission-schema.php:155
+msgid "Outside standard range"
+msgstr ""
+
+#: includes/submission-schema.php:156
+msgid "This measurement falls outside the standard range"
+msgstr ""
+
+#: includes/submission-schema.php:157
+msgid "Set automatically from the measurement rules when the request is saved."
+msgstr ""
+
+#: includes/submission-schema.php:162
+msgid "Optional photo of the window or door."
+msgstr ""
+
+#: includes/submission-schema.php:169
+msgid "Administration"
+msgstr ""
+
+#: includes/submission-schema.php:174
+#: includes/submission.php:312
+msgid "Status"
+msgstr ""
+
+#: includes/submission-schema.php:180
+#: includes/submission.php:310
+msgid "Reference"
+msgstr ""
+
+#: includes/submission-schema.php:181
+msgid "Generated on saving when empty."
+msgstr ""
+
+#: includes/submission.php:313
+msgid "Date"
+msgstr ""
+
+#: includes/submission.php:332
+msgid "(no name)"
 msgstr ""

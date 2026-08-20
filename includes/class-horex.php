@@ -55,6 +55,13 @@ final class Horex {
 
 		// Seeds installs that were activated before the seeder existed.
 		add_action( 'admin_init', 'horex_maybe_seed' );
+
+		add_action( 'add_meta_boxes_' . self::CPT, 'horex_register_submission_meta_boxes' );
+		add_action( 'save_post_' . self::CPT, 'horex_handle_submission_save' );
+		add_filter( 'manage_' . self::CPT . '_posts_columns', 'horex_submission_columns' );
+		add_action( 'manage_' . self::CPT . '_posts_custom_column', 'horex_submission_column', 10, 2 );
+		add_filter( 'manage_edit-' . self::CPT . '_sortable_columns', 'horex_submission_sortable_columns' );
+		add_action( 'pre_get_posts', 'horex_submission_sort' );
 		add_action( 'admin_post_horex_save_settings', 'horex_handle_settings_save' );
 	}
 
@@ -67,6 +74,8 @@ final class Horex {
 		require_once HOREX_DIR . 'includes/settings.php';
 		require_once HOREX_DIR . 'includes/settings-render.php';
 		require_once HOREX_DIR . 'includes/defaults.php';
+		require_once HOREX_DIR . 'includes/submission-schema.php';
+		require_once HOREX_DIR . 'includes/submission.php';
 	}
 
 	/**

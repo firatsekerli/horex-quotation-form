@@ -102,6 +102,17 @@ function horex_render_field( $name, array $field, $value, $input_name = null, $i
 			);
 			break;
 
+		case 'email':
+		case 'tel':
+			printf(
+				'<input type="%1$s"%2$s name="%3$s" value="%4$s" class="regular-text" />',
+				esc_attr( $type ),
+				$id_attr, // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped above.
+				esc_attr( $input_name ),
+				esc_attr( (string) $value )
+			);
+			break;
+
 		case 'url':
 			printf(
 				'<input type="url"%1$s name="%2$s" value="%3$s" class="regular-text" placeholder="https://" />',

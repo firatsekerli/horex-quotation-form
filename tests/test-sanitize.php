@@ -1,50 +1,14 @@
 <?php
 /**
- * Exercises the schema-driven sanitiser without WordPress loaded.
- *
- * The WordPress functions the sanitiser depends on are stubbed with equivalents that
- * are close enough to test our own logic — this checks the schema gate, not core.
+ * Exercises the schema-driven settings sanitiser: the gate that decides what is
+ * allowed to persist.
  *
  * Run with:  php tests/test-sanitize.php
+ *
+ * @package Horex
  */
-define( 'ABSPATH', __DIR__ );
-define( 'HOREX_VERSION', 'test' );
 
-function __( $t, $d = null ) { return $t; }
-function apply_filters( $h, $v ) { return $v; }
-function esc_attr( $v ) { return htmlspecialchars( (string) $v, ENT_QUOTES ); }
-function absint( $v ) { return abs( (int) $v ); }
-function sanitize_text_field( $v ) { return trim( strip_tags( (string) $v ) ); }
-function sanitize_textarea_field( $v ) { return trim( strip_tags( (string) $v ) ); }
-function sanitize_key( $v ) { return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $v ) ); }
-function sanitize_title( $v ) {
-	$v = strtolower( trim( (string) $v ) );
-	$v = str_replace( array( 'é', 'è', 'ë', 'ê' ), 'e', $v );
-	$v = preg_replace( '/[^a-z0-9]+/', '-', $v );
-	return trim( $v, '-' );
-}
-function sanitize_email( $v ) { return trim( (string) $v ); }
-function is_email( $v ) { return (bool) filter_var( $v, FILTER_VALIDATE_EMAIL ); }
-function sanitize_hex_color( $v ) { return preg_match( '/^#[0-9a-f]{6}$/i', (string) $v ) ? $v : null; }
-function esc_url_raw( $v ) { return (string) $v; }
-function wp_kses_post( $v ) { return (string) $v; }
-function get_option( $n, $d = false ) { return $d; }
-function update_option( $n, $v, $a = null ) { return true; }
-require dirname( __DIR__ ) . '/includes/settings-schema.php';
-require dirname( __DIR__ ) . '/includes/settings.php';
-require dirname( __DIR__ ) . '/includes/defaults.php';
-
-$fails = 0;
-function check( $label, $got, $want ) {
-	global $fails;
-	$ok = $got === $want;
-	if ( ! $ok ) { $fails++; }
-	printf( "%s  %s\n", $ok ? 'PASS' : 'FAIL', $label );
-	if ( ! $ok ) {
-		echo "      got:  " . var_export( $got, true ) . "\n";
-		echo "      want: " . var_export( $want, true ) . "\n";
-	}
-}
+require_once __DIR__ . '/bootstrap.php';
 
 $schema = horex_settings_schema();
 
@@ -166,5 +130,4 @@ check( 'seeded uitvoeringen preserved', count( $clean['products'][0]['uitvoering
 check( 'seeded framekleuren preserved', count( $clean['frame_colours'] ), 6 );
 check( 'seeded meethulp steps preserved', count( $clean['meethulp_horren']['stappen'] ), 5 );
 
-echo $fails ? "\n$fails check(s) failed\n" : "\nAll checks passed\n";
-exit( $fails ? 1 : 0 );
+finish();

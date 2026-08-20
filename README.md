@@ -28,6 +28,20 @@ en CSS. De plugin werkt op elke standaard WordPress-installatie.
 3. Ga naar **Hor-Ex → Instellingen** en vul de catalogus aan.
 4. Plaats de shortcode `[horex_offerte]` op de offertepagina.
 
+## Aanvragen
+
+Een aanvraag wordt opgeslagen als één post meta-array bij het `horex_aanvraag` posttype.
+`horex_save_submission()` is het enige schrijfpad: zowel de beheerkant als straks het
+formulier op de site lopen daar doorheen, zodat ze niet uit elkaar kunnen groeien.
+
+Daarbij gebeurt automatisch:
+
+- maten buiten het ingestelde bereik worden **serverzijdig** gemarkeerd — wat de browser
+  daarover beweert, telt niet mee;
+- een referentienummer (`HX-2026-0001`) wordt eenmalig gegenereerd, per jaar oplopend, en
+  nooit opnieuw als de aanvraag later nog eens opgeslagen wordt;
+- de titel volgt als `{referentienummer} — {naam}`.
+
 ## Beheer
 
 Alles wat de klant ziet is instelbaar in de WordPress-admin, zodat het assortiment zonder
@@ -61,9 +75,16 @@ includes/
   settings.php               instellingenpagina: opslag, opslaan, sanitizen
   settings-render.php        veldrenderers (tekst, kleur, afbeelding, repeater, …)
   defaults.php               de startcatalogus, eenmalig ingeladen
+  submission-schema.php      wat een aanvraag bevat
+  submission.php             opslag, metaboxen, adminkolommen, referentienummers
 tests/
-  test-sanitize.php          controle op de sanitizer, draait zonder WordPress
+  bootstrap.php              WordPress-stubs voor de tests
+  test-sanitize.php          controle op de sanitizer
+  test-submission.php        controle op opslaan van aanvragen
+  run.php                    draait alle suites
 bin/
+  lib-po.php                 gedeelde .po/.mo-functies
+  make-pot.php               haalt teksten uit de code, vult .po aan
   po2mo.php                  compileert .po naar .mo zonder gettext
 languages/
   horex.pot                  vertaalsjabloon
@@ -96,12 +117,13 @@ gettext-tooling nodig is.
 ## Testen
 
 ```bash
-php tests/test-sanitize.php
+php tests/run.php
 ```
 
-Draait zonder WordPress en controleert de sanitizer: welke velden overleven, of lege
-rijen verdwijnen, of slugs uniek en stabiel blijven, en of de startcatalogus past op het
-schema dat het formulier rendert.
+Draait zonder WordPress. Gecontroleerd wordt onder meer: welke velden de sanitizer
+overleven, of lege rijen verdwijnen, of slugs uniek en stabiel blijven, of maten buiten
+het bereik serverzijdig gemarkeerd worden, en of referentienummers uniek zijn en niet
+opnieuw gegenereerd worden bij een tweede keer opslaan.
 
 ## Ontwikkeling
 
@@ -111,7 +133,7 @@ De build loopt in kleine, afzonderlijk testbare fases:
   schema-gestuurde velden (Maten, E-mail, Branding)
 - [x] **1 — Catalogus:** repeatercomponent + producten, framekleuren, gaas, stof, doek,
   meethulp, en de seeder met de bevestigde gegevens
-- [ ] **2 — Aanvraagvelden:** opslag en adminweergave van aanvragen + adminkolommen
+- [x] **2 — Aanvraagvelden:** opslag en adminweergave van aanvragen + adminkolommen
 - [ ] **3 — Front-end shell:** shortcode, config doorgeven, productstap
 - [ ] **4 — Stap-engine:** auto-advance, transities, terugknop, voortgangsbalk
 - [ ] **5 — Matenscherm:** live preview, meethulp-popup, waarschuwing buiten bereik
