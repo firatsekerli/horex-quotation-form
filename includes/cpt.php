@@ -15,21 +15,21 @@ defined( 'ABSPATH' ) || exit;
  */
 function horex_register_cpt() {
 	$labels = array(
-		'name'                  => __( 'Aanvragen', 'horex' ),
-		'singular_name'         => __( 'Aanvraag', 'horex' ),
-		'menu_name'             => __( 'Hor-Ex', 'horex' ),
-		'all_items'             => __( 'Aanvragen', 'horex' ),
-		'add_new'               => __( 'Nieuwe aanvraag', 'horex' ),
-		'add_new_item'          => __( 'Nieuwe aanvraag toevoegen', 'horex' ),
-		'edit_item'             => __( 'Aanvraag bewerken', 'horex' ),
-		'new_item'              => __( 'Nieuwe aanvraag', 'horex' ),
-		'view_item'             => __( 'Aanvraag bekijken', 'horex' ),
-		'search_items'          => __( 'Aanvragen zoeken', 'horex' ),
-		'not_found'             => __( 'Geen aanvragen gevonden', 'horex' ),
-		'not_found_in_trash'    => __( 'Geen aanvragen in de prullenbak', 'horex' ),
-		'items_list'            => __( 'Lijst met aanvragen', 'horex' ),
-		'item_published'        => __( 'Aanvraag opgeslagen', 'horex' ),
-		'item_updated'          => __( 'Aanvraag bijgewerkt', 'horex' ),
+		'name'                  => __( 'Requests', 'horex' ),
+		'singular_name'         => __( 'Request', 'horex' ),
+		'menu_name'             => 'Hor-Ex',
+		'all_items'             => __( 'Requests', 'horex' ),
+		'add_new'               => __( 'New request', 'horex' ),
+		'add_new_item'          => __( 'Add new request', 'horex' ),
+		'edit_item'             => __( 'Edit request', 'horex' ),
+		'new_item'              => __( 'New request', 'horex' ),
+		'view_item'             => __( 'View request', 'horex' ),
+		'search_items'          => __( 'Search requests', 'horex' ),
+		'not_found'             => __( 'No requests found', 'horex' ),
+		'not_found_in_trash'    => __( 'No requests found in Trash', 'horex' ),
+		'items_list'            => __( 'Requests list', 'horex' ),
+		'item_published'        => __( 'Request saved', 'horex' ),
+		'item_updated'          => __( 'Request updated', 'horex' ),
 	);
 
 	register_post_type(

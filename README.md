@@ -63,9 +63,35 @@ includes/
   defaults.php               de startcatalogus, eenmalig ingeladen
 tests/
   test-sanitize.php          controle op de sanitizer, draait zonder WordPress
+bin/
+  po2mo.php                  compileert .po naar .mo zonder gettext
+languages/
+  horex.pot                  vertaalsjabloon
+  horex-nl_NL.po/.mo         Nederlandse vertaling
 templates/                   shortcode-markup
 assets/js, assets/css        admin- en front-end assets
 ```
+
+## Taal
+
+De beheerkant volgt de taal van de ingelogde gebruiker (**Gebruikers → Profiel → Taal**).
+De brontekst in de code is Engels; Nederlands wordt meegeleverd als vertaling in
+`languages/horex-nl_NL.mo`. Een beheerder die Engels instelt krijgt dus een Engelse
+beheerkant, terwijl de site zelf Nederlands blijft.
+
+Wat de klant ziet, verandert daar niet door. Productnamen, meetstappen, de
+waarschuwingstekst en de e-mailteksten zijn **opgeslagen inhoud**, geen interface — die
+blijven Nederlands, ongeacht welke taal een beheerder kiest.
+
+Vertaling aanpassen of een taal toevoegen:
+
+```bash
+# bewerk languages/horex-nl_NL.po (of kopieer horex.pot naar horex-<locale>.po)
+php bin/po2mo.php
+```
+
+`bin/po2mo.php` compileert alle `.po`-bestanden in `languages/` naar `.mo`, zodat er geen
+gettext-tooling nodig is.
 
 ## Testen
 

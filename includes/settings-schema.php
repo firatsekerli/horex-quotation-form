@@ -21,9 +21,9 @@ defined( 'ABSPATH' ) || exit;
  */
 function horex_product_types() {
 	return array(
-		'horren'    => __( 'Horren — met uitvoering en gaas, framekleuren', 'horex' ),
-		'gordijn'   => __( 'Gordijn — geen uitvoering of gaas, stofkleuren', 'horex' ),
-		'zonwering' => __( 'Zonwering — geen uitvoering of gaas, doekkleuren', 'horex' ),
+		'horren'    => __( 'Insect screens — with variant and mesh, frame colours', 'horex' ),
+		'gordijn'   => __( 'Curtain — no variant or mesh, fabric colours', 'horex' ),
+		'zonwering' => __( 'Sun shading — no variant or mesh, canvas colours', 'horex' ),
 	);
 }
 
@@ -38,26 +38,26 @@ function horex_product_types() {
 function horex_settings_schema() {
 	$schema = array(
 		'producten'    => array(
-			'label'       => __( 'Producten', 'horex' ),
-			'description' => __( 'De productkaarten in de configurator, in deze volgorde. Het type bepaalt welke stappen de klant doorloopt: horren krijgen een uitvoering- en gaasstap, gordijnen en zonwering niet.', 'horex' ),
+			'label'       => __( 'Products', 'horex' ),
+			'description' => __( 'The product cards in the configurator, in this order. The type decides which steps the customer goes through: insect screens get a variant and mesh step, curtains and sun shading do not.', 'horex' ),
 			'fields'      => array(
 				'products' => array(
 					'type'      => 'repeater',
-					'label'     => __( 'Producten', 'horex' ),
-					'button'    => __( 'Product toevoegen', 'horex' ),
+					'label'     => __( 'Products', 'horex' ),
+					'button'    => __( 'Add product', 'horex' ),
 					'row_label' => 'naam',
 					'singular'  => __( 'Product', 'horex' ),
 					'fields'    => array(
 						'naam'         => array(
 							'type'  => 'text',
-							'label' => __( 'Naam', 'horex' ),
+							'label' => __( 'Name', 'horex' ),
 							'width' => 'half',
 						),
 						'slug'         => array(
 							'type'        => 'slug',
 							'label'       => __( 'Slug', 'horex' ),
 							'width'       => 'half',
-							'description' => __( 'Vaste sleutel in aanvragen. Laat leeg om automatisch te vullen; wijzig niet meer zodra er aanvragen zijn.', 'horex' ),
+							'description' => __( 'Stable key used in requests. Leave empty to fill it automatically; do not change it once requests exist.', 'horex' ),
 						),
 						'type'         => array(
 							'type'    => 'select',
@@ -67,20 +67,20 @@ function horex_settings_schema() {
 						),
 						'foto'         => array(
 							'type'        => 'image',
-							'label'       => __( 'Foto', 'horex' ),
-							'description' => __( 'De projectfoto op de productkaart. Zonder foto toont de kaart een gekleurd vlak.', 'horex' ),
+							'label'       => __( 'Photo', 'horex' ),
+							'description' => __( 'The project photo on the product card. Without a photo the card shows a coloured tile.', 'horex' ),
 						),
 						'uitvoeringen' => array(
 							'type'        => 'repeater',
-							'label'       => __( 'Uitvoeringen', 'horex' ),
-							'button'      => __( 'Uitvoering toevoegen', 'horex' ),
+							'label'       => __( 'Variants', 'horex' ),
+							'button'      => __( 'Add variant', 'horex' ),
 							'row_label'   => 'naam',
-							'singular'    => __( 'Uitvoering', 'horex' ),
-							'description' => __( 'Alleen van toepassing op horren. Gordijnen en zonwering slaan deze stap over.', 'horex' ),
+							'singular'    => __( 'Variant', 'horex' ),
+							'description' => __( 'Only applies to insect screens. Curtains and sun shading skip this step.', 'horex' ),
 							'fields'      => array(
 								'naam' => array(
 									'type'  => 'text',
-									'label' => __( 'Naam', 'horex' ),
+									'label' => __( 'Name', 'horex' ),
 									'width' => 'half',
 								),
 								'slug' => array(
@@ -90,7 +90,7 @@ function horex_settings_schema() {
 								),
 								'foto' => array(
 									'type'  => 'image',
-									'label' => __( 'Foto', 'horex' ),
+									'label' => __( 'Photo', 'horex' ),
 								),
 							),
 						),
@@ -99,19 +99,19 @@ function horex_settings_schema() {
 			),
 		),
 		'framekleuren' => array(
-			'label'       => __( 'Framekleuren', 'horex' ),
-			'description' => __( 'De kleuren voor producten van het type horren. Gebruik een hexkleur voor egale lakken; kies daarnaast een afbeelding voor structuurlakken, die dan als swatch getoond wordt.', 'horex' ),
+			'label'       => __( 'Frame colours', 'horex' ),
+			'description' => __( 'The colours for products of type insect screen. Use a hex colour for solid coatings; add an image for textured coatings, which is then shown as the swatch.', 'horex' ),
 			'fields'      => array(
 				'frame_colours' => array(
 					'type'      => 'repeater',
-					'label'     => __( 'Framekleuren', 'horex' ),
-					'button'    => __( 'Kleur toevoegen', 'horex' ),
+					'label'     => __( 'Frame colours', 'horex' ),
+					'button'    => __( 'Add colour', 'horex' ),
 					'row_label' => 'naam',
-					'singular'  => __( 'Kleur', 'horex' ),
+					'singular'  => __( 'Colour', 'horex' ),
 					'fields'    => array(
 						'naam'   => array(
 							'type'  => 'text',
-							'label' => __( 'Naam', 'horex' ),
+							'label' => __( 'Name', 'horex' ),
 							'width' => 'half',
 						),
 						'slug'   => array(
@@ -121,7 +121,7 @@ function horex_settings_schema() {
 						),
 						'hex'    => array(
 							'type'  => 'color',
-							'label' => __( 'Kleur', 'horex' ),
+							'label' => __( 'Colour', 'horex' ),
 							'width' => 'half',
 						),
 						'ral'    => array(
@@ -132,27 +132,27 @@ function horex_settings_schema() {
 						),
 						'swatch' => array(
 							'type'        => 'image',
-							'label'       => __( 'Swatch-afbeelding', 'horex' ),
-							'description' => __( 'Optioneel, voor structuurlakken. Gaat voor op de hexkleur.', 'horex' ),
+							'label'       => __( 'Swatch image', 'horex' ),
+							'description' => __( 'Optional, for textured coatings. Takes precedence over the hex colour.', 'horex' ),
 						),
 					),
 				),
 			),
 		),
 		'gaas'         => array(
-			'label'       => __( 'Gaas', 'horex' ),
-			'description' => __( 'De gaassoorten in de laatste keuzestap van horren.', 'horex' ),
+			'label'       => __( 'Mesh', 'horex' ),
+			'description' => __( 'The mesh types in the final choice step for insect screens.', 'horex' ),
 			'fields'      => array(
 				'gaas' => array(
 					'type'      => 'repeater',
-					'label'     => __( 'Gaassoorten', 'horex' ),
-					'button'    => __( 'Gaassoort toevoegen', 'horex' ),
+					'label'     => __( 'Mesh types', 'horex' ),
+					'button'    => __( 'Add mesh type', 'horex' ),
 					'row_label' => 'naam',
-					'singular'  => __( 'Gaassoort', 'horex' ),
+					'singular'  => __( 'Mesh type', 'horex' ),
 					'fields'    => array(
 						'naam'        => array(
 							'type'  => 'text',
-							'label' => __( 'Naam', 'horex' ),
+							'label' => __( 'Name', 'horex' ),
 							'width' => 'half',
 						),
 						'slug'        => array(
@@ -162,136 +162,136 @@ function horex_settings_schema() {
 						),
 						'omschrijving' => array(
 							'type'        => 'textarea',
-							'label'       => __( 'Omschrijving', 'horex' ),
+							'label'       => __( 'Description', 'horex' ),
 							'rows'        => 2,
-							'description' => __( 'Eén regel uitleg onder de naam, bijvoorbeeld waarvoor deze soort geschikt is.', 'horex' ),
+							'description' => __( 'One line of explanation under the name, for example what this type is suitable for.', 'horex' ),
 						),
 						'foto'        => array(
 							'type'  => 'image',
-							'label' => __( 'Foto', 'horex' ),
+							'label' => __( 'Photo', 'horex' ),
 						),
 					),
 				),
 			),
 		),
 		'stof'         => array(
-			'label'       => __( 'Stofkleuren', 'horex' ),
-			'description' => __( 'De kleuren voor producten van het type gordijn. Stoffen zijn textuur, dus gebruik hier bij voorkeur een swatch-afbeelding.', 'horex' ),
+			'label'       => __( 'Fabric colours', 'horex' ),
+			'description' => __( 'The colours for products of type curtain. Fabrics are textured, so prefer a swatch image here.', 'horex' ),
 			'fields'      => array(
 				'stof_colours' => array(
 					'type'      => 'repeater',
-					'label'     => __( 'Stofkleuren', 'horex' ),
-					'button'    => __( 'Stofkleur toevoegen', 'horex' ),
+					'label'     => __( 'Fabric colours', 'horex' ),
+					'button'    => __( 'Add fabric colour', 'horex' ),
 					'row_label' => 'naam',
-					'singular'  => __( 'Stofkleur', 'horex' ),
+					'singular'  => __( 'Fabric colour', 'horex' ),
 					'fields'    => horex_fabric_colour_fields(),
 				),
 			),
 		),
 		'doek'         => array(
-			'label'       => __( 'Doekkleuren', 'horex' ),
-			'description' => __( 'De kleuren voor producten van het type zonwering.', 'horex' ),
+			'label'       => __( 'Canvas colours', 'horex' ),
+			'description' => __( 'The colours for products of type sun shading.', 'horex' ),
 			'fields'      => array(
 				'doek_colours' => array(
 					'type'      => 'repeater',
-					'label'     => __( 'Doekkleuren', 'horex' ),
-					'button'    => __( 'Doekkleur toevoegen', 'horex' ),
+					'label'     => __( 'Canvas colours', 'horex' ),
+					'button'    => __( 'Add canvas colour', 'horex' ),
 					'row_label' => 'naam',
-					'singular'  => __( 'Doekkleur', 'horex' ),
+					'singular'  => __( 'Canvas colour', 'horex' ),
 					'fields'    => horex_fabric_colour_fields(),
 				),
 			),
 		),
 		'maten'        => array(
-			'label'       => __( 'Maten', 'horex' ),
-			'description' => __( 'Maten worden altijd in millimeters ingevoerd. Buiten dit bereik wordt de klant gewaarschuwd, maar nooit geblokkeerd — een veranda van 6,2 meter is een echte klant.', 'horex' ),
+			'label'       => __( 'Measurements', 'horex' ),
+			'description' => __( 'Measurements are always entered in millimetres. Outside this range the customer is warned, but never blocked — a 6.2 metre veranda is a real customer, not a typo.', 'horex' ),
 			'fields'      => array(
 				'min_mm'             => array(
 					'type'        => 'number',
-					'label'       => __( 'Minimale maat (mm)', 'horex' ),
+					'label'       => __( 'Minimum size (mm)', 'horex' ),
 					'default'     => 300,
 					'min'         => 0,
 					'max'         => 100000,
-					'description' => __( 'Onder deze maat krijgt de klant een opmerking te zien.', 'horex' ),
+					'description' => __( 'Below this size the customer sees a note.', 'horex' ),
 				),
 				'max_mm'             => array(
 					'type'        => 'number',
-					'label'       => __( 'Maximale maat (mm)', 'horex' ),
+					'label'       => __( 'Maximum size (mm)', 'horex' ),
 					'default'     => 6000,
 					'min'         => 0,
 					'max'         => 100000,
-					'description' => __( 'Boven deze maat krijgt de klant een opmerking te zien.', 'horex' ),
+					'description' => __( 'Above this size the customer sees a note.', 'horex' ),
 				),
 				'waarschuwing_tekst' => array(
 					'type'    => 'textarea',
-					'label'   => __( 'Waarschuwingstekst', 'horex' ),
-					'default' => __( 'Deze maat valt buiten ons standaardbereik. Geen probleem — we nemen contact met u op om de mogelijkheden door te nemen.', 'horex' ),
+					'label'   => __( 'Warning text', 'horex' ),
+					'default' => 'Deze maat valt buiten ons standaardbereik. Geen probleem — we nemen contact met u op om de mogelijkheden door te nemen.',
 					'rows'    => 3,
 				),
 			),
 		),
 		'meethulp'     => array(
-			'label'       => __( 'Meethulp', 'horex' ),
-			'description' => __( 'De uitleg achter "Hoe meet ik dit op?" boven de maatvelden. Verkeerde maten zijn de grootste kostenpost bij maatwerk — dit is de goedkoopste plek om ze te voorkomen.', 'horex' ),
+			'label'       => __( 'Measuring help', 'horex' ),
+			'description' => __( 'The explanation behind "How do I measure this?" above the measurement fields. Wrong measurements are the biggest cost in made-to-measure work — this is the cheapest place to prevent them.', 'horex' ),
 			'fields'      => array(
 				'meethulp_horren'  => array(
 					'type'        => 'group',
-					'label'       => __( 'Horren', 'horex' ),
-					'description' => __( 'Getoond bij producten van het type horren.', 'horex' ),
+					'label'       => __( 'Insect screens', 'horex' ),
+					'description' => __( 'Shown for products of type insect screen.', 'horex' ),
 					'fields'      => horex_meethulp_fields(),
 				),
 				'meethulp_gordijn' => array(
 					'type'        => 'group',
-					'label'       => __( 'Gordijnen en zonwering', 'horex' ),
-					'description' => __( 'Getoond bij producten van het type gordijn en zonwering.', 'horex' ),
+					'label'       => __( 'Curtains and sun shading', 'horex' ),
+					'description' => __( 'Shown for products of type curtain and sun shading.', 'horex' ),
 					'fields'      => horex_meethulp_fields(),
 				),
 			),
 		),
 		'email'        => array(
-			'label'       => __( 'E-mail', 'horex' ),
-			'description' => __( 'Wie krijgt een nieuwe aanvraag binnen, en wat ziet de klant in de bevestigingsmail?', 'horex' ),
+			'label'       => __( 'Email', 'horex' ),
+			'description' => __( 'Who receives a new request, and what does the customer see in the confirmation email?', 'horex' ),
 			'fields'      => array(
 				'ontvangers'        => array(
 					'type'        => 'email_list',
-					'label'       => __( 'Ontvangers', 'horex' ),
+					'label'       => __( 'Recipients', 'horex' ),
 					'rows'        => 4,
-					'description' => __( 'Eén e-mailadres per regel. Leeg laten gebruikt het beheerdersadres van de site.', 'horex' ),
+					'description' => __( 'One email address per line. Leave empty to use the site\'s admin address.', 'horex' ),
 				),
 				'onderwerp'         => array(
 					'type'        => 'text',
-					'label'       => __( 'Onderwerp interne mail', 'horex' ),
-					'default'     => __( 'Nieuwe offerteaanvraag', 'horex' ),
-					'description' => __( 'Het referentienummer wordt hier automatisch achter geplaatst.', 'horex' ),
+					'label'       => __( 'Internal email subject', 'horex' ),
+					'default'     => 'Nieuwe offerteaanvraag',
+					'description' => __( 'The reference number is appended to this automatically.', 'horex' ),
 				),
 				'stuur_klant_kopie' => array(
 					'type'    => 'checkbox',
-					'label'   => __( 'Kopie naar de klant', 'horex' ),
-					'toggle'  => __( 'Stuur de klant een kopie van de aanvraag', 'horex' ),
+					'label'   => __( 'Copy to the customer', 'horex' ),
+					'toggle'  => __( 'Send the customer a copy of the request', 'horex' ),
 					'default' => true,
 				),
 				'intro_tekst'       => array(
 					'type'        => 'wysiwyg',
-					'label'       => __( 'Introtekst klantbevestiging', 'horex' ),
-					'default'     => '<p>' . __( 'Bedankt voor uw aanvraag. Hieronder vindt u een overzicht van wat u heeft doorgegeven. We nemen zo snel mogelijk contact met u op om een afspraak in te plannen en de maten ter plaatse op te nemen.', 'horex' ) . '</p>',
-					'description' => __( 'Staat boven het overzicht in de mail aan de klant.', 'horex' ),
+					'label'       => __( 'Intro text for the customer confirmation', 'horex' ),
+					'default'     => '<p>' . 'Bedankt voor uw aanvraag. Hieronder vindt u een overzicht van wat u heeft doorgegeven. We nemen zo snel mogelijk contact met u op om een afspraak in te plannen en de maten ter plaatse op te nemen.' . '</p>',
+					'description' => __( 'Appears above the summary in the email to the customer.', 'horex' ),
 				),
 				'referentie_prefix' => array(
 					'type'        => 'text',
-					'label'       => __( 'Referentieprefix', 'horex' ),
+					'label'       => __( 'Reference prefix', 'horex' ),
 					'default'     => 'HX-',
-					'description' => __( 'Voorvoegsel van het referentienummer, bijvoorbeeld HX-2026-0031.', 'horex' ),
+					'description' => __( 'Prefix of the reference number, for example HX-2026-0031.', 'horex' ),
 				),
 			),
 		),
 		'branding'     => array(
 			'label'       => __( 'Branding', 'horex' ),
-			'description' => __( 'Het logo met het witte woordmerk staat op de donkere header van de configurator.', 'horex' ),
+			'description' => __( 'The logo with the white wordmark sits on the configurator\'s dark header.', 'horex' ),
 			'fields'      => array(
 				'logo_licht' => array(
 					'type'        => 'image',
-					'label'       => __( 'Logo (licht)', 'horex' ),
-					'description' => __( 'Optioneel. Zonder logo toont de header de naam Hor-Ex als tekst.', 'horex' ),
+					'label'       => __( 'Logo (light)', 'horex' ),
+					'description' => __( 'Optional. Without a logo the header shows the name Hor-Ex as text.', 'horex' ),
 				),
 			),
 		),
@@ -314,7 +314,7 @@ function horex_fabric_colour_fields() {
 	return array(
 		'naam'         => array(
 			'type'  => 'text',
-			'label' => __( 'Naam', 'horex' ),
+			'label' => __( 'Name', 'horex' ),
 			'width' => 'half',
 		),
 		'slug'         => array(
@@ -324,17 +324,17 @@ function horex_fabric_colour_fields() {
 		),
 		'swatch'       => array(
 			'type'        => 'image',
-			'label'       => __( 'Swatch-afbeelding', 'horex' ),
-			'description' => __( 'Een uitsnede van de stof. Zonder afbeelding wordt de hexkleur gebruikt.', 'horex' ),
+			'label'       => __( 'Swatch image', 'horex' ),
+			'description' => __( 'A crop of the fabric. Without an image the hex colour is used.', 'horex' ),
 		),
 		'hex'          => array(
 			'type'        => 'color',
-			'label'       => __( 'Kleur', 'horex' ),
-			'description' => __( 'Terugval wanneer er geen swatch is.', 'horex' ),
+			'label'       => __( 'Colour', 'horex' ),
+			'description' => __( 'Fallback for when there is no swatch.', 'horex' ),
 		),
 		'omschrijving' => array(
 			'type'  => 'textarea',
-			'label' => __( 'Omschrijving', 'horex' ),
+			'label' => __( 'Description', 'horex' ),
 			'rows'  => 2,
 		),
 	);
@@ -349,24 +349,24 @@ function horex_meethulp_fields() {
 	return array(
 		'titel'     => array(
 			'type'    => 'text',
-			'label'   => __( 'Titel', 'horex' ),
-			'default' => __( 'Hoe meet ik dit op?', 'horex' ),
+			'label'   => __( 'Title', 'horex' ),
+			'default' => 'Hoe meet ik dit op?',
 		),
 		'diagram'   => array(
 			'type'        => 'image',
 			'label'       => __( 'Diagram', 'horex' ),
-			'description' => __( 'Tekening die laat zien welke maat bedoeld wordt.', 'horex' ),
+			'description' => __( 'Drawing showing which measurement is meant.', 'horex' ),
 		),
 		'stappen'   => array(
 			'type'      => 'repeater',
-			'label'     => __( 'Stappen', 'horex' ),
-			'button'    => __( 'Stap toevoegen', 'horex' ),
+			'label'     => __( 'Steps', 'horex' ),
+			'button'    => __( 'Add step', 'horex' ),
 			'row_label' => 'tekst',
-			'singular'  => __( 'Stap', 'horex' ),
+			'singular'  => __( 'Step', 'horex' ),
 			'fields'    => array(
 				'tekst' => array(
 					'type'  => 'text',
-					'label' => __( 'Stap', 'horex' ),
+					'label' => __( 'Step', 'horex' ),
 					'width' => 'full',
 				),
 			),
@@ -374,7 +374,7 @@ function horex_meethulp_fields() {
 		'video_url' => array(
 			'type'        => 'url',
 			'label'       => __( 'Video', 'horex' ),
-			'description' => __( 'Optioneel. Een korte clip van iemand die daadwerkelijk opmeet werkt beter dan tekst.', 'horex' ),
+			'description' => __( 'Optional. A short clip of someone actually measuring works better than text.', 'horex' ),
 		),
 	);
 }

@@ -180,12 +180,12 @@ function horex_render_repeater( $input_name, array $field, array $rows, $depth =
 		</div>
 
 		<p class="horex-repeater__empty"<?php echo $rows ? ' hidden' : ''; ?>>
-			<?php esc_html_e( 'Nog niets toegevoegd.', 'horex' ); ?>
+			<?php esc_html_e( 'Nothing added yet.', 'horex' ); ?>
 		</p>
 
 		<p class="horex-repeater__footer">
 			<button type="button" class="button horex-repeater__add">
-				<?php echo esc_html( isset( $field['button'] ) ? $field['button'] : __( 'Rij toevoegen', 'horex' ) ); ?>
+				<?php echo esc_html( isset( $field['button'] ) ? $field['button'] : __( 'Add row', 'horex' ) ); ?>
 			</button>
 		</p>
 
@@ -218,9 +218,9 @@ function horex_render_repeater_row( $prefix, array $field, array $values, $index
 				<?php echo esc_html( $row_label ? $row_label : $singular ); ?>
 			</span>
 			<span class="horex-repeater__tools">
-				<button type="button" class="button-link horex-repeater__move" data-move="up" aria-label="<?php esc_attr_e( 'Omhoog verplaatsen', 'horex' ); ?>">&uarr;</button>
-				<button type="button" class="button-link horex-repeater__move" data-move="down" aria-label="<?php esc_attr_e( 'Omlaag verplaatsen', 'horex' ); ?>">&darr;</button>
-				<button type="button" class="button-link horex-repeater__remove" aria-label="<?php esc_attr_e( 'Verwijderen', 'horex' ); ?>"><?php esc_html_e( 'Verwijderen', 'horex' ); ?></button>
+				<button type="button" class="button-link horex-repeater__move" data-move="up" aria-label="<?php esc_attr_e( 'Move up', 'horex' ); ?>">&uarr;</button>
+				<button type="button" class="button-link horex-repeater__move" data-move="down" aria-label="<?php esc_attr_e( 'Move down', 'horex' ); ?>">&darr;</button>
+				<button type="button" class="button-link horex-repeater__remove" aria-label="<?php esc_attr_e( 'Remove', 'horex' ); ?>"><?php esc_html_e( 'Remove', 'horex' ); ?></button>
 			</span>
 		</div>
 
@@ -304,7 +304,7 @@ function horex_render_color_field( $id, $name, $value ) {
 			type="color"
 			class="horex-color__picker"
 			value="<?php echo esc_attr( $hex ); ?>"
-			aria-label="<?php esc_attr_e( 'Kleur kiezen', 'horex' ); ?>"
+			aria-label="<?php esc_attr_e( 'Choose colour', 'horex' ); ?>"
 		/>
 		<input
 			type="text"
@@ -345,10 +345,10 @@ function horex_render_image_field( $id, $name, $value ) {
 		/>
 		<p class="horex-image__actions">
 			<button type="button" class="button horex-image__select">
-				<?php echo $value ? esc_html__( 'Vervangen', 'horex' ) : esc_html__( 'Afbeelding kiezen', 'horex' ); ?>
+				<?php echo $value ? esc_html__( 'Replace', 'horex' ) : esc_html__( 'Choose image', 'horex' ); ?>
 			</button>
 			<button type="button" class="button-link horex-image__remove"<?php echo $value ? '' : ' hidden'; ?>>
-				<?php esc_html_e( 'Verwijderen', 'horex' ); ?>
+				<?php esc_html_e( 'Remove', 'horex' ); ?>
 			</button>
 		</p>
 	</div>

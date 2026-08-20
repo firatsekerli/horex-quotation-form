@@ -85,8 +85,8 @@ function horex_update_settings( array $values ) {
 function horex_register_settings_page() {
 	$hook = add_submenu_page(
 		'edit.php?post_type=' . Horex::CPT,
-		__( 'Hor-Ex Instellingen', 'horex' ),
-		__( 'Instellingen', 'horex' ),
+		__( 'Hor-Ex Settings', 'horex' ),
+		__( 'Settings', 'horex' ),
 		'manage_options',
 		Horex::OPTIONS_SLUG,
 		'horex_render_settings_page'
@@ -144,7 +144,7 @@ function horex_current_tab() {
  */
 function horex_render_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'U heeft geen toegang tot deze pagina.', 'horex' ) );
+		wp_die( esc_html__( 'You do not have permission to access this page.', 'horex' ) );
 	}
 
 	$schema   = horex_settings_schema();
@@ -155,12 +155,12 @@ function horex_render_settings_page() {
 
 	?>
 	<div class="wrap horex-settings">
-		<h1><?php esc_html_e( 'Hor-Ex Instellingen', 'horex' ); ?></h1>
+		<h1><?php esc_html_e( 'Hor-Ex Settings', 'horex' ); ?></h1>
 
 		<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display-only flag. ?>
 		<?php if ( isset( $_GET['horex-updated'] ) ) : ?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php esc_html_e( 'Instellingen opgeslagen.', 'horex' ); ?></p>
+				<p><?php esc_html_e( 'Settings saved.', 'horex' ); ?></p>
 			</div>
 		<?php endif; ?>
 
@@ -184,7 +184,7 @@ function horex_render_settings_page() {
 
 			<?php horex_render_tab_fields( $tab, $settings ); ?>
 
-			<?php submit_button( __( 'Opslaan', 'horex' ) ); ?>
+			<?php submit_button( __( 'Save', 'horex' ) ); ?>
 		</form>
 	</div>
 	<?php
@@ -266,14 +266,14 @@ function horex_render_scalar_table( array $fields, array $settings ) {
  */
 function horex_handle_settings_save() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'U heeft geen toegang tot deze pagina.', 'horex' ) );
+		wp_die( esc_html__( 'You do not have permission to access this page.', 'horex' ) );
 	}
 
 	$schema = horex_settings_schema();
 	$tab    = isset( $_POST['horex_tab'] ) ? sanitize_key( wp_unslash( $_POST['horex_tab'] ) ) : '';
 
 	if ( ! isset( $schema[ $tab ] ) ) {
-		wp_die( esc_html__( 'Onbekend tabblad.', 'horex' ) );
+		wp_die( esc_html__( 'Unknown tab.', 'horex' ) );
 	}
 
 	check_admin_referer( 'horex_save_settings_' . $tab, 'horex_nonce' );
@@ -527,9 +527,9 @@ function horex_enqueue_admin_assets() {
 		'horex-admin',
 		'horexAdmin',
 		array(
-			'chooseImage'   => __( 'Afbeelding kiezen', 'horex' ),
-			'useImage'      => __( 'Deze afbeelding gebruiken', 'horex' ),
-			'confirmRemove' => __( 'Deze rij verwijderen?', 'horex' ),
+			'chooseImage'   => __( 'Choose image', 'horex' ),
+			'useImage'      => __( 'Use this image', 'horex' ),
+			'confirmRemove' => __( 'Remove this row?', 'horex' ),
 		)
 	);
 }
